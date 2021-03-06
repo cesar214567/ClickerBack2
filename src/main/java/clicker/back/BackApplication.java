@@ -26,7 +26,7 @@ public class BackApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
         SpringApplication.run(BackApplication.class, args);
     }
- 
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return  builder.sources(BackApplication.class);
@@ -42,7 +42,7 @@ public class BackApplication extends SpringBootServletInitializer {
     LocacionesService locacionesService;
     @Autowired
     UsersService usersService;
-
+ 
     @Bean
     InitializingBean sendDatabase() {
         return () -> {
