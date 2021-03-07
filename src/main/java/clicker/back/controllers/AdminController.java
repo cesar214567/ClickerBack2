@@ -1,8 +1,10 @@
 package clicker.back.controllers;
 
 import clicker.back.Setup;
+import clicker.back.entities.RegistroBalance;
 import clicker.back.entities.SolicitudesRetiro;
 import clicker.back.repositories.SolicitudesRetiroRepository;
+import clicker.back.services.RegistroBalanceService;
 import clicker.back.services.SolicitudesRetiroService;
 import clicker.back.services.UsersService;
 import clicker.back.services.UsuariosService;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/admin")
@@ -28,6 +31,9 @@ public class AdminController {
 
     @Autowired
     UsuariosService usuariosService;
+
+    @Autowired
+    RegistroBalanceService registroBalanceService;
 
     @GetMapping(value = "/Retiros")
     @ResponseBody
@@ -62,18 +68,29 @@ public class AdminController {
         if(solicitudesRetiro.getAdmin()==null){
             return new ResponseEntity<>("no se encontro al admin",HttpStatus.BAD_REQUEST);
         }
+        RegistroBalance registroBalance = null;
         if(original.getAceptado()){
             original.getUsuario().setBalance(original.getUsuario().getBalance()-original.getMonto());
+            registroBalance = new RegistroBalance(new Date(),-1*original.getMonto(),solicitudesRetiro.getUsuario(),"retiro de "+original.getMonto()+" soles");
+            original.getUsuario().getHistorialBalance().add(registroBalance);
         }
         try{
             solicitudesRetiroService.save(original);
             usuariosService.save(original.getUsuario());
+
             return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping
+    @ResponseBody
+    public ResponseEntity<Object> getAll(){
+        return new ResponseEntity<>(registroBalanceService.getAll(),HttpStatus.OK);
+    }
+
 
 
 }
