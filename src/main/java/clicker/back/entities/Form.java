@@ -11,7 +11,7 @@ public class Form {
     @Id
     Long id;
 
-    @JsonIgnoreProperties({"carrosPosteados","denuncias","interesadoReventas","solicitudesRetiros","form"})
+    @JsonIgnoreProperties({"carrosPosteados","denuncias","interesadoReventas","solicitudesRetiros","form","password"})
     @JoinColumn(name = "id_usuario")
     @OneToOne
     Usuario usuario;

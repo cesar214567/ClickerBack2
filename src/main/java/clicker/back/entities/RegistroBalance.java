@@ -1,5 +1,7 @@
 package clicker.back.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -16,7 +18,7 @@ public class RegistroBalance {
     @Column
     Long ganancia;
 
-
+    @JsonIgnoreProperties({"carrosPosteados","denuncias","interesadoReventas","solicitudesRetiros","formRemax","password","fbId","solicitudesRetiro","historialBalance"})
     @JoinColumn(name = "correo")
     @ManyToOne
     Usuario usuario;

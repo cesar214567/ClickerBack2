@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping(value = "/solicitudRetiro")
 @CrossOrigin(origins = {Setup.local/*,Setup.route*/}, allowedHeaders = "*")
@@ -31,6 +33,10 @@ public class RetirosController {
         if(solicitudesRetiro.getUsuario()==null)return new ResponseEntity<>("no se encontro al usuario",HttpStatus.BAD_REQUEST);
         if(solicitudesRetiro.getUsuario().getBalance()<solicitudesRetiro.getMonto())return new ResponseEntity<>("el monto que se pide es mayor a lo que el usuario tiene",HttpStatus.NOT_ACCEPTABLE);
         solicitudesRetiro.setAceptado(false);
+        solicitudesRetiro.setDate(new Date());
+        solicitudesRetiro.setAceptado(null);
+        solicitudesRetiro.setTransferencia(null);
+        solicitudesRetiro.getUsuario().getSolicitudesRetiros().add(solicitudesRetiro);
         try{
             return new ResponseEntity<>(solicitudesRetiroService.save(solicitudesRetiro),HttpStatus.BAD_REQUEST);
         }catch (Exception e){

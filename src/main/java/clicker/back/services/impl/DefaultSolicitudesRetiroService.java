@@ -31,4 +31,9 @@ public class DefaultSolicitudesRetiroService implements SolicitudesRetiroService
     public List<SolicitudesRetiro> getAll() {
         return (List<SolicitudesRetiro>) solicitudesRetiroRepository.findAll();
     }
+
+    @Override
+    public List<SolicitudesRetiro> getPendientes() {
+        return solicitudesRetiroRepository.findAllByAceptado();
+    }
 }

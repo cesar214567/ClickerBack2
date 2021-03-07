@@ -42,7 +42,7 @@ public class BackApplication extends SpringBootServletInitializer {
     LocacionesService locacionesService;
     @Autowired
     UsersService usersService;
- 
+
     @Bean
     InitializingBean sendDatabase() {
         return () -> {
@@ -57,7 +57,7 @@ public class BackApplication extends SpringBootServletInitializer {
             usuario.setValidated(true);
             usuario.setEnabled(true);
             usuario.setCantidadCarrosAno(3);
-            usuario.setBalance((long) 0);
+            usuario.setBalance((long) 1000);
             usuario.setForm(new Form());
             usuario.getForm().setEstado(true);
             usuario.getForm().setUsuario(usuario);

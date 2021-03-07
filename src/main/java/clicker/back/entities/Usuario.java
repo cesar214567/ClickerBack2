@@ -79,10 +79,6 @@ public class Usuario {
     @OneToOne(cascade = CascadeType.ALL)
     Form form;
 
-    @JsonIgnoreProperties({"usuario","admin"})
-    @OneToMany(cascade = CascadeType.ALL)
-    List<SolicitudesRetiro> solicitudesRetiro;
-
     @OrderBy("fecha")
     @JsonIgnoreProperties({"usuario"})
     @OneToMany(cascade = CascadeType.ALL)
@@ -268,13 +264,6 @@ public class Usuario {
         this.solicitudesRetiros = solicitudesRetiros;
     }
 
-    public void setSolicitudesRetiro(List<SolicitudesRetiro> solicitudesRetiro) {
-        this.solicitudesRetiro = solicitudesRetiro;
-    }
-
-    public List<SolicitudesRetiro> getSolicitudesRetiro() {
-        return solicitudesRetiro;
-    }
 
     public Form getForm() {
         return form;

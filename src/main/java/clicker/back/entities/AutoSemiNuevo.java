@@ -14,7 +14,7 @@ public class AutoSemiNuevo implements Cloneable {
     @Id
     Long id;
 
-    @JsonIgnoreProperties({"carrosPosteados","denuncias","interesadoReventas","solicitudesRetiros","formRemax","solicitudesRetiro"})
+    @JsonIgnoreProperties({"carrosPosteados","denuncias","interesadoReventas","solicitudesRetiros","formRemax","solicitudesRetiro","password"})
     @JoinColumn(name = "id_usuario")
     @ManyToOne
     Usuario usuario;

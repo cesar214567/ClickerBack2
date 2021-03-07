@@ -13,4 +13,6 @@ public interface SolicitudesRetiroService {
     SolicitudesRetiro getById(Long id );
 
     List<SolicitudesRetiro> getAll();
+
+    List<SolicitudesRetiro> getPendientes();
 }
