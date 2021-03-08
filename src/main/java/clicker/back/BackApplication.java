@@ -312,9 +312,9 @@ public class BackApplication extends SpringBootServletInitializer {
             autosService.save(autos11);
 
             Users admin = new Users();
-            admin.setEmail("cesar.madera@utec.edu.pe");
+            admin.setEmail("luis.jauregui@utec.edu.pe");
             admin.setPassword("uwu");
-            admin.setName("cesar");
+            admin.setName("luis");
             admin.setPermitido(true);
             admin.setRol("ADMIN");
             usersService.save(admin);
