@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface UsuariosService {
 
-    Usuario login(String correo, String password);
 
     Usuario save(Usuario usuario);
 
@@ -18,5 +17,5 @@ public interface UsuariosService {
 
     Long countUsers();
 
-
+    Boolean login(String correo,String password);
 }

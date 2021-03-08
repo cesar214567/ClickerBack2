@@ -9,7 +9,10 @@ import clicker.back.services.UsersService;
 import clicker.back.services.UsuariosService;
 import com.google.gson.*;
 import com.sendgrid.Response;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jackson.JsonObjectSerializer;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.Tuple;
 import javax.persistence.TupleElement;
 import javax.transaction.Transactional;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -92,15 +96,17 @@ public class AuthController {
         if(usuario.getCorreo()==null || usuario.getPassword()==null)return new ResponseEntity<>("no se envio credenciales", HttpStatus.BAD_REQUEST);
         Users users = usersService.login(usuario.getCorreo(),usuario.getPassword());
         if(users ==null){
-            usuario = usuariosService.login(usuario.getCorreo(),usuario.getPassword());
-            if(usuario==null){
+            Boolean validated = usuariosService.login(usuario.getCorreo(),usuario.getPassword());
+            if(validated==null){
                 return new ResponseEntity<>("no se encontro el usuario", HttpStatus.BAD_REQUEST);
             }else{
                 try{
-                    Map<String,String> jsonElement = new HashMap<String,String>();
+                    JSONObject jsonElement= new JSONObject();
                     jsonElement.put("secret",cryptoService.encrypt3(usuario.getCorreo()));
+                    jsonElement.put("validated",validated);
                     return new ResponseEntity<>(jsonElement, HttpStatus.OK);
                 }catch (Exception e){
+                    e.printStackTrace();
                     return new ResponseEntity<>("fallo la encriptacion",HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }

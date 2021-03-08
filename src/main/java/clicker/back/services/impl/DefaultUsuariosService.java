@@ -16,8 +16,8 @@ public class DefaultUsuariosService implements UsuariosService {
 
 
     @Override
-    public Usuario login(String correo, String password ) {
-        return usuariosRepository.findByCorreoAndPassword(correo,password);
+    public Boolean login(String correo, String password ) {
+        return usuariosRepository.loginGetValidated(correo,password);
     }
 
     @Override
