@@ -106,7 +106,6 @@ public class AuthController {
                     jsonElement.put("validated",validated);
                     return new ResponseEntity<>(jsonElement, HttpStatus.OK);
                 }catch (Exception e){
-                    e.printStackTrace();
                     return new ResponseEntity<>("fallo la encriptacion",HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
