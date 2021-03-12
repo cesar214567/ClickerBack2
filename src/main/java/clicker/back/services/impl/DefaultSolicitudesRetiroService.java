@@ -1,6 +1,7 @@
 package clicker.back.services.impl;
 
 import clicker.back.entities.SolicitudesRetiro;
+import clicker.back.entities.Usuario;
 import clicker.back.repositories.SolicitudesRetiroRepository;
 import clicker.back.services.SolicitudesRetiroService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,10 @@ public class DefaultSolicitudesRetiroService implements SolicitudesRetiroService
     @Override
     public List<SolicitudesRetiro> getPendientes() {
         return solicitudesRetiroRepository.findAllByAceptado();
+    }
+
+    @Override
+    public Boolean checkIfExist(Usuario usuario) {
+        return solicitudesRetiroRepository.existsByUsuarioAndAceptadoIsNull(usuario);
     }
 }

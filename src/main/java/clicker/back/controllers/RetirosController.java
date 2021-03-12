@@ -32,6 +32,9 @@ public class RetirosController {
         solicitudesRetiro.setUsuario(usuariosService.getById(solicitudesRetiro.getUsuario().getCorreo()));
         if(solicitudesRetiro.getUsuario()==null)return new ResponseEntity<>("no se encontro al usuario",HttpStatus.BAD_REQUEST);
         if(solicitudesRetiro.getUsuario().getBalance()<solicitudesRetiro.getMonto())return new ResponseEntity<>("el monto que se pide es mayor a lo que el usuario tiene",HttpStatus.NOT_ACCEPTABLE);
+        if(solicitudesRetiroService.checkIfExist(solicitudesRetiro.getUsuario())){
+            return new ResponseEntity<>("existe una solicitud actualmente",HttpStatus.LOCKED);
+        }
         solicitudesRetiro.setAceptado(false);
         solicitudesRetiro.setDate(new Date());
         solicitudesRetiro.setAceptado(null);

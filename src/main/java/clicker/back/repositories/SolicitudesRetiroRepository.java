@@ -1,6 +1,7 @@
 package clicker.back.repositories;
 
 import clicker.back.entities.SolicitudesRetiro;
+import clicker.back.entities.Usuario;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -11,4 +12,6 @@ public interface SolicitudesRetiroRepository extends PagingAndSortingRepository<
 
     @Query(nativeQuery = true,value = "select * from solicitudes_retiro s where s.aceptado is null order by s.date asc ")
     List<SolicitudesRetiro> findAllByAceptado();
+
+    Boolean existsByUsuarioAndAceptadoIsNull(Usuario usuario);
 }
