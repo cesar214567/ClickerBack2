@@ -1,6 +1,7 @@
 package clicker.back.controllers;
 
 import clicker.back.Setup;
+import clicker.back.antiguo.Solicitudes;
 import clicker.back.entities.SolicitudesRetiro;
 import clicker.back.entities.Usuario;
 import clicker.back.services.SolicitudesRetiroService;
@@ -43,6 +44,23 @@ public class RetirosController {
         try{
             solicitudesRetiroService.save(solicitudesRetiro);
             return new ResponseEntity<>(null,HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping
+    @ResponseBody
+    public ResponseEntity<Object> eliminarSolicitud(@RequestParam("id")Long id){
+        try{
+            if(id==null)return new ResponseEntity<>("no se envio id ",HttpStatus.BAD_REQUEST);
+            SolicitudesRetiro solicitudesRetiro = solicitudesRetiroService.getById(id);
+            if(solicitudesRetiro==null) return new ResponseEntity<>("no se encontro la solicitud",HttpStatus.BAD_REQUEST);
+            if(solicitudesRetiro.getAceptado()!=null)return new ResponseEntity<>("esta solicitud ya fue atendida",HttpStatus.LOCKED);
+            solicitudesRetiro.getUsuario().getSolicitudesRetiros().removeIf(n->n.getId().equals(id));
+            usuariosService.save(solicitudesRetiro.getUsuario());
+            solicitudesRetiroService.delete(solicitudesRetiro);
+            return new ResponseEntity<>("ok",HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
