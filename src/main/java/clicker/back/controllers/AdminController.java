@@ -45,7 +45,7 @@ public class AdminController {
         }
     }
 
-    @PostMapping(value = "/Retiros")
+    @PutMapping(value = "/Retiros")
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> acceptSolicitud(@RequestBody SolicitudesRetiro solicitudesRetiro){

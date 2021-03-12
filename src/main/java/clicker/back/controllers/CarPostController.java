@@ -51,8 +51,8 @@ public class CarPostController {
             return new ResponseEntity<>(" no se mando la placa", HttpStatus.BAD_REQUEST);
         }
         for (AutoSemiNuevo semiNuevo : temp) {
-            if(!semiNuevo.getComprado()){
-                return new ResponseEntity<>("este auto esta siendo vendido",HttpStatus.BAD_REQUEST);
+            if(!semiNuevo.getComprado() && semiNuevo.getEnabled()){
+                return new ResponseEntity<>("este auto esta siendo vendido",HttpStatus.IM_USED);
             }
         }
         if(autoSemiNuevo.getLocaciones()==null || autoSemiNuevo.getLocaciones().getId()==null) {

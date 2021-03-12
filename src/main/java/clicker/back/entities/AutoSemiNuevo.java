@@ -14,7 +14,7 @@ public class AutoSemiNuevo implements Cloneable {
     @Id
     Long id;
 
-    @JsonIgnoreProperties({"carrosPosteados","denuncias","interesadoReventas","solicitudesRetiros","formRemax","solicitudesRetiro","password"})
+    @JsonIgnoreProperties({"carrosPosteados","denuncias","interesadoReventas","solicitudesRetiros","formRemax","solicitudesRetiro","password","historialBalance","form"})
     @JoinColumn(name = "id_usuario")
     @ManyToOne
     Usuario usuario;
@@ -114,8 +114,6 @@ public class AutoSemiNuevo implements Cloneable {
 
     @OneToOne(cascade = CascadeType.ALL)
     SolicitudRemocionAuto solicitudRemocionAuto;
-
-
 
     @JsonIgnoreProperties({"autoSemiNuevo"})
     @OneToMany(cascade = CascadeType.ALL)

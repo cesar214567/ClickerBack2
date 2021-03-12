@@ -38,7 +38,8 @@ public class RetirosController {
         solicitudesRetiro.setTransferencia(null);
         solicitudesRetiro.getUsuario().getSolicitudesRetiros().add(solicitudesRetiro);
         try{
-            return new ResponseEntity<>(solicitudesRetiroService.save(solicitudesRetiro),HttpStatus.BAD_REQUEST);
+            solicitudesRetiroService.save(solicitudesRetiro);
+            return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }

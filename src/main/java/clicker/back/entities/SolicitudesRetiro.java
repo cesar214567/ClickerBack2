@@ -12,7 +12,8 @@ public class SolicitudesRetiro {
     @Id
     Long id;
 
-    @JsonIgnoreProperties({"carrosPosteados","denuncias","interesadoReventas","solicitudesRetiros","formRemax","password"})
+    @JsonIgnoreProperties({"carrosPosteados","denuncias","interesadoReventas","solicitudesRetiros","formRemax","password",
+            "fbId","historialBalance","form"})
     @JoinColumn(name = "id_usuario")
     @ManyToOne
     Usuario usuario;
