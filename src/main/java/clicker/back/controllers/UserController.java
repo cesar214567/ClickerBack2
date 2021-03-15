@@ -1,14 +1,14 @@
 package clicker.back.controllers;
 
 import clicker.back.Setup;
-import clicker.back.entities.Form;
-import clicker.back.entities.Users;
-import clicker.back.entities.Usuario;
-import clicker.back.services.CryptoService;
-import clicker.back.services.EmailService;
-import clicker.back.services.UsersService;
-import clicker.back.services.UsuariosService;
+import clicker.back.antiguo.Solicitudes;
+import clicker.back.entities.*;
+import clicker.back.services.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.sendgrid.Response;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -29,6 +30,15 @@ public class UserController {
 
     @Autowired
     UsuariosService usuariosService;
+
+    @Autowired
+    VentaSemiNuevoService ventaSemiNuevoService;
+
+    @Autowired
+    SolicitudesRetiroService solicitudesRetiroService;
+
+    @Autowired
+    AutoSemiNuevoService autoSemiNuevoService;
 
     @PostMapping("/create")
     @ResponseBody
@@ -119,10 +129,44 @@ public class UserController {
 
     }
 
+    @GetMapping(value = "/registroBalance")
+    @ResponseBody
+    public ResponseEntity<Object> getRegistroBalance(@RequestParam("id")String correo){
+        List<VentaSemiNuevo> ventaSemiNuevos =  ventaSemiNuevoService.getByIdAuto(autoSemiNuevoService.getAllAutosVendidosByUsuario(correo));
+        List<SolicitudesRetiro> solicitudesRetiros = solicitudesRetiroService.getAllAceptadosByUsuario(correo);
+        List<VentaSemiNuevo> ventaSemiNuevos1 = ventaSemiNuevoService.getVentasByUsuario(correo);
+        JSONArray jsonArray = new JSONArray();
+        for (VentaSemiNuevo ventaSemiNuevo : ventaSemiNuevos) {
+            if(ventaSemiNuevo.getGananciaUsuario()>0){
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("monto",ventaSemiNuevo.getGananciaUsuario());
+                jsonObject.put("fecha",ventaSemiNuevo.getFecha());
+                jsonObject.put("descripcion","el usuario vendio su auto: "+ventaSemiNuevo.getAutoSemiNuevo().getMarca()+" "+ventaSemiNuevo.getAutoSemiNuevo().getModelo());
+                jsonArray.appendElement(jsonObject);
+            }
+        }
+        for (SolicitudesRetiro solicitudesRetiro : solicitudesRetiros) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("monto",solicitudesRetiro.getMonto()*(-1));
+            jsonObject.put("fecha",solicitudesRetiro.getDate());
+            jsonObject.put("descripcion","el usuario retiro "+solicitudesRetiro.getMonto()+" soles ");
+            jsonArray.appendElement(jsonObject);
+        }
+        for (VentaSemiNuevo ventaSemiNuevo : ventaSemiNuevos1) {
+            if(ventaSemiNuevo.getGananciaUsuario()>0){
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("monto",ventaSemiNuevo.getGananciaUsuario());
+                jsonObject.put("fecha",ventaSemiNuevo.getFecha());
+                jsonObject.put("descripcion","el usuario revendio un auto: "+ventaSemiNuevo.getAutoSemiNuevo().getMarca()+" "+ventaSemiNuevo.getAutoSemiNuevo().getModelo());
+                jsonArray.appendElement(jsonObject);
+            }
+        }
+        try{
+            return new ResponseEntity<>(jsonArray,HttpStatus.OK);
 
+        }catch (Exception e){
+            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-
-
-
-
+    }
 }

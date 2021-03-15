@@ -104,5 +104,10 @@ public class DefaultAutoSemiNuevoService implements AutoSemiNuevoService {
         return autoSemiNuevoRepository.findAllByEnabledAndRevisadoAndComprado(true,false,false);
     }
 
+    @Override
+    public List<Long> getAllAutosVendidosByUsuario(String correo) {
+        return autoSemiNuevoRepository.findAllAutosNotComprados(correo);
+    }
+
 
 }

@@ -14,4 +14,7 @@ public interface SolicitudesRetiroRepository extends PagingAndSortingRepository<
     List<SolicitudesRetiro> findAllByAceptado();
 
     Boolean existsByUsuarioAndAceptadoIsNull(Usuario usuario);
+
+    @Query(nativeQuery = true,value = "select * from solicitudes_retiro s where s.aceptado=true and s.id_usuario=:correo")
+    List<SolicitudesRetiro> findAceptadosByUsuario(String correo);
 }

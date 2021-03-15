@@ -133,4 +133,5 @@ public class VentaSemiNuevo {
         this.ciudadCompra = ciudadCompra;
     }
 
+    
 }

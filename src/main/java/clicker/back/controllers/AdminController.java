@@ -37,9 +37,6 @@ public class AdminController {
     UsuariosService usuariosService;
 
     @Autowired
-    RegistroBalanceService registroBalanceService;
-
-    @Autowired
     AutoSemiNuevoService autoSemiNuevoService;
 
     @Autowired
@@ -80,11 +77,9 @@ public class AdminController {
         if(solicitudesRetiro.getAdmin()==null){
             return new ResponseEntity<>("no se encontro al admin",HttpStatus.BAD_REQUEST);
         }
-        RegistroBalance registroBalance = null;
+
         if(original.getAceptado()){
             original.getUsuario().setBalance(original.getUsuario().getBalance()-original.getMonto());
-            registroBalance = new RegistroBalance(new Date(), (float) (-1*original.getMonto()),solicitudesRetiro.getUsuario(),"retiro de "+original.getMonto()+" soles");
-            original.getUsuario().getHistorialBalance().add(registroBalance);
         }
         try{
             solicitudesRetiroService.save(original);
@@ -97,11 +92,6 @@ public class AdminController {
         }
     }
 
-    @GetMapping
-    @ResponseBody
-    public ResponseEntity<Object> getAll(){
-        return new ResponseEntity<>(registroBalanceService.getAll(),HttpStatus.OK);
-    }
 
     @GetMapping(value = "/interesados")
     @ResponseBody

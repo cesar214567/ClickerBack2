@@ -79,20 +79,9 @@ public class Usuario {
     @OneToOne(cascade = CascadeType.ALL)
     Form form;
 
-    @OrderBy("fecha")
-    @JsonIgnoreProperties({"usuario"})
-    @OneToMany(cascade = CascadeType.ALL)
-    List<RegistroBalance> historialBalance;
 
     Long numeroDenuncias;
 
-    public List<RegistroBalance> getHistorialBalance() {
-        return historialBalance;
-    }
-
-    public void setHistorialBalance(List<RegistroBalance> historialBalance) {
-        this.historialBalance = historialBalance;
-    }
 
     public Boolean getValidated() {
         return validated;

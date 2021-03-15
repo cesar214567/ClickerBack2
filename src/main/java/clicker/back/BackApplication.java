@@ -49,7 +49,6 @@ public class BackApplication extends SpringBootServletInitializer {
             Locaciones locaciones = new Locaciones("000000","Lima","Lima","Jesus Maria",true);
             locaciones = locacionesService.save(locaciones);
 
-
             Usuario usuario = new Usuario();
             usuario.setRol("REMAX");
             usuario.setCorreo("cesar.madera@utec.edu.pe");
@@ -64,7 +63,6 @@ public class BackApplication extends SpringBootServletInitializer {
 
             FotosAutoSemiNuevo fotosAutoSemiNuevo = new FotosAutoSemiNuevo();
             fotosAutoSemiNuevo.setFoto("");
-
 
             AutoSemiNuevo autoSemiNuevo = new AutoSemiNuevo();
             autoSemiNuevo.setUsuario(usuario);

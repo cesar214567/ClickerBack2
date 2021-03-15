@@ -1,5 +1,6 @@
 package clicker.back.services.impl;
 
+import clicker.back.entities.Usuario;
 import clicker.back.entities.VentaSemiNuevo;
 import clicker.back.repositories.VentaSemiNuevoRepository;
 import clicker.back.services.VentaSemiNuevoService;
@@ -32,4 +33,16 @@ public class DefaultVentaSemiNuevoService implements VentaSemiNuevoService {
     public List<VentaSemiNuevo> getAll() {
         return (List<VentaSemiNuevo>) ventaSemiNuevoRepository.findAll();
     }
+
+    @Override
+    public List<VentaSemiNuevo> getVentasByUsuario(String usuario) {
+        return ventaSemiNuevoRepository.findAllByVendedor(usuario);
+    }
+
+    @Override
+    public List<VentaSemiNuevo> getByIdAuto(List<Long> id) {
+        return ventaSemiNuevoRepository.findAllByAuto(id);
+    }
+
+
 }

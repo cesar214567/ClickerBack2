@@ -43,4 +43,6 @@ public interface AutoSemiNuevoService {
     void borrarAuto(Long id);
 
     List<AutoSemiNuevo> getReportados();
+
+    List<Long> getAllAutosVendidosByUsuario(String correo);
 }

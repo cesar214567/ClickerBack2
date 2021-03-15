@@ -152,7 +152,7 @@ public class CarPostController {
         if(ventaSemiNuevo.getComisionGeneral()==null || ventaSemiNuevo.getPrecioFinalVenta()==null){
             return new ResponseEntity<>("no se enviaron la comision o el precio fianl",HttpStatus.BAD_REQUEST);
         }
-        if(ventaSemiNuevo.getFoto()!=null) return new ResponseEntity<>("no se envio la foto",HttpStatus.BAD_REQUEST);
+        if(ventaSemiNuevo.getFoto()==null) return new ResponseEntity<>("no se envio la foto",HttpStatus.BAD_REQUEST);
         if(ventaSemiNuevo.getAutoSemiNuevo()==null || ventaSemiNuevo.getAutoSemiNuevo().getId()==null){
             return new ResponseEntity<>("no se mando el auto",HttpStatus.BAD_REQUEST);
         }
@@ -194,7 +194,8 @@ public class CarPostController {
         ventaSemiNuevo.setGananciaUsuario(gananciaUsuario);
         ventaSemiNuevo.setGananciaVendedor(gananciaVendedor);
         try{
-            return new ResponseEntity<>(ventaSemiNuevoService.save(ventaSemiNuevo),HttpStatus.OK);
+            ventaSemiNuevoService.save(ventaSemiNuevo);
+            return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>("fallo del servidor",HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -42,4 +42,9 @@ public class DefaultSolicitudesRetiroService implements SolicitudesRetiroService
     public Boolean checkIfExist(Usuario usuario) {
         return solicitudesRetiroRepository.existsByUsuarioAndAceptadoIsNull(usuario);
     }
+
+    @Override
+    public List<SolicitudesRetiro> getAllAceptadosByUsuario(String correo) {
+        return solicitudesRetiroRepository.findAceptadosByUsuario(correo);
+    }
 }

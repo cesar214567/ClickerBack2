@@ -1,5 +1,6 @@
 package clicker.back.services;
 
+import clicker.back.entities.Usuario;
 import clicker.back.entities.VentaSemiNuevo;
 
 import java.util.List;
@@ -15,4 +16,7 @@ public interface VentaSemiNuevoService {
 
     List<VentaSemiNuevo> getAll();
 
+    List<VentaSemiNuevo> getVentasByUsuario(String string);
+
+    List<VentaSemiNuevo> getByIdAuto(List<Long> id);
 }
