@@ -157,10 +157,11 @@ public class CarPostController {
             return new ResponseEntity<>("no se mando el auto",HttpStatus.BAD_REQUEST);
         }
         ventaSemiNuevo.setAutoSemiNuevo(autoSemiNuevoService.getById(ventaSemiNuevo.getAutoSemiNuevo().getId()));
-        if(ventaSemiNuevo.getAutoSemiNuevo()==null)return new ResponseEntity<>("no se encontro el auto con ese id",HttpStatus.BAD_REQUEST);
+        if(ventaSemiNuevo.getAutoSemiNuevo()==null )return new ResponseEntity<>("no se encontro el auto con ese id",HttpStatus.BAD_REQUEST);
+        if(ventaSemiNuevo.getAutoSemiNuevo().getComprado())return new ResponseEntity<>("este auto ya ha sido comprado anteriormente",HttpStatus.CONFLICT);
         ventaSemiNuevo.setFecha(new Date());
         float gananciaVendedor=0;
-        float gananciaClicker =0;
+        float gananciaClicker = 0;
         float gananciaUsuario = 0;
         if(ventaSemiNuevo.getAutoSemiNuevo().getUsuario().getRol().equals("USUARIO") ){
             if(ventaSemiNuevo.getVendedor()!=null){
@@ -185,7 +186,7 @@ public class CarPostController {
 
             }else{
                 gananciaUsuario= (float) (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*0.4);
-                gananciaClicker= (float) (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*0.6);
+                gananciaClicker = (float) (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*0.6);
 
             }
         }
@@ -194,6 +195,11 @@ public class CarPostController {
         ventaSemiNuevo.setGananciaUsuario(gananciaUsuario);
         ventaSemiNuevo.setGananciaVendedor(gananciaVendedor);
         try{
+
+            usuariosService.updateBalance(gananciaUsuario,ventaSemiNuevo.getAutoSemiNuevo().getUsuario().getCorreo());
+            if(ventaSemiNuevo.getVendedor()!=null){
+                usuariosService.updateBalance(gananciaVendedor,ventaSemiNuevo.getVendedor().getCorreo());
+            }
             ventaSemiNuevoService.save(ventaSemiNuevo);
             return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){

@@ -21,6 +21,11 @@ public class DefaultUsuariosService implements UsuariosService {
     }
 
     @Override
+    public void updateBalance(Float extraBalance, String correo) {
+        usuariosRepository.updateBalance(extraBalance,correo);
+    }
+
+    @Override
     public Usuario save(Usuario usuario) {
         return usuariosRepository.save(usuario);
     }
