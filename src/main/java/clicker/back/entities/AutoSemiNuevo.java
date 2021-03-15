@@ -71,7 +71,7 @@ public class AutoSemiNuevo implements Cloneable {
     Integer numeroCilindros;
 
     @Column
-    Long precioVenta;
+    Float precioVenta;
 
     @ManyToOne
     Locaciones locaciones;
@@ -86,13 +86,7 @@ public class AutoSemiNuevo implements Cloneable {
     Boolean enabled;
 
     @Column
-    Integer comisionUsuario;
-
-    @Column
-    Integer comisionVendedor;
-
-    @Column
-    Integer comisionEmpresa;
+    Boolean revisado;
 
     @Column
     Date fechaPublicacion;
@@ -124,6 +118,14 @@ public class AutoSemiNuevo implements Cloneable {
         return super.clone();
     }
 
+    public Boolean getRevisado() {
+        return revisado;
+    }
+
+    public void setRevisado(Boolean revisado) {
+        this.revisado = revisado;
+    }
+
     public String getNombredeauto(){
         return marca+" "+modelo+" de tipo "+tipoCarroceria;
     }
@@ -144,11 +146,11 @@ public class AutoSemiNuevo implements Cloneable {
         this.usuario = usuario;
     }
 
-    public Long getPrecioVenta() {
+    public Float getPrecioVenta() {
         return precioVenta;
     }
 
-    public void setPrecioVenta(Long precioVenta) {
+    public void setPrecioVenta(Float precioVenta) {
         this.precioVenta = precioVenta;
     }
 
@@ -175,30 +177,6 @@ public class AutoSemiNuevo implements Cloneable {
 
     public void setValidado(Boolean validado) {
         this.validado = validado;
-    }
-
-    public Integer getComisionUsuario() {
-        return comisionUsuario;
-    }
-
-    public void setComisionUsuario(Integer comisionUsuario) {
-        this.comisionUsuario = comisionUsuario;
-    }
-
-    public Integer getComisionVendedor() {
-        return comisionVendedor;
-    }
-
-    public void setComisionVendedor(Integer comisionVendedor) {
-        this.comisionVendedor = comisionVendedor;
-    }
-
-    public Integer getComisionEmpresa() {
-        return comisionEmpresa;
-    }
-
-    public void setComisionEmpresa(Integer comisionEmpresa) {
-        this.comisionEmpresa = comisionEmpresa;
     }
 
     public Date getFechaPublicacion() {

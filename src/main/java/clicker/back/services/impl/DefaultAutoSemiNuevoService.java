@@ -88,4 +88,21 @@ public class DefaultAutoSemiNuevoService implements AutoSemiNuevoService {
     public List<AutoSemiNuevo> getAutosNoValidados() {
         return autoSemiNuevoRepository.findAllByValidadoAndEnabled(false,true);
     }
+
+    @Override
+    public void setRevisado(Boolean revisado, Long id) {
+        autoSemiNuevoRepository.setRevisado(revisado,id);
+    }
+
+    @Override
+    public void borrarAuto(Long id) {
+        autoSemiNuevoRepository.setRevisadoAndEnabled(true,false,id);
+    }
+
+    @Override
+    public List<AutoSemiNuevo> getReportados() {
+        return autoSemiNuevoRepository.findAllByEnabledAndRevisadoAndComprado(true,false,false);
+    }
+
+
 }

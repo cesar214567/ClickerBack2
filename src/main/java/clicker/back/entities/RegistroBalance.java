@@ -16,7 +16,7 @@ public class RegistroBalance {
     Date fecha;
 
     @Column
-    Long ganancia;
+    Float ganancia;
 
     @JsonIgnoreProperties({"carrosPosteados","denuncias","interesadoReventas","solicitudesRetiros","formRemax","password","fbId","solicitudesRetiro","historialBalance"})
     @JoinColumn(name = "correo")
@@ -26,7 +26,7 @@ public class RegistroBalance {
     @Column
     String descripcion;
 
-    public RegistroBalance(Date fecha, Long ganancia, Usuario usuario, String descripcion) {
+    public RegistroBalance(Date fecha, Float ganancia, Usuario usuario, String descripcion) {
         this.fecha = fecha;
         this.ganancia = ganancia;
         this.usuario = usuario;
@@ -51,11 +51,11 @@ public class RegistroBalance {
         this.fecha = fecha;
     }
 
-    public Long getGanancia() {
+    public Float getGanancia() {
         return ganancia;
     }
 
-    public void setGanancia(Long ganancia) {
+    public void setGanancia(Float ganancia) {
         this.ganancia = ganancia;
     }
 

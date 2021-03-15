@@ -37,4 +37,10 @@ public interface AutoSemiNuevoService {
     List<String> getAllMarcasString();
 
     List<AutoSemiNuevo> getAutosNoValidados();
+
+    void setRevisado(Boolean revisado,Long id);
+
+    void borrarAuto(Long id);
+
+    List<AutoSemiNuevo> getReportados();
 }

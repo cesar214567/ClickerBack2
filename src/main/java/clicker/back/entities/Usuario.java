@@ -54,7 +54,7 @@ public class Usuario {
     String rol;
 
     @Column
-    Long balance;
+    Float balance;
 
     @Column
     Integer cantidadCarrosAno;
@@ -224,14 +224,6 @@ public class Usuario {
         this.rol = rol;
     }
 
-    public Long getBalance() {
-        return balance;
-    }
-
-    public void setBalance(Long balance) {
-        this.balance = balance;
-    }
-
     public Integer getCantidadCarrosAno() {
         return cantidadCarrosAno;
     }
@@ -264,6 +256,13 @@ public class Usuario {
         this.solicitudesRetiros = solicitudesRetiros;
     }
 
+    public Float getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Float balance) {
+        this.balance = balance;
+    }
 
     public Form getForm() {
         return form;

@@ -28,10 +28,70 @@ public class VentaSemiNuevo {
     String ciudadCompra;
 
     @Column
-    String linkQr;
+    String foto;
 
     @Column
-    Boolean pagado;
+    Float comisionGeneral;
+
+    @Column
+    Float precioFinalVenta;
+
+    @Column
+    Float gananciaUsuario;
+
+    @Column
+    Float gananciaVendedor;
+
+    @Column
+    Float gananciaEmpresa;
+
+    public Float getComisionGeneral() {
+        return comisionGeneral;
+    }
+
+    public void setComisionGeneral(Float comisionGeneral) {
+        this.comisionGeneral = comisionGeneral;
+    }
+
+    public Float getPrecioFinalVenta() {
+        return precioFinalVenta;
+    }
+
+    public void setPrecioFinalVenta(Float precioFinalVenta) {
+        this.precioFinalVenta = precioFinalVenta;
+    }
+
+    public Float getGananciaUsuario() {
+        return gananciaUsuario;
+    }
+
+    public void setGananciaUsuario(Float gananciaUsuario) {
+        this.gananciaUsuario = gananciaUsuario;
+    }
+
+    public Float getGananciaVendedor() {
+        return gananciaVendedor;
+    }
+
+    public void setGananciaVendedor(Float gananciaVendedor) {
+        this.gananciaVendedor = gananciaVendedor;
+    }
+
+    public Float getGananciaEmpresa() {
+        return gananciaEmpresa;
+    }
+
+    public void setGananciaEmpresa(Float gananciaEmpresa) {
+        this.gananciaEmpresa = gananciaEmpresa;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
 
     public Long getId() {
         return id;
@@ -73,19 +133,4 @@ public class VentaSemiNuevo {
         this.ciudadCompra = ciudadCompra;
     }
 
-    public String getLinkQr() {
-        return linkQr;
-    }
-
-    public void setLinkQr(String linkQr) {
-        this.linkQr = linkQr;
-    }
-
-    public Boolean getPagado() {
-        return pagado;
-    }
-
-    public void setPagado(Boolean pagado) {
-        this.pagado = pagado;
-    }
 }

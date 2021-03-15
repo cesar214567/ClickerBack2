@@ -23,7 +23,7 @@ public class SolicitudesRetiro {
     Users admin;
 
     @Column
-    Long monto;
+    Float monto;
 
     @Column
     Long transferencia;
@@ -66,11 +66,11 @@ public class SolicitudesRetiro {
         this.admin = admin;
     }
 
-    public Long getMonto() {
+    public Float getMonto() {
         return monto;
     }
 
-    public void setMonto(Long monto) {
+    public void setMonto(Float monto) {
         this.monto = monto;
     }
 

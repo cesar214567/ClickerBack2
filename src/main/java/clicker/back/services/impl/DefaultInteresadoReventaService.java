@@ -1,5 +1,6 @@
 package clicker.back.services.impl;
 
+import clicker.back.entities.AutoSemiNuevo;
 import clicker.back.entities.InteresadoReventa;
 import clicker.back.repositories.InteresadoReventaRepository;
 import clicker.back.services.InteresadoReventaService;
@@ -31,5 +32,10 @@ public class DefaultInteresadoReventaService implements InteresadoReventaService
     @Override
     public List<InteresadoReventa> getAll() {
         return (List<InteresadoReventa>) interesadoReventaRepository.findAll();
+    }
+
+    @Override
+    public List<InteresadoReventa> getAllByAuto(AutoSemiNuevo autoSemiNuevo) {
+        return interesadoReventaRepository.findAllByAutoSemiNuevo(autoSemiNuevo);
     }
 }

@@ -59,7 +59,7 @@ public class AuthController {
                     usuario.setForm(null);
                     usuario.setCantidadCarrosAno(3);
                 }
-                usuario.setBalance((long) 0);
+                usuario.setBalance((float) 0);
                 usuario.setValidated(false);
                 usuario.setEnabled(true);
                 usuario.setNombre(null);

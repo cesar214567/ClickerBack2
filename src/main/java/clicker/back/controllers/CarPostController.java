@@ -76,22 +76,10 @@ public class CarPostController {
                 if(c1.get(Calendar.YEAR)==c2.get(Calendar.YEAR))cont++;
             }
             if(cont>=user.getCantidadCarrosAno())return new ResponseEntity<>("ya agoto sus subidas anuales",  HttpStatus.LOCKED);
-            else{
-                autoSemiNuevo.setValidado(false);
-                if(user.getRol().equals("PARTICULAR")){
-                    autoSemiNuevo.setComisionEmpresa(40);
-                    autoSemiNuevo.setComisionUsuario(40);
-                    autoSemiNuevo.setComisionVendedor(20);
-                }else{
-                    autoSemiNuevo.setComisionEmpresa(40);
-                    autoSemiNuevo.setComisionUsuario(40);
-                    autoSemiNuevo.setComisionVendedor(20);
-                }
-
-            }
             autoSemiNuevo.setComprado(false);
             autoSemiNuevo.setValidado(false);
             autoSemiNuevo.setEnabled(true);
+            autoSemiNuevo.setRevisado(true);
             autoSemiNuevo.setFechaPublicacion(new Date());
             autos.add(autoSemiNuevo);
             try{
@@ -155,22 +143,56 @@ public class CarPostController {
         }
     }
 
+    //TODO DELETE INTERESADO REVENTA
+
     @PostMapping(value = "/venta")
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> ventaSemiNuevo(@RequestBody VentaSemiNuevo ventaSemiNuevo){
-        //TODO balance total
-        if(ventaSemiNuevo.getAutoSemiNuevo()==null || ventaSemiNuevo.getAutoSemiNuevo().getId()==null)return new ResponseEntity<>("no se mando el auto",HttpStatus.BAD_REQUEST);
+        if(ventaSemiNuevo.getComisionGeneral()==null || ventaSemiNuevo.getPrecioFinalVenta()==null){
+            return new ResponseEntity<>("no se enviaron la comision o el precio fianl",HttpStatus.BAD_REQUEST);
+        }
+        if(ventaSemiNuevo.getFoto()!=null) return new ResponseEntity<>("no se envio la foto",HttpStatus.BAD_REQUEST);
+        if(ventaSemiNuevo.getAutoSemiNuevo()==null || ventaSemiNuevo.getAutoSemiNuevo().getId()==null){
+            return new ResponseEntity<>("no se mando el auto",HttpStatus.BAD_REQUEST);
+        }
         ventaSemiNuevo.setAutoSemiNuevo(autoSemiNuevoService.getById(ventaSemiNuevo.getAutoSemiNuevo().getId()));
         if(ventaSemiNuevo.getAutoSemiNuevo()==null)return new ResponseEntity<>("no se encontro el auto con ese id",HttpStatus.BAD_REQUEST);
-        if(ventaSemiNuevo.getVendedor()==null)return new ResponseEntity<>("no se mando el vendedor",HttpStatus.BAD_REQUEST);
-        ventaSemiNuevo.setVendedor(usuariosService.getById(ventaSemiNuevo.getVendedor().getCorreo()));
-        if(ventaSemiNuevo.getVendedor()==null)return new ResponseEntity<>("no se encontro el vendedor con ese id",HttpStatus.BAD_REQUEST);
+        ventaSemiNuevo.setFecha(new Date());
+        float gananciaVendedor=0;
+        float gananciaClicker =0;
+        float gananciaUsuario = 0;
+        if(ventaSemiNuevo.getAutoSemiNuevo().getUsuario().getRol().equals("USUARIO") ){
+            if(ventaSemiNuevo.getVendedor()!=null){
+                ventaSemiNuevo.setVendedor(usuariosService.getById(ventaSemiNuevo.getVendedor().getCorreo()));
+                if(ventaSemiNuevo.getVendedor()==null){
+                    return new ResponseEntity<>("no se encontro el vendedor con ese id",HttpStatus.BAD_REQUEST);
+                }
+                gananciaVendedor= (float) (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*0.4);
+                gananciaClicker= (float) (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*0.6);
+            }else{
+                gananciaClicker=  (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*1);
+            }
+        }else{
+            if(ventaSemiNuevo.getVendedor()!=null){
+                ventaSemiNuevo.setVendedor(usuariosService.getById(ventaSemiNuevo.getVendedor().getCorreo()));
+                if(ventaSemiNuevo.getVendedor()==null){
+                    return new ResponseEntity<>("no se encontro el vendedor con ese id",HttpStatus.BAD_REQUEST);
+                }
+                gananciaVendedor= (float) (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*0.4);
+                gananciaUsuario= (float) (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*0.4);
+                gananciaClicker= (float) (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*0.2);
+
+            }else{
+                gananciaUsuario= (float) (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*0.4);
+                gananciaClicker= (float) (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*0.6);
+
+            }
+        }
         ventaSemiNuevo.getAutoSemiNuevo().setComprado(true);
-        long gananciaUsuario = ventaSemiNuevo.getAutoSemiNuevo().getPrecioVenta()*ventaSemiNuevo.getAutoSemiNuevo().getComisionVendedor()/100;
-        ventaSemiNuevo.getVendedor().setBalance( (ventaSemiNuevo.getVendedor().getBalance()+gananciaUsuario));
-        ventaSemiNuevo.getVendedor().getHistorialBalance().add(new RegistroBalance(new Date(),gananciaUsuario,ventaSemiNuevo.getVendedor(),
-                "el usuario ha vendido un "+ventaSemiNuevo.getAutoSemiNuevo().getNombredeauto()));
+        ventaSemiNuevo.setGananciaEmpresa(gananciaClicker);
+        ventaSemiNuevo.setGananciaUsuario(gananciaUsuario);
+        ventaSemiNuevo.setGananciaVendedor(gananciaVendedor);
         try{
             return new ResponseEntity<>(ventaSemiNuevoService.save(ventaSemiNuevo),HttpStatus.OK);
         }catch (Exception e){
@@ -224,25 +246,6 @@ public class CarPostController {
         }catch (Exception e){
             return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @GetMapping(value = "/reported")
-    @ResponseBody
-    @Transactional
-    public ResponseEntity<Object> getAllReported() throws IOException {
-        List<Long> ids = denunciaService.getIdsAutosDenunciados();
-        List<AutoSemiNuevo> autoSemiNuevos = autoSemiNuevoService.getAllFromIdList(ids);
-        if(autoSemiNuevos==null){
-            return new ResponseEntity<>("BAD",HttpStatus.BAD_REQUEST);
-        }
-        for (AutoSemiNuevo autoSemiNuevo : autoSemiNuevos) {
-            if (autoSemiNuevo.getDenuncias()!=null){
-                for (Denuncia denuncia : autoSemiNuevo.getDenuncias()) {
-                    denuncia.getUsuario().setNumeroDenuncias((long) denuncia.getUsuario().getDenuncias().size());
-                }
-            }
-        }
-        return new ResponseEntity<>(autoSemiNuevos,HttpStatus.OK);
     }
 
     @PutMapping

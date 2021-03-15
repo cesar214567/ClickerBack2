@@ -1,5 +1,6 @@
 package clicker.back.services;
 
+import clicker.back.entities.AutoSemiNuevo;
 import clicker.back.entities.InteresadoCompra;
 import clicker.back.entities.InteresadoReventa;
 
@@ -13,4 +14,5 @@ public interface InteresadoCompraService {
     InteresadoCompra getById(Long id );
 
     List<InteresadoCompra> getAll();
+    List<InteresadoCompra> getAllByAuto(AutoSemiNuevo autoSemiNuevo);
 }

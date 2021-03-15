@@ -44,7 +44,13 @@ public class DenunciaController {
         autoSemiNuevo.getDenuncias().add(denuncia);
         denuncia.setUsuario(denunciante);
         denuncia.setAutoSemiNuevo(autoSemiNuevo);
-        return new ResponseEntity<>(denunciaService.save(denuncia),HttpStatus.OK);
+        try{
+            denunciaService.save(denuncia);
+            autoSemiNuevoService.setRevisado(false,autoSemiNuevo.getId());
+            return new ResponseEntity<>(null,HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
 
     }
