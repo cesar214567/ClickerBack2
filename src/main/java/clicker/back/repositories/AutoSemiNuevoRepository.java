@@ -46,7 +46,7 @@ public interface AutoSemiNuevoRepository extends PagingAndSortingRepository<Auto
 
     @Transactional
     @Modifying
-    @Query(nativeQuery = true,value = "update auto_semi_nuevo a set revisado=:revisado enabled=:enabled where a.id_auto_semi_nuevo=:id ")
+    @Query(nativeQuery = true,value = "update auto_semi_nuevo a set revisado=:revisado, enabled=:enabled where a.id_auto_semi_nuevo=:id ")
     void setRevisadoAndEnabled(Boolean revisado,Boolean enabled,Long id);
 
     List<AutoSemiNuevo> findAllByEnabledAndRevisadoAndComprado(Boolean enabled, Boolean revisado, Boolean comprado);
