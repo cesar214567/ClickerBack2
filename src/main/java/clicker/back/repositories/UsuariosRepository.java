@@ -15,8 +15,8 @@ public interface UsuariosRepository extends PagingAndSortingRepository<Usuario,S
 
     Long countAllByEnabledAndValidated(Boolean enabled,Boolean validated);
 
-    @Query(value = "select u.validated from usuario u where u.id_usuario=?1 and u.password=?2",nativeQuery = true)
-    Boolean loginGetValidated(String correo,String password);
+    @Query(value = "select * from usuario u where u.id_usuario=?1 and u.password=?2",nativeQuery = true)
+    Usuario loginGetValidated(String correo,String password);
 
     @Transactional
     @Modifying

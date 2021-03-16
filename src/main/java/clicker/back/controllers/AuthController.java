@@ -96,15 +96,14 @@ public class AuthController {
         if(usuario.getCorreo()==null || usuario.getPassword()==null)return new ResponseEntity<>("no se envio credenciales", HttpStatus.BAD_REQUEST);
         Users users = usersService.login(usuario.getCorreo(),usuario.getPassword());
         if(users ==null){
-            Boolean validated = usuariosService.login(usuario.getCorreo(),usuario.getPassword());
-            if(validated==null){
+            Usuario user = usuariosService.login(usuario.getCorreo(),usuario.getPassword());
+            if(user==null){
                 return new ResponseEntity<>("no se encontro el usuario", HttpStatus.BAD_REQUEST);
             }else{
                 try{
-                    JSONObject jsonElement= new JSONObject();
-                    jsonElement.put("secret",cryptoService.encrypt3(usuario.getCorreo()));
-                    jsonElement.put("validated",validated);
-                    return new ResponseEntity<>(jsonElement, HttpStatus.OK);
+                    String secret = cryptoService.encrypt3(usuario.getCorreo());
+                    user.setSecret(secret);
+                    return new ResponseEntity<>(user, HttpStatus.OK);
                 }catch (Exception e){
                     return new ResponseEntity<>("fallo la encriptacion",HttpStatus.INTERNAL_SERVER_ERROR);
                 }

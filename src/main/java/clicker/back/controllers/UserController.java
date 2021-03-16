@@ -92,7 +92,6 @@ public class UserController {
         }
     }
 
-
     @Autowired
     CryptoService cryptoService;
 
@@ -141,7 +140,7 @@ public class UserController {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("monto",ventaSemiNuevo.getGananciaUsuario());
                 jsonObject.put("fecha",ventaSemiNuevo.getFecha());
-                jsonObject.put("descripcion","el usuario vendio su auto: "+ventaSemiNuevo.getAutoSemiNuevo().getMarca()+" "+ventaSemiNuevo.getAutoSemiNuevo().getModelo());
+                jsonObject.put("descripcion","Ingreso por la venta de: "+ventaSemiNuevo.getAutoSemiNuevo().getMarca()+" "+ventaSemiNuevo.getAutoSemiNuevo().getModelo());
                 jsonArray.appendElement(jsonObject);
             }
         }
@@ -149,7 +148,7 @@ public class UserController {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("monto",solicitudesRetiro.getMonto()*(-1));
             jsonObject.put("fecha",solicitudesRetiro.getDate());
-            jsonObject.put("descripcion","el usuario retiro "+solicitudesRetiro.getMonto()+" soles ");
+            jsonObject.put("descripcion","Solicitud de retiro aceptada por el monto de: "+solicitudesRetiro.getMonto()+" soles ");
             jsonArray.appendElement(jsonObject);
         }
         for (VentaSemiNuevo ventaSemiNuevo : ventaSemiNuevos1) {

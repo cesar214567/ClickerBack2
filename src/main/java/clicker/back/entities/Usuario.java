@@ -79,9 +79,17 @@ public class Usuario {
     @OneToOne(cascade = CascadeType.ALL)
     Form form;
 
+    String secret;
 
     Long numeroDenuncias;
 
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
 
     public Boolean getValidated() {
         return validated;

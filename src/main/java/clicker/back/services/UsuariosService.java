@@ -17,7 +17,7 @@ public interface UsuariosService {
 
     Long countUsers();
 
-    Boolean login(String correo,String password);
+    Usuario login(String correo,String password);
 
     void updateBalance(Float extraBalance, String correo);
 }
