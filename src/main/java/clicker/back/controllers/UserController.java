@@ -140,7 +140,7 @@ public class UserController {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("monto",ventaSemiNuevo.getGananciaUsuario());
                 jsonObject.put("fecha",ventaSemiNuevo.getFecha().toString());
-                jsonObject.put("descripcion","Ingreso por la venta de: "+ventaSemiNuevo.getAutoSemiNuevo().getMarca()+" "+ventaSemiNuevo.getAutoSemiNuevo().getModelo());
+                jsonObject.put("descripcion","Ingreso de dinero por la venta de su auto: "+ventaSemiNuevo.getAutoSemiNuevo().getMarca()+" "+ventaSemiNuevo.getAutoSemiNuevo().getModelo()+" placa: "+ventaSemiNuevo.getAutoSemiNuevo().getPlaca());
                 jsonArray.appendElement(jsonObject);
             }
         }
@@ -156,7 +156,7 @@ public class UserController {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("monto",ventaSemiNuevo.getGananciaUsuario());
                 jsonObject.put("fecha",ventaSemiNuevo.getFecha().toString());
-                jsonObject.put("descripcion","el usuario revendio un auto: "+ventaSemiNuevo.getAutoSemiNuevo().getMarca()+" "+ventaSemiNuevo.getAutoSemiNuevo().getModelo());
+                jsonObject.put("descripcion","Ingreso de dinero por la reventa del auto: "+ventaSemiNuevo.getAutoSemiNuevo().getMarca()+" "+ventaSemiNuevo.getAutoSemiNuevo().getModelo());
                 jsonArray.appendElement(jsonObject);
             }
         }

@@ -102,7 +102,7 @@ public class BackApplication extends SpringBootServletInitializer {
             AutoSemiNuevo autoSemiNuevo10 = (AutoSemiNuevo) autoSemiNuevo.clone();
             AutoSemiNuevo autoSemiNuevo11 = (AutoSemiNuevo) autoSemiNuevo.clone();
 
-            autoSemiNuevo.setPlaca("0");
+            autoSemiNuevo.setPlaca("ABC123");
             autoSemiNuevo.setMarca("Toyota");
             autoSemiNuevo.setModelo("Corolla");
             autoSemiNuevo.setTipoCarroceria("SUV");
