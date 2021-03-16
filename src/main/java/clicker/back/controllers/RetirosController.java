@@ -6,12 +6,14 @@ import clicker.back.entities.SolicitudesRetiro;
 import clicker.back.entities.Usuario;
 import clicker.back.services.SolicitudesRetiroService;
 import clicker.back.services.UsuariosService;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/solicitudRetiro")
@@ -63,6 +65,24 @@ public class RetirosController {
             return new ResponseEntity<>("ok",HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping
+    @ResponseBody
+    public ResponseEntity<Object> getSolicitudVigente(@RequestParam("id")String correo){
+        try{
+            if (correo==null) return new ResponseEntity<>("no se envió correo", HttpStatus.BAD_REQUEST);
+            List<SolicitudesRetiro> solicitudes = solicitudesRetiroService.findSolicitudVigente(correo);
+            if (solicitudes.size() == 0) return new ResponseEntity<>("no se encontró solicitudes para el usuario enviado.", HttpStatus.NOT_FOUND);
+            for (SolicitudesRetiro solicitud: solicitudes){
+                if (solicitud.getAceptado() == null) {
+                    return new ResponseEntity<>(solicitud, HttpStatus.OK);
+                }
+            }
+            return new ResponseEntity<>("solicitud ya fue atendida", HttpStatus.ALREADY_REPORTED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("fallo servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -21,4 +21,6 @@ public interface SolicitudesRetiroService {
     Boolean checkIfExist(Usuario usuario);
 
     List<SolicitudesRetiro> getAllAceptadosByUsuario(String correo);
+
+    List<SolicitudesRetiro> findSolicitudVigente(String correo);
 }

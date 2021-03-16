@@ -47,4 +47,9 @@ public class DefaultSolicitudesRetiroService implements SolicitudesRetiroService
     public List<SolicitudesRetiro> getAllAceptadosByUsuario(String correo) {
         return solicitudesRetiroRepository.findAceptadosByUsuario(correo);
     }
+
+    @Override
+    public List<SolicitudesRetiro> findSolicitudVigente(String correo) {
+        return solicitudesRetiroRepository.findSolicitudVigente(correo);
+    };
 }

@@ -22,4 +22,5 @@ public interface UsuariosRepository extends PagingAndSortingRepository<Usuario,S
     @Modifying
     @Query(nativeQuery = true,value = "update usuario u set balance=balance+:extraBalance where u.id_usuario=:correo ")
     void updateBalance(Float extraBalance,String correo);
+
 }
