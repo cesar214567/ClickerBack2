@@ -140,7 +140,7 @@ public class UserController {
             if(ventaSemiNuevo.getGananciaUsuario()>0){
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("monto",ventaSemiNuevo.getGananciaUsuario());
-                jsonObject.put("fecha",ventaSemiNuevo.getFecha());
+                jsonObject.put("fecha",ventaSemiNuevo.getFecha().toString());
                 jsonObject.put("descripcion","el usuario vendio su auto: "+ventaSemiNuevo.getAutoSemiNuevo().getMarca()+" "+ventaSemiNuevo.getAutoSemiNuevo().getModelo());
                 jsonArray.appendElement(jsonObject);
             }
@@ -148,7 +148,7 @@ public class UserController {
         for (SolicitudesRetiro solicitudesRetiro : solicitudesRetiros) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("monto",solicitudesRetiro.getMonto()*(-1));
-            jsonObject.put("fecha",solicitudesRetiro.getDate());
+            jsonObject.put("fecha",solicitudesRetiro.getDate().toString());
             jsonObject.put("descripcion","el usuario retiro "+solicitudesRetiro.getMonto()+" soles ");
             jsonArray.appendElement(jsonObject);
         }
@@ -156,7 +156,7 @@ public class UserController {
             if(ventaSemiNuevo.getGananciaUsuario()>0){
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("monto",ventaSemiNuevo.getGananciaUsuario());
-                jsonObject.put("fecha",ventaSemiNuevo.getFecha());
+                jsonObject.put("fecha",ventaSemiNuevo.getFecha().toString());
                 jsonObject.put("descripcion","el usuario revendio un auto: "+ventaSemiNuevo.getAutoSemiNuevo().getMarca()+" "+ventaSemiNuevo.getAutoSemiNuevo().getModelo());
                 jsonArray.appendElement(jsonObject);
             }

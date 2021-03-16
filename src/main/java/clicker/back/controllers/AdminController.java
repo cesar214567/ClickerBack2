@@ -150,7 +150,7 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping("/reported")
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> remove(@RequestParam("id") Long idAuto){
