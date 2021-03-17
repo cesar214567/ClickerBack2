@@ -62,7 +62,7 @@ public class RetirosController {
             solicitudesRetiro.getUsuario().getSolicitudesRetiros().removeIf(n->n.getId().equals(id));
             usuariosService.save(solicitudesRetiro.getUsuario());
             solicitudesRetiroService.delete(solicitudesRetiro);
-            return new ResponseEntity<>("ok",HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
