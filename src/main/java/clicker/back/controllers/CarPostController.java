@@ -137,7 +137,7 @@ public class CarPostController {
         interesadoReventa.setAutoSemiNuevo(interesadoReventa.getAutoSemiNuevo());
         try{
             interesadoReventaService.save(interesadoReventa);
-            return new ResponseEntity<>("se realizo correctamente el post",HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>("se encontro algun error",HttpStatus.BAD_REQUEST);
         }
