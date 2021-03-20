@@ -143,7 +143,28 @@ public class CarPostController {
         }
     }
 
-    //TODO DELETE INTERESADO REVENTA
+    @DeleteMapping(value = "interesadoVenta")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<Object> deleteInteresadoReventa(@RequestParam("id") Long id){
+        if(id==null){
+            return new ResponseEntity<>("no se mando el id de la solicitud",HttpStatus.BAD_REQUEST);
+        }
+        InteresadoReventa interesadoReventa = interesadoReventaService.getById(id);
+        if(interesadoReventa==null){
+            return new ResponseEntity<>("no se encontro solicitud",HttpStatus.BAD_REQUEST);
+        }
+        interesadoReventa.getUsuario().getInteresadoReventas().removeIf(t-> t.getId().equals(id));
+
+        try{
+            usuariosService.save(interesadoReventa.getUsuario());
+            interesadoReventaService.delete(interesadoReventa);
+            return new ResponseEntity<>("eliminado",HttpStatus.OK);
+        }catch (Exception e ){
+            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     @PostMapping(value = "/venta")
     @ResponseBody
