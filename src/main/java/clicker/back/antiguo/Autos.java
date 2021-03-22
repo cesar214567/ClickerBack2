@@ -5,54 +5,53 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-@Entity
 public class Autos implements Cloneable {
 
-    @Column(name = "id_auto")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
+    //@Column(name = "id_auto")
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
     Long id;
 
-    @Column
+    //@Column
     String modelo;
 
-    @Column
+    //@Column
     Date anofabricacion;
 
     //TODO
     //Concesionarios concesionarios;
 
-    @Column(length = 1000)
+    //@Column(length = 1000)
     String foto;
 
-    @Column(length = 1000)
+    //@Column(length = 1000)
     String documentacion;
 
-    @Column
+    //@Column
     Long precio;
 
-    @Column
+    //@Column
     String moneda;
 
-    @ElementCollection
+    //@ElementCollection
     List<String> ciudadesDisponibles;
 
-    @Column
+    //@Column
     String tipoCarroceria;
 
-    @ElementCollection
+    //@ElementCollection
     List<String> usoAuto;
 
-    @Column
+    //@Column
     String marca;
 
-    @Column
+    //@Column
     Boolean presentar;
 
-    @Column
+    //@Column
     String version;
 
-    @Column
+    //@Column
     Integer codVersion;
 
     @Override

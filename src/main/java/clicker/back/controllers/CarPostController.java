@@ -6,20 +6,20 @@ import clicker.back.controllers.beans.FiltrosBean;
 import clicker.back.entities.*;
 import clicker.back.services.*;
 import clicker.back.utils.services.LocacionesService;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/post")
@@ -305,13 +305,31 @@ public class CarPostController {
         }
     }
 
+    @Value("${DB_USERNAME2}")
+    String db2Username;
+    @Value("${DB_PASSWORD2}")
+    String db2Password;
+    @Value("${DB_URL2}")
+    String db2Url;
+
     @GetMapping("/novendidos")
     @ResponseBody
     @Transactional
-    public ResponseEntity<Object> getNoVendidos(){
+    public ResponseEntity<Object> getNoVendidos() throws SQLException {
+        Connection connection = null;
         try{
-            return new ResponseEntity<>(autoSemiNuevoService.getAllNoVendidos()+autosService.countAll(),HttpStatus.OK);
+            connection = DriverManager.getConnection(db2Url, db2Username, db2Password);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT count(*) as count FROM autos");
+            resultSet.next();
+            Long sumatotal = autoSemiNuevoService.getAllNoVendidos()+resultSet.getLong("count");
+            connection.close();
+            return new ResponseEntity<>(sumatotal,HttpStatus.OK);
         }catch (Exception e){
+            e.printStackTrace();
+            if(connection!=null){
+                connection.close();
+            }
             return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -319,39 +337,54 @@ public class CarPostController {
     @GetMapping("/marcas")
     @ResponseBody
     @Transactional
-    public ResponseEntity<Object> getMarcas(){
+    public ResponseEntity<Object> getMarcas() throws SQLException {
+        Connection connection=null;
         try{
             List<String> marcas = autoSemiNuevoService.getAllMarcasString();
-            marcas.addAll(autosService.findAllMarcas());
+            connection = DriverManager.getConnection(db2Url, db2Username, db2Password);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("select distinct (a.marca) as marcas from autos a ");
+            while(resultSet.next()){
+                marcas.add(resultSet.getString("marcas"));
+            }
+            //marcas.addAll(autosService.findAllMarcas());
+            //TODO
             Set<String> set = new HashSet<>(marcas);
+            connection.close();
             return new ResponseEntity<>(set.size(),HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("nice",HttpStatus.OK);
+            if(connection!=null){
+                connection.close();
+            }
+            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
-
-
-    @Autowired
-    AutosService autosService;
-
     @GetMapping("/filtros")
     @ResponseBody
     @Transactional
-    public ResponseEntity<Object> getFiltros(){
+    public ResponseEntity<Object> getFiltros() throws SQLException {
+        Connection connection=null;
         try{
             List<FiltrosBean> filtrosBeans = new ArrayList<>();
             List<Tuple> temp = autoSemiNuevoService.getFilters();
             for (Tuple tuple : temp) {
                 filtrosBeans.add(new FiltrosBean((String)tuple.get("marca"),(String)tuple.get("modelo"),(String)tuple.get("tipo_carroceria"),"USED"));
             }
-            temp = autosService.getFiltros();
-            for (Tuple tuple : temp) {
-                filtrosBeans.add(new FiltrosBean((String)tuple.get("marca"),(String)tuple.get("modelo"),(String)tuple.get("tipo_carroceria"),"NEW"));
+            //TODO
+            connection = DriverManager.getConnection(db2Url, db2Username, db2Password);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("select count(a.id_auto) as count ,a.marca as marca ,a.modelo as modelo ,a.tipocarroceria as tipo_carroceria from autos a  group by (a.marca,a.modelo,a.tipocarroceria )");
+            while(resultSet.next()){
+                filtrosBeans.add(new FiltrosBean(resultSet.getString("marca"),resultSet.getString("modelo"),resultSet.getString("tipo_carroceria"),"NEW"));
             }
+
+            connection.close();
             return new ResponseEntity<>(filtrosBeans,HttpStatus.OK);
         }catch (Exception e){
+            e.printStackTrace();
+            if(connection!=null)connection.close();
             return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
 
         }

@@ -1,23 +1,16 @@
 package clicker.back.controllers;
 
 import clicker.back.Setup;
-import clicker.back.antiguo.Solicitudes;
 import clicker.back.entities.*;
 import clicker.back.services.*;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.sendgrid.Response;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController

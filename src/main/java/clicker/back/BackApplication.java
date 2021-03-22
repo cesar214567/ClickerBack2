@@ -1,9 +1,7 @@
 package clicker.back;
 
-import clicker.back.antiguo.Autos;
 import clicker.back.entities.*;
 import clicker.back.services.AutoPatrocinadoService;
-import clicker.back.services.AutosService;
 import clicker.back.services.UsersService;
 import clicker.back.services.UsuariosService;
 import clicker.back.utils.entities.Locaciones;
@@ -36,9 +34,7 @@ public class BackApplication extends SpringBootServletInitializer {
     UsuariosService usuariosService;
     @Autowired
     AutoPatrocinadoService autoPatrocinadoService;
-    @Autowired
-    AutosService autosService;
-    @Autowired
+        @Autowired
     LocacionesService locacionesService;
     @Autowired
     UsersService usersService;
@@ -219,7 +215,7 @@ public class BackApplication extends SpringBootServletInitializer {
             autoPatrocinado.setLevel(20);
             autoPatrocinadoService.save(autoPatrocinado);
 
-            Autos autos = new Autos();
+            /*Autos autos = new Autos();
             autos.setAnofabricacion(new Date());
             autos.setCiudadesDisponibles(Arrays.asList("Lima","Piura","Trujillo"));
             autos.setCodVersion(1);
@@ -305,7 +301,7 @@ public class BackApplication extends SpringBootServletInitializer {
             autosService.save(autos9);
             autosService.save(autos10);
             autosService.save(autos11);
-
+            */
             Users admin = new Users();
             admin.setEmail("luis.jauregui@utec.edu.pe");
             admin.setPassword("uwu");

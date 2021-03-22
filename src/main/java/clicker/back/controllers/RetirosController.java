@@ -1,12 +1,9 @@
 package clicker.back.controllers;
 
 import clicker.back.Setup;
-import clicker.back.antiguo.Solicitudes;
 import clicker.back.entities.SolicitudesRetiro;
-import clicker.back.entities.Usuario;
 import clicker.back.services.SolicitudesRetiroService;
 import clicker.back.services.UsuariosService;
-import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
