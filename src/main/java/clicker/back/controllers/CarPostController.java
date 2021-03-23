@@ -131,6 +131,9 @@ public class CarPostController {
         if(interesadoReventa.getUsuario()==null || interesadoReventa.getUsuario().getCorreo()==null) return new ResponseEntity<>("No se envio el usuario interesado",HttpStatus.BAD_REQUEST);
         interesadoReventa.setUsuario(usuariosService.getById(interesadoReventa.getUsuario().getCorreo()));
         if(interesadoReventa.getUsuario() == null) return new ResponseEntity<>("no se encontro el usuario en la base de datos",HttpStatus.NOT_FOUND);
+        if(!interesadoReventa.getUsuario().getRol().equals("REMAX")){
+            return new ResponseEntity<>("el usuario no es REMAX",HttpStatus.LOCKED);
+        }
         interesadoReventa.setId(null);
         interesadoReventa.setUsuario(interesadoReventa.getUsuario());
         interesadoReventa.getUsuario().getInteresadoReventas().add(interesadoReventa);
@@ -142,7 +145,7 @@ public class CarPostController {
             return new ResponseEntity<>("se encontro algun error",HttpStatus.BAD_REQUEST);
         }
     }
-
+ 
     @DeleteMapping(value = "interesadoVenta")
     @ResponseBody
     @Transactional
