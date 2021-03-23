@@ -161,4 +161,46 @@ public class UserController {
         }
 
     }
+
+    @Autowired
+    InteresadoReventaService interesadoReventaService;
+
+    @GetMapping(value = "/interesadoVenta")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<Object> getIntVenta(@RequestParam("correo") String correo ){
+        try{
+            if(correo==null)return new ResponseEntity<>("no mando correo",HttpStatus.BAD_REQUEST);
+            if(!usuariosService.existById(correo))return new ResponseEntity<>("no existe el usuario",HttpStatus.BAD_REQUEST);
+            List<InteresadoReventa> interesadoReventas= interesadoReventaService.getAllByUsuario(correo);
+            interesadoReventas.forEach(t->t.setUsuario(null));
+            return new ResponseEntity<>(interesadoReventas,HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping(value = "interesadoVenta")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<Object> deleteInteresadoReventa(@RequestParam("id") Long id){
+        if(id==null){
+            return new ResponseEntity<>("no se mando el id de la solicitud",HttpStatus.BAD_REQUEST);
+        }
+        InteresadoReventa interesadoReventa = interesadoReventaService.getById(id);
+        if(interesadoReventa==null){
+            return new ResponseEntity<>("no se encontro solicitud",HttpStatus.BAD_REQUEST);
+        }
+        interesadoReventa.getUsuario().getInteresadoReventas().removeIf(t-> t.getId().equals(id));
+
+        try{
+            usuariosService.save(interesadoReventa.getUsuario());
+            interesadoReventaService.delete(interesadoReventa);
+            return new ResponseEntity<>("eliminado",HttpStatus.OK);
+        }catch (Exception e ){
+            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

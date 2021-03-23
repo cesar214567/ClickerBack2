@@ -38,4 +38,9 @@ public class DefaultInteresadoReventaService implements InteresadoReventaService
     public List<InteresadoReventa> getAllByAuto(AutoSemiNuevo autoSemiNuevo) {
         return interesadoReventaRepository.findAllByAutoSemiNuevo(autoSemiNuevo);
     }
+
+    @Override
+    public List<InteresadoReventa> getAllByUsuario(String correo) {
+        return interesadoReventaRepository.findAllByCorreo(correo);
+    }
 }

@@ -26,6 +26,11 @@ public class DefaultUsuariosService implements UsuariosService {
     }
 
     @Override
+    public Boolean existById(String correo) {
+        return usuariosRepository.existsByCorreo(correo);
+    }
+
+    @Override
     public Usuario save(Usuario usuario) {
         return usuariosRepository.save(usuario);
     }

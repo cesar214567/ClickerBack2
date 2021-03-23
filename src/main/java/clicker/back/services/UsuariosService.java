@@ -20,4 +20,6 @@ public interface UsuariosService {
     Usuario login(String correo,String password);
 
     void updateBalance(Float extraBalance, String correo);
+
+    Boolean existById(String correo);
 }
