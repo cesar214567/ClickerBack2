@@ -96,7 +96,7 @@ public class CarPostController {
     @Autowired
     InteresadoCompraService interesadoCompraService;
 
-    @PostMapping(value = "/interesadosCompra")
+    @PostMapping(value = "/interesadoCompra")
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> intCompra(@RequestBody InteresadoCompra interesadoCompra) {
@@ -121,7 +121,7 @@ public class CarPostController {
     @Autowired
     InteresadoReventaService interesadoReventaService;
 
-    @PostMapping(value = "/interesadosVenta")
+    @PostMapping(value = "/interesadoVenta")
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> intVenta(@RequestBody InteresadoReventa interesadoReventa) {
