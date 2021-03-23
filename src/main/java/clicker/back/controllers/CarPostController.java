@@ -2,6 +2,7 @@ package clicker.back.controllers;
 
 
 import clicker.back.Setup;
+import clicker.back.antiguo.Autos;
 import clicker.back.controllers.beans.FiltrosBean;
 import clicker.back.entities.*;
 import clicker.back.services.*;
@@ -39,6 +40,15 @@ public class CarPostController {
 
     @Autowired
     LocacionesService locacionesService;
+
+    public ResultSet executeQuery(String sql) throws SQLException {
+        Connection connection = DriverManager.getConnection(db2Url, db2Username, db2Password);
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        connection.close();
+        return resultSet;
+    }
+
 
     @PostMapping
     @ResponseBody
@@ -224,8 +234,27 @@ public class CarPostController {
         }
     }
 
+    @GetMapping(value = "/all")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<Object> getAll() throws SQLException {
+        try{
+            List<Object> autos = new ArrayList<>();
+            autos.addAll(autoSemiNuevoService.getAllEnabled(true,true,false));
+            ResultSet resultSet = executeQuery("select * from autos");
+            while(resultSet.next()){
+                autos.add(new Autos(resultSet));
+            }
+            return new ResponseEntity<>(autos,HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-    @GetMapping(value = "/enabled/{pageId}")
+
+
+    /*@GetMapping(value = "/enabled/{pageId}")
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> getEnabledPaginated(@PathVariable("pageId") Integer pageId){
@@ -234,7 +263,7 @@ public class CarPostController {
         }catch (Exception e){
             return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    }*/
 
     @GetMapping(value = "/enabled/count")
     @ResponseBody
@@ -301,20 +330,13 @@ public class CarPostController {
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> getNoVendidos() throws SQLException {
-        Connection connection = null;
         try{
-            connection = DriverManager.getConnection(db2Url, db2Username, db2Password);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT count(*) as count FROM autos");
+            ResultSet resultSet = executeQuery("SELECT count(*) as count FROM autos");
             resultSet.next();
             Long sumatotal = autoSemiNuevoService.getAllNoVendidos()+resultSet.getLong("count");
-            connection.close();
             return new ResponseEntity<>(sumatotal,HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
-            if(connection!=null){
-                connection.close();
-            }
             return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -323,24 +345,16 @@ public class CarPostController {
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> getMarcas() throws SQLException {
-        Connection connection=null;
         try{
             List<String> marcas = autoSemiNuevoService.getAllMarcasString();
-            connection = DriverManager.getConnection(db2Url, db2Username, db2Password);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select distinct (a.marca) as marcas from autos a ");
+            ResultSet resultSet = executeQuery("select distinct (a.marca) as marcas from autos a ");
+
             while(resultSet.next()){
                 marcas.add(resultSet.getString("marcas"));
             }
-            //marcas.addAll(autosService.findAllMarcas());
-            //TODO
             Set<String> set = new HashSet<>(marcas);
-            connection.close();
             return new ResponseEntity<>(set.size(),HttpStatus.OK);
         }catch (Exception e){
-            if(connection!=null){
-                connection.close();
-            }
             return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -358,18 +372,15 @@ public class CarPostController {
                 filtrosBeans.add(new FiltrosBean((String)tuple.get("marca"),(String)tuple.get("modelo"),(String)tuple.get("tipo_carroceria"),"USED"));
             }
             //TODO
-            connection = DriverManager.getConnection(db2Url, db2Username, db2Password);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select count(a.id_auto) as count ,a.marca as marca ,a.modelo as modelo ,a.tipocarroceria as tipo_carroceria from autos a  group by (a.marca,a.modelo,a.tipocarroceria )");
+            ResultSet resultSet = executeQuery("select count(a.id_auto) as count ,a.marca as marca ,a.modelo as modelo " +
+                    ",a.tipocarroceria as tipo_carroceria from autos a  group by (a.marca,a.modelo,a.tipocarroceria )");
             while(resultSet.next()){
                 filtrosBeans.add(new FiltrosBean(resultSet.getString("marca"),resultSet.getString("modelo"),resultSet.getString("tipo_carroceria"),"NEW"));
             }
 
-            connection.close();
             return new ResponseEntity<>(filtrosBeans,HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
-            if(connection!=null)connection.close();
             return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
@@ -386,7 +397,45 @@ public class CarPostController {
         }
     }
 
+    @GetMapping("/nuevo")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<Object> getAutosNuevos(){
+        try{
+            ResultSet resultSet = executeQuery("select * from autos a ");
+            List<Autos> autosNuevos = new ArrayList<>();
+            while(resultSet.next()){
+                Autos autos = new Autos(resultSet);
+                autosNuevos.add(autos);
+            }
+            return new ResponseEntity<>(autosNuevos,HttpStatus.OK);
+        } catch (Exception e ) {
+            e.printStackTrace();
+            return new ResponseEntity<>("fallo ",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
+    }
+
+    @GetMapping("/nuevo/{id}")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<Object> getAutosNuevos(@PathVariable("id")String id){
+        if(id==null)return new ResponseEntity<>("no se mando el id",HttpStatus.BAD_REQUEST);
+        try{
+            String statements ="select * from autos a where a.id_auto=\'"+id+"\'";
+            ResultSet resultSet = executeQuery(statements);
+            List<Autos> autosNuevos = new ArrayList<>();
+            while(resultSet.next()){
+                Autos autos = new Autos(resultSet);
+                autosNuevos.add(autos);
+            }
+            return new ResponseEntity<>(autosNuevos,HttpStatus.OK);
+        } catch (Exception e ) {
+            e.printStackTrace();
+            return new ResponseEntity<>("fallo ",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 
 }
 

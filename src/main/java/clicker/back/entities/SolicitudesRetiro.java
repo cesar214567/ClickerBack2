@@ -26,7 +26,7 @@ public class SolicitudesRetiro {
     Float monto;
 
     @Column
-    Long transferencia;
+    String transferencia;
 
     @Column
     Boolean aceptado;
@@ -74,11 +74,11 @@ public class SolicitudesRetiro {
         this.monto = monto;
     }
 
-    public Long getTransferencia() {
+    public String getTransferencia() {
         return transferencia;
     }
 
-    public void setTransferencia(Long transferencia) {
+    public void setTransferencia(String transferencia) {
         this.transferencia = transferencia;
     }
 

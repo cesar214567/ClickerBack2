@@ -2,6 +2,10 @@ package clicker.back.antiguo;
 
 
 import javax.persistence.*;
+import javax.xml.transform.Result;
+import java.sql.Array;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -10,16 +14,15 @@ public class Autos implements Cloneable {
     //@Column(name = "id_auto")
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Id
-    Long id;
+    String id;
 
     //@Column
     String modelo;
 
     //@Column
-    Date anofabricacion;
+    Long anofabricacion;
 
-    //TODO
-    //Concesionarios concesionarios;
+    String  concesionarios;
 
     //@Column(length = 1000)
     String foto;
@@ -34,13 +37,13 @@ public class Autos implements Cloneable {
     String moneda;
 
     //@ElementCollection
-    List<String> ciudadesDisponibles;
+    Object ciudadesDisponibles;
 
     //@Column
     String tipoCarroceria;
 
     //@ElementCollection
-    List<String> usoAuto;
+    Object usoAuto;
 
     //@Column
     String marca;
@@ -59,11 +62,11 @@ public class Autos implements Cloneable {
         return super.clone();
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -75,11 +78,11 @@ public class Autos implements Cloneable {
         this.modelo = modelo;
     }
 
-    public Date getAnofabricacion() {
+    public Long getAnofabricacion() {
         return anofabricacion;
     }
 
-    public void setAnofabricacion(Date anofabricacion) {
+    public void setAnofabricacion(Long anofabricacion) {
         this.anofabricacion = anofabricacion;
     }
 
@@ -115,14 +118,6 @@ public class Autos implements Cloneable {
         this.moneda = moneda;
     }
 
-    public List<String> getCiudadesDisponibles() {
-        return ciudadesDisponibles;
-    }
-
-    public void setCiudadesDisponibles(List<String> ciudadesDisponibles) {
-        this.ciudadesDisponibles = ciudadesDisponibles;
-    }
-
     public String getTipoCarroceria() {
         return tipoCarroceria;
     }
@@ -131,13 +126,7 @@ public class Autos implements Cloneable {
         this.tipoCarroceria = tipoCarroceria;
     }
 
-    public List<String> getUsoAuto() {
-        return usoAuto;
-    }
 
-    public void setUsoAuto(List<String> usoAuto) {
-        this.usoAuto = usoAuto;
-    }
 
     public String getMarca() {
         return marca;
@@ -169,5 +158,49 @@ public class Autos implements Cloneable {
 
     public void setCodVersion(Integer codVersion) {
         this.codVersion = codVersion;
+    }
+
+    public String getConcesionarios() {
+        return concesionarios;
+    }
+
+    public void setConcesionarios(String concesionarios) {
+        this.concesionarios = concesionarios;
+    }
+
+    public Object getCiudadesDisponibles() {
+
+        return ciudadesDisponibles;
+    }
+
+    public void setCiudadesDisponibles(Object ciudadesDisponibles) {
+        this.ciudadesDisponibles = ciudadesDisponibles;
+    }
+
+    public Object getUsoAuto() {
+        return usoAuto;
+    }
+
+    public void setUsoAuto(Object usoAuto) {
+        this.usoAuto = usoAuto;
+    }
+
+    public Autos(ResultSet resultSet) throws SQLException {
+        setId(resultSet.getString("id_auto"));
+        setModelo(resultSet.getString("modelo"));
+        setAnofabricacion(resultSet.getLong("anofabricacion"));
+        setConcesionarios(resultSet.getString("concesionario"));
+        setFoto(resultSet.getString("foto"));
+        setDocumentacion(resultSet.getString("documentacion"));
+        setPrecio((long) resultSet.getInt("precio"));
+        setMoneda(resultSet.getString("moneda"));
+
+        setCiudadesDisponibles(resultSet.getArray("ciudadesdisp").getArray() );
+        setTipoCarroceria(resultSet.getString("tipocarroceria"));
+        setUsoAuto( resultSet.getArray("usoauto").getArray());
+        setMarca(resultSet.getString("marca"));
+        setPresentar(resultSet.getBoolean("presentar"));
+        setVersion(resultSet.getString("version"));
+        setCodVersion((int) resultSet.getShort("codversion"));
     }
 }

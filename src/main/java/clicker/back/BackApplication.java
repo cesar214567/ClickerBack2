@@ -309,6 +309,17 @@ public class BackApplication extends SpringBootServletInitializer {
             admin.setPermitido(true);
             admin.setRol("ADMIN");
             usersService.save(admin);
+
+            Usuario usuario2 = new Usuario();
+            usuario2.setRol("PARTICULAR");
+            usuario2.setCorreo("gabriel.spranger@utec.edu.pe");
+            usuario2.setPassword("uwu");
+            usuario2.setValidated(true);
+            usuario2.setEnabled(true);
+            usuario2.setCantidadCarrosAno(3);
+            usuario2.setBalance((float) 1000);
+
+            usuariosService.save(usuario2);
         };
     }
 }
