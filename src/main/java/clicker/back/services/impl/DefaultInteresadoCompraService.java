@@ -39,4 +39,9 @@ public class DefaultInteresadoCompraService implements InteresadoCompraService {
     public List<InteresadoCompra> getAllByAuto(AutoSemiNuevo autoSemiNuevo) {
         return interesadoCompraRepository.findAllByAutoSemiNuevo(autoSemiNuevo);
     }
+
+    @Override
+    public Integer existByAutoAndCorreo(Long autoId, String correo) {
+        return interesadoCompraRepository.existByAutoAndCorreo(autoId,correo);
+    }
 }

@@ -17,4 +17,5 @@ public interface InteresadoReventaService {
 
     List<InteresadoReventa> getAllByAuto(AutoSemiNuevo autoSemiNuevo);
     List<InteresadoReventa> getAllByUsuario(String correo);
+    Integer existByAutoIdAndCorreo(Long autoId,String correo);
 }

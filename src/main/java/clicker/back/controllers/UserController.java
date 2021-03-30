@@ -172,8 +172,8 @@ public class UserController {
         try{
             if(correo==null)return new ResponseEntity<>("no mando correo",HttpStatus.BAD_REQUEST);
             if(!usuariosService.existById(correo))return new ResponseEntity<>("no existe el usuario",HttpStatus.BAD_REQUEST);
+            //TODO INVESTIGAR PORQ CUANDO SE SETEA A NULO EL USUARIO NO SALE
             List<InteresadoReventa> interesadoReventas= interesadoReventaService.getAllByUsuario(correo);
-            interesadoReventas.forEach(t->t.setUsuario(null));
             return new ResponseEntity<>(interesadoReventas,HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();

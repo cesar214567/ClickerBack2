@@ -14,4 +14,7 @@ public interface InteresadoReventaRepository extends PagingAndSortingRepository<
     @Query(nativeQuery = true,value = "select * from interesado_reventa i where i.id_usuario=:correo")
     List<InteresadoReventa> findAllByCorreo(String correo);
 
+    @Query(nativeQuery = true,value = "select count(*) from interesado_reventa i where i.id_usuario=:correo and i.id_auto_semi_nuevo=:autoId")
+    Integer existByAutoAndCorreo(Long autoId,String correo);
+
 }

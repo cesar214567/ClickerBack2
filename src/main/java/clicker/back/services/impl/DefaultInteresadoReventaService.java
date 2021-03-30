@@ -43,4 +43,9 @@ public class DefaultInteresadoReventaService implements InteresadoReventaService
     public List<InteresadoReventa> getAllByUsuario(String correo) {
         return interesadoReventaRepository.findAllByCorreo(correo);
     }
+
+    @Override
+    public Integer existByAutoIdAndCorreo(Long autoId, String correo) {
+        return interesadoReventaRepository.existByAutoAndCorreo(autoId,correo);
+    }
 }

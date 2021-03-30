@@ -111,6 +111,9 @@ public class CarPostController {
     @Transactional
     public ResponseEntity<Object> intCompra(@RequestBody InteresadoCompra interesadoCompra) {
         if(interesadoCompra.getAutoSemiNuevo()==null || interesadoCompra.getAutoSemiNuevo().getId()==null) return new ResponseEntity<>("No se envio el auto por el cual esta interesado",HttpStatus.BAD_REQUEST);
+        if(interesadoCompraService.existByAutoAndCorreo(interesadoCompra.getAutoSemiNuevo().getId(),interesadoCompra.getCorreo())!=0){
+            return new ResponseEntity<>(null,HttpStatus.LOCKED);
+        }
         interesadoCompra.setAutoSemiNuevo(autoSemiNuevoService.getById(interesadoCompra.getAutoSemiNuevo().getId()));
         if(interesadoCompra.getAutoSemiNuevo() == null) return new ResponseEntity<>("no se encontro el auto",HttpStatus.NOT_FOUND);
         interesadoCompra.setId(null);
@@ -138,6 +141,9 @@ public class CarPostController {
     @Transactional
     public ResponseEntity<Object> intVenta(@RequestBody InteresadoReventa interesadoReventa) {
         if(interesadoReventa.getAutoSemiNuevo()==null || interesadoReventa.getAutoSemiNuevo().getId()==null) return new ResponseEntity<>("No se envio el auto por el cual esta interesado",HttpStatus.BAD_REQUEST);
+        if(interesadoReventaService.existByAutoIdAndCorreo(interesadoReventa.getAutoSemiNuevo().getId(), interesadoReventa.getUsuario().getCorreo())!=0){
+            return new ResponseEntity<>(null,HttpStatus.LOCKED);
+        }
         interesadoReventa.setAutoSemiNuevo(autoSemiNuevoService.getById(interesadoReventa.getAutoSemiNuevo().getId()));
         if(interesadoReventa.getAutoSemiNuevo() == null) return new ResponseEntity<>("no se encontro el auto",HttpStatus.NOT_FOUND);
         if(interesadoReventa.getUsuario()==null || interesadoReventa.getUsuario().getCorreo()==null) return new ResponseEntity<>("No se envio el usuario interesado",HttpStatus.BAD_REQUEST);
@@ -254,7 +260,7 @@ public class CarPostController {
 
 
 
-    /*@GetMapping(value = "/enabled/{pageId}")
+    @GetMapping(value = "/enabled/{pageId}")
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> getEnabledPaginated(@PathVariable("pageId") Integer pageId){
@@ -263,7 +269,7 @@ public class CarPostController {
         }catch (Exception e){
             return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }*/
+    }
 
     @GetMapping(value = "/enabled/count")
     @ResponseBody
