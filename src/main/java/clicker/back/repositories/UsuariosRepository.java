@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 
 public interface UsuariosRepository extends PagingAndSortingRepository<Usuario,String> {
@@ -24,4 +25,7 @@ public interface UsuariosRepository extends PagingAndSortingRepository<Usuario,S
     void updateBalance(Float extraBalance,String correo);
 
     Boolean existsByCorreo(String correo);
+
+    @Query(nativeQuery = true,value = "select u.id_usuario,u.num_telefono,u.nombre from usuario u where u.id_usuario=:correo")
+    Tuple getData(String correo);
 }

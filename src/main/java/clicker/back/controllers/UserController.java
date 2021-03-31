@@ -203,4 +203,18 @@ public class UserController {
         }
     }
 
+    @GetMapping("/ventas")
+    @ResponseBody
+    public ResponseEntity<Object> getVentasByUsuario(@RequestParam("correo")String correo){
+        if(correo!=null){
+            try{
+                return new ResponseEntity<>(ventaSemiNuevoService.getVentasByUsuario(correo),HttpStatus.OK);
+            }catch (Exception e){
+                e.printStackTrace();
+                return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }else{
+            return new ResponseEntity<>("no se encontro usuario",HttpStatus.BAD_REQUEST);
+        }
+    }
 }

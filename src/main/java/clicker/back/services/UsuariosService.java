@@ -2,6 +2,7 @@ package clicker.back.services;
 
 import clicker.back.entities.Usuario;
 
+import javax.persistence.Tuple;
 import java.util.List;
 
 public interface UsuariosService {
@@ -22,4 +23,6 @@ public interface UsuariosService {
     void updateBalance(Float extraBalance, String correo);
 
     Boolean existById(String correo);
+
+    Tuple getData(String correo);
 }

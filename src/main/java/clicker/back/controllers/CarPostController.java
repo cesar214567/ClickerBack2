@@ -7,6 +7,7 @@ import clicker.back.controllers.beans.FiltrosBean;
 import clicker.back.entities.*;
 import clicker.back.services.*;
 import clicker.back.utils.services.LocacionesService;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -164,7 +165,8 @@ public class CarPostController {
         }
     }
 
-
+    @Autowired
+    CompradorService compradorService;
 
 
     @PostMapping(value = "/venta")
@@ -175,6 +177,24 @@ public class CarPostController {
             return new ResponseEntity<>("no se enviaron la comision o el precio fianl",HttpStatus.BAD_REQUEST);
         }
         if(ventaSemiNuevo.getFoto()==null) return new ResponseEntity<>("no se envio la foto",HttpStatus.BAD_REQUEST);
+        //TODO check if comprador exists
+        if(ventaSemiNuevo.getComprador()!=null){
+            if(ventaSemiNuevo.getComprador().getCorreo()==null)return new ResponseEntity<>("no se envio el correo",HttpStatus.BAD_REQUEST);
+            Comprador comprador = null;
+            comprador= compradorService.getById(ventaSemiNuevo.getComprador().getCorreo());
+            if(comprador==null ){
+                Tuple usuario= usuariosService.getData(ventaSemiNuevo.getComprador().getCorreo());
+                if(usuariosService.existById(ventaSemiNuevo.getComprador().getCorreo())){
+                    comprador=new Comprador();
+                    comprador.setCorreo((String) usuario.get("id_usuario"));
+                    comprador.setNombre((String) usuario.get("nombre"));
+                    if(usuario.get("num_telefono")!=null)comprador.setTelefono( usuario.get("num_telefono").toString());
+                    ventaSemiNuevo.setComprador(comprador);
+                }
+            }else{
+                ventaSemiNuevo.setComprador(comprador);
+            }
+        }
         if(ventaSemiNuevo.getAutoSemiNuevo()==null || ventaSemiNuevo.getAutoSemiNuevo().getId()==null){
             return new ResponseEntity<>("no se mando el auto",HttpStatus.BAD_REQUEST);
         }
@@ -250,6 +270,9 @@ public class CarPostController {
             ResultSet resultSet = executeQuery("select * from autos");
             while(resultSet.next()){
                 autos.add(new Autos(resultSet));
+                /*Array array= resultSet.getArray("ciudadesdisp");
+                String[] nullable = (String[])array.getArray();
+                for()*/
             }
             return new ResponseEntity<>(autos,HttpStatus.OK);
         }catch (Exception e){

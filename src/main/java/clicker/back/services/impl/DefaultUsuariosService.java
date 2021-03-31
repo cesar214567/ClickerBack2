@@ -6,6 +6,7 @@ import clicker.back.services.UsuariosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Tuple;
 import java.util.List;
 
 @Service
@@ -28,6 +29,11 @@ public class DefaultUsuariosService implements UsuariosService {
     @Override
     public Boolean existById(String correo) {
         return usuariosRepository.existsByCorreo(correo);
+    }
+
+    @Override
+    public Tuple getData(String correo) {
+        return usuariosRepository.getData(correo);
     }
 
     @Override

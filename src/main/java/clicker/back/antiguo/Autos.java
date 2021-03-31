@@ -1,6 +1,8 @@
 package clicker.back.antiguo;
 
 
+import clicker.back.utils.entities.Locaciones;
+
 import javax.persistence.*;
 import javax.xml.transform.Result;
 import java.sql.Array;
@@ -20,7 +22,7 @@ public class Autos implements Cloneable {
     String modelo;
 
     //@Column
-    Long anofabricacion;
+    Long anoFabricacion;
 
     String  concesionarios;
 
@@ -31,13 +33,14 @@ public class Autos implements Cloneable {
     String documentacion;
 
     //@Column
-    Long precio;
+    Float precioVenta;
 
     //@Column
     String moneda;
 
     //@ElementCollection
-    Object ciudadesDisponibles;
+    //List<Locaciones> locaciones;
+    Object locaciones;
 
     //@Column
     String tipoCarroceria;
@@ -78,13 +81,7 @@ public class Autos implements Cloneable {
         this.modelo = modelo;
     }
 
-    public Long getAnofabricacion() {
-        return anofabricacion;
-    }
 
-    public void setAnofabricacion(Long anofabricacion) {
-        this.anofabricacion = anofabricacion;
-    }
 
     public String getFoto() {
         return foto;
@@ -102,13 +99,6 @@ public class Autos implements Cloneable {
         this.documentacion = documentacion;
     }
 
-    public Long getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(Long precio) {
-        this.precio = precio;
-    }
 
     public String getMoneda() {
         return moneda;
@@ -168,14 +158,23 @@ public class Autos implements Cloneable {
         this.concesionarios = concesionarios;
     }
 
-    public Object getCiudadesDisponibles() {
-
-        return ciudadesDisponibles;
+    public Long getAnoFabricacion() {
+        return anoFabricacion;
     }
 
-    public void setCiudadesDisponibles(Object ciudadesDisponibles) {
-        this.ciudadesDisponibles = ciudadesDisponibles;
+    public void setAnoFabricacion(Long anoFabricacion) {
+        this.anoFabricacion = anoFabricacion;
     }
+
+    public Float getPrecioVenta() {
+        return precioVenta;
+    }
+
+    public void setPrecioVenta(Float precioVenta) {
+        this.precioVenta = precioVenta;
+    }
+
+
 
     public Object getUsoAuto() {
         return usoAuto;
@@ -185,17 +184,25 @@ public class Autos implements Cloneable {
         this.usoAuto = usoAuto;
     }
 
+    public Object getLocaciones() {
+        return locaciones;
+    }
+
+    public void setLocaciones(Object locaciones) {
+        this.locaciones = locaciones;
+    }
+
     public Autos(ResultSet resultSet) throws SQLException {
         setId(resultSet.getString("id_auto"));
         setModelo(resultSet.getString("modelo"));
-        setAnofabricacion(resultSet.getLong("anofabricacion"));
+        setAnoFabricacion(resultSet.getLong("anofabricacion"));
         setConcesionarios(resultSet.getString("concesionario"));
         setFoto(resultSet.getString("foto"));
         setDocumentacion(resultSet.getString("documentacion"));
-        setPrecio((long) resultSet.getInt("precio"));
+        setPrecioVenta( resultSet.getFloat("precio"));
         setMoneda(resultSet.getString("moneda"));
 
-        setCiudadesDisponibles(resultSet.getArray("ciudadesdisp").getArray() );
+        setLocaciones(resultSet.getArray("ciudadesdisp").getArray() );
         setTipoCarroceria(resultSet.getString("tipocarroceria"));
         setUsoAuto( resultSet.getArray("usoauto").getArray());
         setMarca(resultSet.getString("marca"));

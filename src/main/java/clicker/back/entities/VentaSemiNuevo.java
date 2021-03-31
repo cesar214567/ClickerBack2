@@ -21,6 +21,11 @@ public class VentaSemiNuevo {
     @ManyToOne
     Usuario vendedor;
 
+
+    @JoinColumn(name = "id_comprador")
+    @ManyToOne(cascade = CascadeType.ALL)
+    Comprador comprador;
+
     @Column
     Date fecha;
 
@@ -44,6 +49,14 @@ public class VentaSemiNuevo {
 
     @Column
     Float gananciaEmpresa;
+
+    public Comprador getComprador() {
+        return comprador;
+    }
+
+    public void setComprador(Comprador comprador) {
+        this.comprador = comprador;
+    }
 
     public Float getComisionGeneral() {
         return comisionGeneral;
