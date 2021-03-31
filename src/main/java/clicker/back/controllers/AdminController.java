@@ -102,20 +102,11 @@ public class    AdminController {
         for (AutoSemiNuevo autoSemiNuevo : list) {
             List<InteresadoCompra> interesadoCompraList = interesadoCompraService.getAllByAuto(autoSemiNuevo);
             List<InteresadoReventa> interesadoReventasList = interesadoReventaService.getAllByAuto(autoSemiNuevo);
-            List<InteresadoCompra> interesadoReventasFormated = new ArrayList<>();
             interesadoCompraList.forEach(t->t.setAutoSemiNuevo(null));
             if (interesadoCompraList.size()!=0 || interesadoReventasList.size()!=0 ){
-                for (InteresadoReventa interesadoReventa : interesadoReventasList) {
-                    InteresadoCompra interesadoCompra = new InteresadoCompra();
-                    interesadoCompra.setId(interesadoReventa.getId());
-                    interesadoCompra.setCorreo(interesadoReventa.getUsuario().getCorreo());
-                    interesadoCompra.setNombre(interesadoReventa.getUsuario().getNombre());
-                    if(interesadoReventa.getUsuario().getNumTelefono()!=null)interesadoCompra.setNumTelefono(interesadoReventa.getUsuario().getNumTelefono().toString());
-                    interesadoReventasFormated.add(interesadoCompra);
-                }
                 JSONObject object = new JSONObject();
                 object.put("auto",autoSemiNuevo);
-                object.put("interesadosReventa",interesadoReventasFormated);
+                object.put("interesadosReventa",interesadoReventasList);
                 object.put("interesadosCompra",interesadoCompraList);
                 jsonArray.appendElement(object);
             }
