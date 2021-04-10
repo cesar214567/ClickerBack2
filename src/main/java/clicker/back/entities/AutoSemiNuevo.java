@@ -103,6 +103,16 @@ public class AutoSemiNuevo implements Cloneable {
     @Column
     String descripcion;
 
+    @Column
+    String version;
+
+    @Column
+    String mantenimiento;
+
+    @Column
+    Boolean unicoDueno;
+
+
     @OneToMany(cascade = CascadeType.ALL)
     List<FotosAutoSemiNuevo> fotos;
 
@@ -116,6 +126,30 @@ public class AutoSemiNuevo implements Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getMantenimiento() {
+        return mantenimiento;
+    }
+
+    public void setMantenimiento(String mantenimiento) {
+        this.mantenimiento = mantenimiento;
+    }
+
+    public Boolean getUnicoDueno() {
+        return unicoDueno;
+    }
+
+    public void setUnicoDueno(Boolean unicoDueno) {
+        this.unicoDueno = unicoDueno;
     }
 
     public Boolean getRevisado() {
@@ -387,5 +421,22 @@ public class AutoSemiNuevo implements Cloneable {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public void info(AutoSemiNuevo autoSemiNuevo){
+        this.setComprado(autoSemiNuevo.getComprado());
+        this.setValidado(autoSemiNuevo.getValidado());
+        this.setRevisado(autoSemiNuevo.getRevisado());
+        this.setUsuario(autoSemiNuevo.getUsuario());
+        this.setSolicitudRemocionAuto(autoSemiNuevo.getSolicitudRemocionAuto());
+        this.setDenuncias(autoSemiNuevo.getDenuncias());
+        this.setFotoPrincipal(autoSemiNuevo.getFotoPrincipal());
+        this.setFotos(autoSemiNuevo.getFotos());
+        this.setId(autoSemiNuevo.getId());
+        this.setPlaca(autoSemiNuevo.getPlaca());
+        this.setMarca(autoSemiNuevo.getMarca());
+        this.setModelo(autoSemiNuevo.getModelo());
+        this.setSerie(autoSemiNuevo.getSerie());
+
     }
 }

@@ -328,12 +328,14 @@ public class CarPostController {
         if(temp==null)return new ResponseEntity<>("no se encontro el auto",HttpStatus.BAD_REQUEST);
         if(temp.getComprado())return new ResponseEntity<>("el auto no puede ser modificado porque ya se vendio",HttpStatus.BAD_REQUEST);
         /*seting info*/
-        autoSemiNuevo.setComprado(temp.getComprado());
-        autoSemiNuevo.setValidado(temp.getValidado());
-        autoSemiNuevo.setUsuario(temp.getUsuario());
-        autoSemiNuevo.setSolicitudRemocionAuto(temp.getSolicitudRemocionAuto());
-        autoSemiNuevo.setDenuncias(temp.getDenuncias());
-        return new ResponseEntity<>("ok",HttpStatus.OK);
+        try{
+            autoSemiNuevo.info(temp);
+            autoSemiNuevoService.save(autoSemiNuevo);
+            return new ResponseEntity<>("ok",HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
     }
 
