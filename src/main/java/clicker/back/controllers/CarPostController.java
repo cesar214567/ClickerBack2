@@ -66,11 +66,11 @@ public class CarPostController {
                 return new ResponseEntity<>("este auto esta siendo vendido",HttpStatus.IM_USED);
             }
         }
-        if(autoSemiNuevo.getLocaciones()==null || autoSemiNuevo.getLocaciones().getId()==null) {
+        if(autoSemiNuevo.getLocacion()==null || autoSemiNuevo.getLocacion().getId()==null) {
             return new ResponseEntity<>("no se envio la locacion", HttpStatus.BAD_REQUEST);
         }
-        autoSemiNuevo.setLocaciones(locacionesService.findById(autoSemiNuevo.getLocaciones().getId()));
-        if(autoSemiNuevo.getLocaciones()==null){
+        autoSemiNuevo.setLocacion(locacionesService.findById(autoSemiNuevo.getLocacion().getId()));
+        if(autoSemiNuevo.getLocacion()==null){
             return new ResponseEntity<>("no se encontro la locacion",HttpStatus.BAD_REQUEST);
         }
         Usuario user = usuariosService.getById(autoSemiNuevo.getUsuario().getCorreo());
