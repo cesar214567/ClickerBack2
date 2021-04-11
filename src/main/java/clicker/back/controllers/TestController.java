@@ -16,7 +16,7 @@ public class TestController {
     @Autowired
     VentaSemiNuevoService ventaSemiNuevoService;
 
-    @GetMapping
+    @GetMapping("/ventas")
     @ResponseBody
     public ResponseEntity<Object> getAllVentas(){
         try{
