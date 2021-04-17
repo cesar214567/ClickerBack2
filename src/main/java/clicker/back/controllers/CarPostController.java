@@ -95,7 +95,7 @@ public class CarPostController {
             autos.add(autoSemiNuevo);
             try{
                 usuariosService.save(user);
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                return new ResponseEntity<>( HttpStatus.OK);
             }catch (Exception e ){
                 return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -121,7 +121,7 @@ public class CarPostController {
         interesadoCompra.setAutoSemiNuevo(interesadoCompra.getAutoSemiNuevo());
         try{
             interesadoCompraService.save(interesadoCompra);
-            return new ResponseEntity<>("se realizo correctamente el post",HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>("se encontro algun error",HttpStatus.BAD_REQUEST);
         }
