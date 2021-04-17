@@ -331,7 +331,7 @@ public class CarPostController {
         try{
             autoSemiNuevo.info(temp);
             autoSemiNuevoService.save(autoSemiNuevo);
-            return new ResponseEntity<>("ok",HttpStatus.OK);
+            return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
