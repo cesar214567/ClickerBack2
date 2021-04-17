@@ -47,4 +47,21 @@ public class SponsorsController {
         }
     }
 
+    @PutMapping
+    @ResponseBody
+    public ResponseEntity<Object> modify(@RequestBody AutoPatrocinado autoPatrocinado){
+        if(autoPatrocinado.getId()==null)return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        AutoPatrocinado temp = autoPatrocinadoService.findById(autoPatrocinado.getId());
+        if(temp==null)return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        temp.setLevel(autoPatrocinado.getLevel());
+        try{
+            autoPatrocinadoService.save(temp);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
+    }
+
 }
