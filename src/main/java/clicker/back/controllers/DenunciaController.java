@@ -7,6 +7,7 @@ import clicker.back.entities.Usuario;
 import clicker.back.services.AutoSemiNuevoService;
 import clicker.back.services.DenunciaService;
 import clicker.back.services.UsuariosService;
+import clicker.back.utils.errors.ResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,16 +30,16 @@ public class DenunciaController {
     @ResponseBody
     public ResponseEntity<Object> denunciar(@RequestBody Denuncia denuncia){
         if(denuncia.getDescripcion()==null ||  denuncia.getDescripcion().equals(""))
-            return new ResponseEntity<>("no se envio detalle de la denuncia",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se envio detalle de la denuncia",HttpStatus.BAD_REQUEST);
         if(denuncia.getAutoSemiNuevo()==null || denuncia.getUsuario()==null)
-            return new ResponseEntity<>("no se envio usuario o auto",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se envio usuario o auto",HttpStatus.BAD_REQUEST);
         Usuario denunciante = usuariosService.getById(denuncia.getUsuario().getCorreo());
         AutoSemiNuevo autoSemiNuevo = autoSemiNuevoService.getById(denuncia.getAutoSemiNuevo().getId());
         if(denunciante == null || autoSemiNuevo == null ){
-             return new ResponseEntity<>("no se encontro el usuario o el vehiculo", HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se encontro el usuario o el vehiculo",HttpStatus.BAD_REQUEST);
         }
         if(denunciaService.getByAutoAndUsuario(autoSemiNuevo,denunciante)!=null){
-            return new ResponseEntity<>("Este usuario ya reporto al vehiculo",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("Este usuario ya reporto al vehiculo",HttpStatus.BAD_REQUEST);
         }
         denunciante.getDenuncias().add(denuncia);
         autoSemiNuevo.getDenuncias().add(denuncia);
@@ -49,7 +50,7 @@ public class DenunciaController {
             autoSemiNuevoService.setRevisado(false,autoSemiNuevo.getId());
             return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
 

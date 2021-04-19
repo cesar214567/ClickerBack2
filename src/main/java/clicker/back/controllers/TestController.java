@@ -1,8 +1,8 @@
 package clicker.back.controllers;
 
 import clicker.back.Setup;
-import clicker.back.entities.VentaSemiNuevo;
 import clicker.back.services.VentaSemiNuevoService;
+import clicker.back.utils.errors.ResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class TestController {
         try{
             return new ResponseEntity<>(ventaSemiNuevoService.getAll(),HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo", HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

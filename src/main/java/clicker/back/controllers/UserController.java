@@ -3,6 +3,7 @@ package clicker.back.controllers;
 import clicker.back.Setup;
 import clicker.back.entities.*;
 import clicker.back.services.*;
+import clicker.back.utils.errors.ResponseService;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,9 @@ public class UserController {
     @PostMapping("/create")
     @ResponseBody
     public ResponseEntity<Object> create(@RequestBody Users users){
-        if(users.getEmail()==null || users.getPassword()==null)return new ResponseEntity<>("no se envio el email", HttpStatus.BAD_REQUEST);
+        if(users.getEmail()==null || users.getPassword()==null){
+            return ResponseService.genError("no se envio el email",HttpStatus.BAD_REQUEST);
+        }
         Usuario usuario= usuariosService.getById(users.getEmail());
         if(usuario==null){
             Users temp = userService.getById(users.getEmail());
@@ -44,7 +47,7 @@ public class UserController {
                 return new ResponseEntity<>(userService.save(users), HttpStatus.OK);
             }
         }
-        return new ResponseEntity<>("se encontro un user con ese correo", HttpStatus.BAD_REQUEST);
+        return ResponseService.genError("se encontro un user con ese correo",HttpStatus.CONFLICT);
     }
 
     @GetMapping(value = "/id")
@@ -67,10 +70,16 @@ public class UserController {
     @PostMapping(value = "/remax")
     @ResponseBody
     public ResponseEntity<Object> postFormRemax(@RequestBody Form form){
-        if(form.getUsuario()==null || form.getUsuario().getCorreo()==null)return new ResponseEntity<>("no se envio el usuario",HttpStatus.BAD_REQUEST);
+        if(form.getUsuario()==null || form.getUsuario().getCorreo()==null){
+            return ResponseService.genError("no se envio el usuario",HttpStatus.BAD_REQUEST);
+        }
         form.setUsuario(usuariosService.getById(form.getUsuario().getCorreo()));
-        if(form.getUsuario()==null) return new ResponseEntity<>("no se encontro el usuario",HttpStatus.BAD_REQUEST);
-        if(!form.getUsuario().getRol().equals("REMAX"))return new ResponseEntity<>("el usuario no es un tipo REMAX, no se le debe hacer un forms",HttpStatus.BAD_REQUEST);
+        if(form.getUsuario()==null){
+            return ResponseService.genError("no se encontro el usuario",HttpStatus.NOT_FOUND);
+        }
+        if(!form.getUsuario().getRol().equals("REMAX")){
+            return ResponseService.genError("el usuario no es un tipo REMAX, no se le debe hacer un forms",HttpStatus.BAD_REQUEST);
+        }
         form.getUsuario().setForm(form);
         return new ResponseEntity<>(usuariosService.save(form.getUsuario()),HttpStatus.OK);
     }
@@ -81,7 +90,7 @@ public class UserController {
         try{
             return new ResponseEntity<>(usuariosService.countUsers(),HttpStatus.OK);
         }catch (Exception e ){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -93,15 +102,14 @@ public class UserController {
     @Transactional
     public ResponseEntity<Object> validar(@RequestBody Usuario usuario){
         if(usuario.getNombre()==null || usuario.getNumTelefono()==null){
-            return new ResponseEntity<>("no envio los datos",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no envio los datos",HttpStatus.BAD_REQUEST);
         }
         String correo;
         System.out.println(usuario.getCorreo().length());;
         try{
             correo = cryptoService.decrypt3(usuario.getCorreo());
         }catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("no se pudo desencriptar el id",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("no se pudo desencriptar el id",HttpStatus.INTERNAL_SERVER_ERROR);
         }
         Usuario real = usuariosService.getById(correo);
         if(real.getRol().equals("USUARIO")){
@@ -116,7 +124,7 @@ public class UserController {
             usuariosService.save(real);
             return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -157,7 +165,7 @@ public class UserController {
             return new ResponseEntity<>(jsonArray,HttpStatus.OK);
 
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -170,14 +178,17 @@ public class UserController {
     @Transactional
     public ResponseEntity<Object> getIntVenta(@RequestParam("correo") String correo ){
         try{
-            if(correo==null)return new ResponseEntity<>("no mando correo",HttpStatus.BAD_REQUEST);
-            if(!usuariosService.existById(correo))return new ResponseEntity<>("no existe el usuario",HttpStatus.BAD_REQUEST);
+            if(correo==null){
+                return ResponseService.genError("no mando correo",HttpStatus.BAD_REQUEST);
+            }
+            if(!usuariosService.existById(correo)){
+                return ResponseService.genError("no existe el usuario",HttpStatus.BAD_REQUEST);
+            }
             //TODO INVESTIGAR PORQ CUANDO SE SETEA A NULO EL USUARIO NO SALE
             List<InteresadoReventa> interesadoReventas= interesadoReventaService.getAllByUsuario(correo);
             return new ResponseEntity<>(interesadoReventas,HttpStatus.OK);
         }catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -186,20 +197,20 @@ public class UserController {
     @Transactional
     public ResponseEntity<Object> deleteInteresadoReventa(@RequestParam("id") Long id){
         if(id==null){
-            return new ResponseEntity<>("no se mando el id de la solicitud",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se mando el id de la solicitud",HttpStatus.BAD_REQUEST);
         }
         InteresadoReventa interesadoReventa = interesadoReventaService.getById(id);
         if(interesadoReventa==null){
-            return new ResponseEntity<>("no se encontro solicitud",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se encontro solicitud",HttpStatus.BAD_REQUEST);
         }
         interesadoReventa.getUsuario().getInteresadoReventas().removeIf(t-> t.getId().equals(id));
 
         try{
             usuariosService.save(interesadoReventa.getUsuario());
             interesadoReventaService.delete(interesadoReventa);
-            return new ResponseEntity<>("eliminado",HttpStatus.OK);
+            return ResponseService.genSuccess("eliminado");
         }catch (Exception e ){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -210,11 +221,10 @@ public class UserController {
             try{
                 return new ResponseEntity<>(ventaSemiNuevoService.getVentasByUsuario(correo),HttpStatus.OK);
             }catch (Exception e){
-                e.printStackTrace();
-                return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+                return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }else{
-            return new ResponseEntity<>("no se encontro usuario",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se encontro usuario",HttpStatus.BAD_REQUEST);
         }
     }
 }

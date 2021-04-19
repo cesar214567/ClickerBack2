@@ -6,8 +6,8 @@ import clicker.back.antiguo.Autos;
 import clicker.back.controllers.beans.FiltrosBean;
 import clicker.back.entities.*;
 import clicker.back.services.*;
+import clicker.back.utils.errors.ResponseService;
 import clicker.back.utils.services.LocacionesService;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.Tuple;
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
@@ -56,26 +55,26 @@ public class CarPostController {
     @Transactional
     public ResponseEntity<Object> post(@RequestBody AutoSemiNuevo autoSemiNuevo){
         if(autoSemiNuevo.getUsuario()==null || autoSemiNuevo.getUsuario().getCorreo()==null)
-            return new ResponseEntity<>("no se envio un usuario",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se envio un usuario",HttpStatus.BAD_REQUEST);
         List<AutoSemiNuevo> temp = autoSemiNuevoService.getByPlaca(autoSemiNuevo.getPlaca());
         if(autoSemiNuevo.getPlaca()==null) {
-            return new ResponseEntity<>(" no se mando la placa", HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se mando la placa",HttpStatus.BAD_REQUEST);
         }
         for (AutoSemiNuevo semiNuevo : temp) {
             if(!semiNuevo.getComprado() && semiNuevo.getEnabled()){
-                return new ResponseEntity<>("este auto esta siendo vendido",HttpStatus.IM_USED);
+                return ResponseService.genError("este auto esta siendo vendido",HttpStatus.BAD_REQUEST);
             }
         }
         if(autoSemiNuevo.getLocacion()==null || autoSemiNuevo.getLocacion().getId()==null) {
-            return new ResponseEntity<>("no se envio la locacion", HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se envio la locacion",HttpStatus.BAD_REQUEST);
         }
         autoSemiNuevo.setLocacion(locacionesService.findById(autoSemiNuevo.getLocacion().getId()));
         if(autoSemiNuevo.getLocacion()==null){
-            return new ResponseEntity<>("no se encontro la locacion",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se encontro la locacion",HttpStatus.BAD_REQUEST);
         }
         Usuario user = usuariosService.getById(autoSemiNuevo.getUsuario().getCorreo());
         if(user == null){
-            return new ResponseEntity<>("no se encontro el usuario con ese id",  HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se encontro el usuario con ese id",HttpStatus.BAD_REQUEST);
         }else{
             Calendar c1 = Calendar.getInstance();
             Calendar c2 = Calendar.getInstance();
@@ -86,7 +85,9 @@ public class CarPostController {
                 c1.setTime(auto.getFechaPublicacion());
                 if(c1.get(Calendar.YEAR)==c2.get(Calendar.YEAR))cont++;
             }
-            if(cont>=user.getCantidadCarrosAno())return new ResponseEntity<>("ya agoto sus subidas anuales",  HttpStatus.LOCKED);
+            if(cont>=user.getCantidadCarrosAno()){
+                return ResponseService.genError("ya agoto sus subidas anuales",HttpStatus.BAD_REQUEST);
+            }
             autoSemiNuevo.setComprado(false);
             autoSemiNuevo.setValidado(false);
             autoSemiNuevo.setEnabled(true);
@@ -97,7 +98,7 @@ public class CarPostController {
                 usuariosService.save(user);
                 return new ResponseEntity<>( HttpStatus.OK);
             }catch (Exception e ){
-                return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+                return ResponseService.genError("fallo",HttpStatus.BAD_REQUEST);
             }
 
         }
@@ -111,19 +112,23 @@ public class CarPostController {
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> intCompra(@RequestBody InteresadoCompra interesadoCompra) {
-        if(interesadoCompra.getAutoSemiNuevo()==null || interesadoCompra.getAutoSemiNuevo().getId()==null) return new ResponseEntity<>("No se envio el auto por el cual esta interesado",HttpStatus.BAD_REQUEST);
+        if(interesadoCompra.getAutoSemiNuevo()==null || interesadoCompra.getAutoSemiNuevo().getId()==null){
+            return ResponseService.genError("No se envio el auto por el cual esta interesado",HttpStatus.BAD_REQUEST);
+        }
         if(interesadoCompraService.existByAutoAndCorreo(interesadoCompra.getAutoSemiNuevo().getId(),interesadoCompra.getCorreo())!=0){
-            return new ResponseEntity<>(null,HttpStatus.LOCKED);
+            return ResponseService.genError("locked",HttpStatus.LOCKED);
         }
         interesadoCompra.setAutoSemiNuevo(autoSemiNuevoService.getById(interesadoCompra.getAutoSemiNuevo().getId()));
-        if(interesadoCompra.getAutoSemiNuevo() == null) return new ResponseEntity<>("no se encontro el auto",HttpStatus.NOT_FOUND);
+        if(interesadoCompra.getAutoSemiNuevo() == null){
+            return ResponseService.genError("no se encontro el auto",HttpStatus.BAD_REQUEST);
+        }
         interesadoCompra.setId(null);
         interesadoCompra.setAutoSemiNuevo(interesadoCompra.getAutoSemiNuevo());
         try{
             interesadoCompraService.save(interesadoCompra);
             return new ResponseEntity<>(HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("se encontro algun error",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -141,17 +146,26 @@ public class CarPostController {
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> intVenta(@RequestBody InteresadoReventa interesadoReventa) {
-        if(interesadoReventa.getAutoSemiNuevo()==null || interesadoReventa.getAutoSemiNuevo().getId()==null) return new ResponseEntity<>("No se envio el auto por el cual esta interesado",HttpStatus.BAD_REQUEST);
+        if(interesadoReventa.getAutoSemiNuevo()==null || interesadoReventa.getAutoSemiNuevo().getId()==null){
+            return ResponseService.genError("No se envio el auto por el cual esta interesado",HttpStatus.BAD_REQUEST);
+        }
         if(interesadoReventaService.existByAutoIdAndCorreo(interesadoReventa.getAutoSemiNuevo().getId(), interesadoReventa.getUsuario().getCorreo())!=0){
-            return new ResponseEntity<>(null,HttpStatus.LOCKED);
+            return ResponseService.genError("",HttpStatus.LOCKED);
+
         }
         interesadoReventa.setAutoSemiNuevo(autoSemiNuevoService.getById(interesadoReventa.getAutoSemiNuevo().getId()));
-        if(interesadoReventa.getAutoSemiNuevo() == null) return new ResponseEntity<>("no se encontro el auto",HttpStatus.NOT_FOUND);
-        if(interesadoReventa.getUsuario()==null || interesadoReventa.getUsuario().getCorreo()==null) return new ResponseEntity<>("No se envio el usuario interesado",HttpStatus.BAD_REQUEST);
+        if(interesadoReventa.getAutoSemiNuevo() == null){
+            return ResponseService.genError("no se encontro el auto",HttpStatus.NOT_FOUND);
+        }
+        if(interesadoReventa.getUsuario()==null || interesadoReventa.getUsuario().getCorreo()==null){
+            return ResponseService.genError("No se envio el usuario interesado",HttpStatus.BAD_REQUEST);
+        }
         interesadoReventa.setUsuario(usuariosService.getById(interesadoReventa.getUsuario().getCorreo()));
-        if(interesadoReventa.getUsuario() == null) return new ResponseEntity<>("no se encontro el usuario en la base de datos",HttpStatus.NOT_FOUND);
+        if(interesadoReventa.getUsuario() == null){
+            return ResponseService.genError(" se encontro el usuario en la base de datos",HttpStatus.NOT_FOUND);
+        }
         if(!interesadoReventa.getUsuario().getRol().equals("REMAX")){
-            return new ResponseEntity<>("el usuario no es REMAX",HttpStatus.LOCKED);
+            return ResponseService.genError("el usuario no es REMAX",HttpStatus.LOCKED);
         }
         interesadoReventa.setId(null);
         interesadoReventa.setUsuario(interesadoReventa.getUsuario());
@@ -161,7 +175,7 @@ public class CarPostController {
             interesadoReventaService.save(interesadoReventa);
             return new ResponseEntity<>(HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("se encontro algun error",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -174,12 +188,16 @@ public class CarPostController {
     @Transactional
     public ResponseEntity<Object> ventaSemiNuevo(@RequestBody VentaSemiNuevo ventaSemiNuevo){
         if(ventaSemiNuevo.getComisionGeneral()==null || ventaSemiNuevo.getPrecioFinalVenta()==null){
-            return new ResponseEntity<>("no se enviaron la comision o el precio fianl",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se enviaron la comision o el precio final",HttpStatus.BAD_REQUEST);
         }
-        if(ventaSemiNuevo.getFoto()==null) return new ResponseEntity<>("no se envio la foto",HttpStatus.BAD_REQUEST);
+        if(ventaSemiNuevo.getFoto()==null){
+            return ResponseService.genError("no se envio la foto",HttpStatus.BAD_REQUEST);
+        }
         //TODO check if comprador exists
         if(ventaSemiNuevo.getComprador()!=null){
-            if(ventaSemiNuevo.getComprador().getCorreo()==null)return new ResponseEntity<>("no se envio el correo",HttpStatus.BAD_REQUEST);
+            if(ventaSemiNuevo.getComprador().getCorreo()==null){
+                return ResponseService.genError("no se envio el correo",HttpStatus.BAD_REQUEST);
+            }
             Comprador comprador = null;
             comprador= compradorService.getById(ventaSemiNuevo.getComprador().getCorreo());
             if(comprador==null ){
@@ -196,11 +214,15 @@ public class CarPostController {
             }
         }
         if(ventaSemiNuevo.getAutoSemiNuevo()==null || ventaSemiNuevo.getAutoSemiNuevo().getId()==null){
-            return new ResponseEntity<>("no se mando el auto",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se mando el auto",HttpStatus.BAD_REQUEST);
         }
         ventaSemiNuevo.setAutoSemiNuevo(autoSemiNuevoService.getById(ventaSemiNuevo.getAutoSemiNuevo().getId()));
-        if(ventaSemiNuevo.getAutoSemiNuevo()==null )return new ResponseEntity<>("no se encontro el auto con ese id",HttpStatus.BAD_REQUEST);
-        if(ventaSemiNuevo.getAutoSemiNuevo().getComprado())return new ResponseEntity<>("este auto ya ha sido comprado anteriormente",HttpStatus.CONFLICT);
+        if(ventaSemiNuevo.getAutoSemiNuevo()==null ){
+            return ResponseService.genError("no se encontro el auto con ese id",HttpStatus.BAD_REQUEST);
+        }
+        if(ventaSemiNuevo.getAutoSemiNuevo().getComprado()){
+            return ResponseService.genError("este auto ya ha sido comprado anteriormente",HttpStatus.BAD_REQUEST);
+        }
         ventaSemiNuevo.setFecha(new Date());
         float gananciaVendedor=0;
         float gananciaClicker = 0;
@@ -209,7 +231,7 @@ public class CarPostController {
             if(ventaSemiNuevo.getVendedor()!=null){
                 ventaSemiNuevo.setVendedor(usuariosService.getById(ventaSemiNuevo.getVendedor().getCorreo()));
                 if(ventaSemiNuevo.getVendedor()==null){
-                    return new ResponseEntity<>("no se encontro el vendedor con ese id",HttpStatus.BAD_REQUEST);
+                    return ResponseService.genError("no se encontro el vendedor con ese id",HttpStatus.BAD_REQUEST);
                 }
                 gananciaVendedor= (float) (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*0.4);
                 gananciaClicker= (float) (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*0.6);
@@ -220,7 +242,7 @@ public class CarPostController {
             if(ventaSemiNuevo.getVendedor()!=null){
                 ventaSemiNuevo.setVendedor(usuariosService.getById(ventaSemiNuevo.getVendedor().getCorreo()));
                 if(ventaSemiNuevo.getVendedor()==null){
-                    return new ResponseEntity<>("no se encontro el vendedor con ese id",HttpStatus.BAD_REQUEST);
+                    return ResponseService.genError("no se encontro el vendedor con ese id",HttpStatus.BAD_REQUEST);
                 }
                 gananciaVendedor= (float) (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*0.4);
                 gananciaUsuario= (float) (ventaSemiNuevo.getPrecioFinalVenta()*ventaSemiNuevo.getComisionGeneral()*0.4);
@@ -245,7 +267,7 @@ public class CarPostController {
             ventaSemiNuevoService.save(ventaSemiNuevo);
             return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo del servidor",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -256,7 +278,7 @@ public class CarPostController {
         try{
             return new ResponseEntity<>(autoSemiNuevoService.getAllEnabled(true,true,false),HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -277,7 +299,7 @@ public class CarPostController {
             return new ResponseEntity<>(autos,HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -290,7 +312,7 @@ public class CarPostController {
         try{
             return new ResponseEntity<>(autoSemiNuevoService.getAllEnabled(true,true,false,PageRequest.of(pageId,8, Sort.by("fechaPublicacion").descending())),HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -301,7 +323,7 @@ public class CarPostController {
         try{
             return new ResponseEntity<>(autoSemiNuevoService.getPages(true,true,false),HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -310,12 +332,14 @@ public class CarPostController {
     @Transactional
     public ResponseEntity<Object> modify(@PathVariable("id")Long id ){
         AutoSemiNuevo autoSemiNuevo = autoSemiNuevoService.getById(id);
-        if(autoSemiNuevo==null)return new ResponseEntity<>("no se encontro el post con ese id",HttpStatus.BAD_REQUEST);
+        if(autoSemiNuevo==null){
+            return ResponseService.genError("no se encontro el post con ese id",HttpStatus.BAD_REQUEST);
+        }
         autoSemiNuevo.setValidado(true);
         try{
             return new ResponseEntity<>(autoSemiNuevoService.save(autoSemiNuevo),HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -325,8 +349,12 @@ public class CarPostController {
     public ResponseEntity<Object> updatePost(@RequestBody AutoSemiNuevo autoSemiNuevo){
         if(autoSemiNuevo.getId()==null)return new ResponseEntity<>("no se envio id",HttpStatus.BAD_REQUEST);
         AutoSemiNuevo temp = autoSemiNuevoService.getById(autoSemiNuevo.getId());
-        if(temp==null)return new ResponseEntity<>("no se encontro el auto",HttpStatus.BAD_REQUEST);
-        if(temp.getComprado())return new ResponseEntity<>("el auto no puede ser modificado porque ya se vendio",HttpStatus.BAD_REQUEST);
+        if(temp==null){
+            return ResponseService.genError("no se encontro el auto",HttpStatus.BAD_REQUEST);
+        }
+        if(temp.getComprado()){
+            return ResponseService.genError("el auto no puede ser modificado porque ya se vendio",HttpStatus.BAD_REQUEST);
+        }
         /*seting info*/
         try{
             autoSemiNuevo.info(temp);
@@ -334,7 +362,7 @@ public class CarPostController {
             return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -346,7 +374,7 @@ public class CarPostController {
         try{
             return new ResponseEntity<>(autoSemiNuevoService.getAllVendidos(),HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -368,7 +396,7 @@ public class CarPostController {
             return new ResponseEntity<>(sumatotal,HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -386,7 +414,7 @@ public class CarPostController {
             Set<String> set = new HashSet<>(marcas);
             return new ResponseEntity<>(set.size(),HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -412,7 +440,7 @@ public class CarPostController {
             return new ResponseEntity<>(filtrosBeans,HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
@@ -424,7 +452,7 @@ public class CarPostController {
         try{
             return new ResponseEntity<>(autoSemiNuevoService.getAutosNoValidados(),HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

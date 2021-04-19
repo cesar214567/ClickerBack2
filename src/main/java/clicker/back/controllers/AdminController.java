@@ -2,25 +2,16 @@ package clicker.back.controllers;
 
 import clicker.back.Setup;
 import clicker.back.entities.*;
-import clicker.back.repositories.SolicitudesRetiroRepository;
 import clicker.back.services.*;
-import com.google.gson.JsonArray;
-import com.sendgrid.Response;
+import clicker.back.utils.errors.ResponseService;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
-import org.apache.http.client.protocol.ResponseProcessCookies;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -51,7 +42,7 @@ public class    AdminController {
         try{
             return  new ResponseEntity<>(solicitudesRetiroService.getPendientes(), HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -60,23 +51,23 @@ public class    AdminController {
     @Transactional
     public ResponseEntity<Object> acceptSolicitud(@RequestBody SolicitudesRetiro solicitudesRetiro){
         if(solicitudesRetiro.getId()==null){
-            return new ResponseEntity<>("no se envio el id ",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se envio el id",HttpStatus.BAD_REQUEST);
         }
         if(solicitudesRetiro.getAceptado()==null){
-            return new ResponseEntity<>("no se envio la acpetacion",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se envio la aceptacion",HttpStatus.BAD_REQUEST);
         }
         SolicitudesRetiro original = solicitudesRetiroService.getById(solicitudesRetiro.getId());
         if(original==null || original.getAceptado()!=null){
-            return new ResponseEntity<>("no se encontro la solicitud o ya fue resuelta",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se encontro la solicitud o ya fue resuelta",HttpStatus.BAD_REQUEST);
         }
         original.setAceptado(solicitudesRetiro.getAceptado());
         original.setTransferencia(solicitudesRetiro.getTransferencia());
         if(solicitudesRetiro.getAdmin()==null || solicitudesRetiro.getAdmin().getEmail()==null){
-            return new ResponseEntity<>("no se enviaron los datos del admin",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se enviaron los datos del admin",HttpStatus.BAD_REQUEST);
         }
         original.setAdmin(usersService.getByEmail(solicitudesRetiro.getAdmin().getEmail()));
         if(solicitudesRetiro.getAdmin()==null){
-            return new ResponseEntity<>("no se encontro al admin",HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se encontro al admin",HttpStatus.BAD_REQUEST);
         }
 
         if(original.getAceptado()){
@@ -89,7 +80,7 @@ public class    AdminController {
             return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -115,7 +106,7 @@ public class    AdminController {
         try{
             return new ResponseEntity<>(jsonArray,HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -124,19 +115,22 @@ public class    AdminController {
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> getAllReported() {
-        List<AutoSemiNuevo> autoSemiNuevos = autoSemiNuevoService.getReportados();
-        if(autoSemiNuevos==null){
-            return new ResponseEntity<>("BAD",HttpStatus.BAD_REQUEST);
-        }
-        for (AutoSemiNuevo autoSemiNuevo : autoSemiNuevos) {
-            if (autoSemiNuevo.getDenuncias()!=null){
-                for (Denuncia denuncia : autoSemiNuevo.getDenuncias()) {
-                    denuncia.getUsuario().setNumeroDenuncias((long) denuncia.getUsuario().getDenuncias().size());
+        try{
+            List<AutoSemiNuevo> autoSemiNuevos = autoSemiNuevoService.getReportados();
+
+            for (AutoSemiNuevo autoSemiNuevo : autoSemiNuevos) {
+                if (autoSemiNuevo.getDenuncias()!=null){
+                    for (Denuncia denuncia : autoSemiNuevo.getDenuncias()) {
+                        denuncia.getUsuario().setNumeroDenuncias((long) denuncia.getUsuario().getDenuncias().size());
+                    }
                 }
             }
+            return new ResponseEntity<>(autoSemiNuevos,HttpStatus.OK);
+        }catch (Exception e ){
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(autoSemiNuevos,HttpStatus.OK);
     }
+
 
     @PutMapping(value = "/reported")
     @ResponseBody
@@ -146,7 +140,7 @@ public class    AdminController {
             autoSemiNuevoService.setRevisado(true,idAuto);
             return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -158,7 +152,7 @@ public class    AdminController {
             autoSemiNuevoService.borrarAuto(idAuto);
             return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

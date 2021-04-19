@@ -7,23 +7,14 @@ import clicker.back.services.CryptoService;
 import clicker.back.services.EmailService;
 import clicker.back.services.UsersService;
 import clicker.back.services.UsuariosService;
-import com.google.gson.*;
+import clicker.back.utils.errors.ResponseService;
 import com.sendgrid.Response;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jackson.JsonObjectSerializer;
-import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.Tuple;
-import javax.persistence.TupleElement;
 import javax.transaction.Transactional;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +38,9 @@ public class AuthController {
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> register(@RequestBody Usuario usuario) {
-        if(usuario.getCorreo()==null || usuario.getPassword()==null)return new ResponseEntity<>("no se envio el email", HttpStatus.BAD_REQUEST);
+        if(usuario.getCorreo()==null || usuario.getPassword()==null){
+            return ResponseService.genError("no se envio el email",HttpStatus.BAD_REQUEST);
+        }
         Users users = usersService.getByEmail(usuario.getCorreo());
         if(users ==null){
             Usuario temp = usuariosService.getById(usuario.getCorreo());
@@ -77,35 +70,37 @@ public class AuthController {
                         jsonElement.put("secret",secret);
                         return new ResponseEntity<>(jsonElement, HttpStatus.OK);
                     }else{
-                        return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+
+                        return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
                     }
                 }catch (Exception e ){
                     e.printStackTrace();
-                    return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+                    return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
         }
-        return new ResponseEntity<>("se encontro un usuario con ese correo", HttpStatus.BAD_REQUEST);
-
+        return ResponseService.genError("se encontro un usuario con ese correo",HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping(value = "/login")
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> login(@RequestBody Usuario usuario)  {
-        if(usuario.getCorreo()==null || usuario.getPassword()==null)return new ResponseEntity<>("no se envio credenciales", HttpStatus.BAD_REQUEST);
+        if(usuario.getCorreo()==null || usuario.getPassword()==null){
+            return ResponseService.genError("no se envio credenciales",HttpStatus.BAD_REQUEST);
+        }
         Users users = usersService.login(usuario.getCorreo(),usuario.getPassword());
         if(users ==null){
             Usuario user = usuariosService.login(usuario.getCorreo(),usuario.getPassword());
             if(user==null){
-                return new ResponseEntity<>("no se encontro el usuario", HttpStatus.BAD_REQUEST);
+                return ResponseService.genError("no se encontro el usuario",HttpStatus.BAD_REQUEST);
             }else{
                 try{
                     String secret = cryptoService.encrypt3(usuario.getCorreo());
                     user.setSecret(secret);
                     return new ResponseEntity<>(user, HttpStatus.OK);
                 }catch (Exception e){
-                    return new ResponseEntity<>("fallo la encriptacion",HttpStatus.INTERNAL_SERVER_ERROR);
+                    return ResponseService.genError("fallo la encriptacion",HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
         }else {

@@ -4,6 +4,7 @@ import clicker.back.Setup;
 import clicker.back.entities.SolicitudesRetiro;
 import clicker.back.services.SolicitudesRetiroService;
 import clicker.back.services.UsuariosService;
+import clicker.back.utils.errors.ResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +27,20 @@ public class RetirosController {
     @PostMapping
     @ResponseBody
     public ResponseEntity<Object> retirarDinero(@RequestBody SolicitudesRetiro solicitudesRetiro){
-        if(solicitudesRetiro.getMonto()<=0) return new ResponseEntity<>("se envio un monto negativo",HttpStatus.BAD_REQUEST);
+        if(solicitudesRetiro.getMonto()<=0){
+            return ResponseService.genError("se envio un monto negativo",HttpStatus.BAD_REQUEST);
+        }
         if(solicitudesRetiro.getUsuario()==null || solicitudesRetiro.getUsuario().getCorreo()==null)
-            return new ResponseEntity<>("no se envio el usuario", HttpStatus.BAD_REQUEST);
+            return ResponseService.genError("no se envio el usuario",HttpStatus.BAD_REQUEST);
         solicitudesRetiro.setUsuario(usuariosService.getById(solicitudesRetiro.getUsuario().getCorreo()));
-        if(solicitudesRetiro.getUsuario()==null)return new ResponseEntity<>("no se encontro al usuario",HttpStatus.BAD_REQUEST);
-        if(solicitudesRetiro.getUsuario().getBalance()<solicitudesRetiro.getMonto())return new ResponseEntity<>("el monto que se pide es mayor a lo que el usuario tiene",HttpStatus.NOT_ACCEPTABLE);
+        if(solicitudesRetiro.getUsuario()==null){
+            return ResponseService.genError("no se encontro al usuario",HttpStatus.BAD_REQUEST);
+        }
+        if(solicitudesRetiro.getUsuario().getBalance()<solicitudesRetiro.getMonto()){
+            return ResponseService.genError("el monto que se pide es mayor a lo que el usuario tiene",HttpStatus.NOT_ACCEPTABLE);
+        }
         if(solicitudesRetiroService.checkIfExist(solicitudesRetiro.getUsuario())){
-            return new ResponseEntity<>("existe una solicitud actualmente",HttpStatus.LOCKED);
+            return ResponseService.genError("existe una solicitud actualmente",HttpStatus.LOCKED);
         }
         solicitudesRetiro.setAceptado(false);
         solicitudesRetiro.setDate(new Date());
@@ -44,7 +51,7 @@ public class RetirosController {
             solicitudesRetiroService.save(solicitudesRetiro);
             return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -52,16 +59,22 @@ public class RetirosController {
     @ResponseBody
     public ResponseEntity<Object> eliminarSolicitud(@RequestParam("id")Long id){
         try{
-            if(id==null)return new ResponseEntity<>("no se envio id ",HttpStatus.BAD_REQUEST);
+            if(id==null){
+                return ResponseService.genError("no se envio id",HttpStatus.BAD_REQUEST);
+            }
             SolicitudesRetiro solicitudesRetiro = solicitudesRetiroService.getById(id);
-            if(solicitudesRetiro==null) return new ResponseEntity<>("no se encontro la solicitud",HttpStatus.BAD_REQUEST);
-            if(solicitudesRetiro.getAceptado()!=null)return new ResponseEntity<>("esta solicitud ya fue atendida",HttpStatus.LOCKED);
+            if(solicitudesRetiro==null){
+                return ResponseService.genError("no se encontro la solicitud",HttpStatus.BAD_REQUEST);
+            }
+            if(solicitudesRetiro.getAceptado()!=null){
+                return ResponseService.genError("esta solicitud ya fue atendida",HttpStatus.LOCKED);
+            }
             solicitudesRetiro.getUsuario().getSolicitudesRetiros().removeIf(n->n.getId().equals(id));
             usuariosService.save(solicitudesRetiro.getUsuario());
             solicitudesRetiroService.delete(solicitudesRetiro);
             return new ResponseEntity<>(HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -69,17 +82,21 @@ public class RetirosController {
     @ResponseBody
     public ResponseEntity<Object> getSolicitudVigente(@RequestParam("id")String correo){
         try{
-            if (correo==null) return new ResponseEntity<>("no se envió correo", HttpStatus.BAD_REQUEST);
+            if (correo==null){
+                return ResponseService.genError("no se envió correo",HttpStatus.BAD_REQUEST);
+            }
             List<SolicitudesRetiro> solicitudes = solicitudesRetiroService.findSolicitudVigente(correo);
-            if (solicitudes.size() == 0) return new ResponseEntity<>("no se encontró solicitudes para el usuario enviado.", HttpStatus.NOT_FOUND);
+            if (solicitudes.size() == 0){
+                return ResponseService.genError("no se encontró solicitudes para el usuario enviado",HttpStatus.NOT_FOUND);
+            }
             for (SolicitudesRetiro solicitud: solicitudes){
                 if (solicitud.getAceptado() == null) {
                     return new ResponseEntity<>(solicitud, HttpStatus.OK);
                 }
             }
-            return new ResponseEntity<>("solicitud ya fue atendida", HttpStatus.ALREADY_REPORTED);
+            return ResponseService.genError("solicitud ya fue atendida",HttpStatus.ALREADY_REPORTED);
         } catch (Exception e) {
-            return new ResponseEntity<>("fallo servidor", HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo servidor",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
