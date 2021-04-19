@@ -11,9 +11,7 @@ public class ResponseService {
         return new ResponseEntity<>(jsonObject,httpStatus);
     }
     public static ResponseEntity<Object> genSuccess(Object message){
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("error",message);
-        return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+        return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
 }
