@@ -5,6 +5,7 @@ import clicker.back.entities.AutoPatrocinado;
 import clicker.back.services.AutoPatrocinadoService;
 import clicker.back.services.AutoSemiNuevoService;
 import clicker.back.utils.errors.ResponseService;
+import com.sendgrid.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +26,6 @@ public class SponsorsController {
     public ResponseEntity<Object> sponsor(@RequestBody AutoPatrocinado autoPatrocinado){
         if(autoPatrocinado.getAutoSemiNuevo()==null || autoPatrocinado.getAutoSemiNuevo().getId()==null){
             return ResponseService.genError("no se envio el auto a patrocinar",HttpStatus.BAD_REQUEST);
-        }
-        if(autoPatrocinado.getLevel()==null){
-            return ResponseService.genError("no se envio el nivel",HttpStatus.BAD_REQUEST);
         }
         autoPatrocinado.setAutoSemiNuevo(autoSemiNuevoService.getById(autoPatrocinado.getAutoSemiNuevo().getId()));
         if(autoPatrocinado.getAutoSemiNuevo()==null){
@@ -67,8 +65,24 @@ public class SponsorsController {
         }catch (Exception e){
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
 
-
+    @DeleteMapping
+    @ResponseBody
+    public ResponseEntity<Object> delete(@RequestParam("id")Long id){
+        if(id==null){
+            return  ResponseService.genError("no se envio el id",HttpStatus.BAD_REQUEST);
+        }
+        AutoPatrocinado autoPatrocinado = autoPatrocinadoService.findById(id);
+        if(autoPatrocinado==null){
+            return ResponseService.genError("no se encontro el patrocinio",HttpStatus.NOT_FOUND);
+        }
+        try{
+            autoPatrocinadoService.delete(autoPatrocinado);
+            return ResponseService.genSuccess(null);
+        }catch (Exception e){
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

@@ -423,6 +423,33 @@ public class AutoSemiNuevo implements Cloneable {
     }
 
     public void info(AutoSemiNuevo autoSemiNuevo){
+
+        if(this.correoDueno!=null)autoSemiNuevo.setCorreoDueno(this.correoDueno);
+        if(this.nombreDueno!=null)autoSemiNuevo.setNombreDueno(this.nombreDueno);
+        if(this.telefonoDueno!=null)autoSemiNuevo.setTelefonoDueno(this.telefonoDueno);
+        if(this.anoFabricacion!=null)autoSemiNuevo.setAnoFabricacion(this.anoFabricacion);
+        if(this.tipoCambios!=null)autoSemiNuevo.setTipoCambios(this.tipoCambios);
+        if(this.tipoCombustible!=null)autoSemiNuevo.setTipoCombustible(this.tipoCombustible);
+        if(this.tipoCarroceria!=null)autoSemiNuevo.setTipoCarroceria(this.tipoCarroceria);
+        if(this.cilindrada!=null)autoSemiNuevo.setCilindrada(this.cilindrada);
+        if(this.kilometraje!=null)autoSemiNuevo.setKilometraje(this.kilometraje);
+        if(this.numeroPuertas!=null)autoSemiNuevo.setNumeroPuertas(this.numeroPuertas);
+        if(this.tipoTraccion!=null)autoSemiNuevo.setTipoTraccion(this.tipoTraccion);
+        if(this.color!=null)autoSemiNuevo.setColor(this.color);
+        if(this.numeroCilindros!=null)autoSemiNuevo.setNumeroCilindros(this.numeroCilindros);
+        if(this.precioVenta!=null)autoSemiNuevo.setPrecioVenta(this.precioVenta);
+        if(this.fechaPublicacion!=null)autoSemiNuevo.setFechaPublicacion(this.fechaPublicacion);
+        if(this.video!=null)autoSemiNuevo.setVideo(this.video);
+        if(this.accesorios!=null)autoSemiNuevo.setAccesorios(this.accesorios);
+        if(this.descripcion!=null)autoSemiNuevo.setDescripcion(this.descripcion);
+        if(this.version!=null)autoSemiNuevo.setVersion(this.version);
+        if(this.mantenimiento!=null)autoSemiNuevo.setMantenimiento(this.mantenimiento);
+        if(this.unicoDueno!=null)autoSemiNuevo.setUnicoDueno(this.unicoDueno);
+
+
+
+    }
+    public void reverseInfo(AutoSemiNuevo autoSemiNuevo){
         this.setComprado(autoSemiNuevo.getComprado());
         this.setValidado(autoSemiNuevo.getValidado());
         this.setRevisado(autoSemiNuevo.getRevisado());

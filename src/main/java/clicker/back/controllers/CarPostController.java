@@ -343,6 +343,9 @@ public class CarPostController {
         }
     }
 
+
+
+
     @PutMapping
     @ResponseBody
     @Transactional
@@ -355,10 +358,9 @@ public class CarPostController {
         if(temp.getComprado()){
             return ResponseService.genError("el auto no puede ser modificado porque ya se vendio",HttpStatus.BAD_REQUEST);
         }
-        /*seting info*/
         try{
             autoSemiNuevo.info(temp);
-            autoSemiNuevoService.save(autoSemiNuevo);
+            autoSemiNuevoService.save(temp);
             return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();

@@ -55,5 +55,4 @@ public interface AutoSemiNuevoRepository extends PagingAndSortingRepository<Auto
     List<Long> findAllAutosNotComprados(String correo);
 
 
-
 }
