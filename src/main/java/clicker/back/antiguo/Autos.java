@@ -199,7 +199,7 @@ public class Autos implements Cloneable {
         setDocumentacion(resultSet.getString("documentacion"));
         setPrecioVenta( resultSet.getFloat("precio"));
         setMoneda(resultSet.getString("moneda"));
- 
+
         setLocaciones(resultSet.getArray("ciudadesdisp").getArray() );
         setTipoCarroceria(resultSet.getString("tipocarroceria"));
         setUsoAuto( resultSet.getArray("usoauto").getArray());
