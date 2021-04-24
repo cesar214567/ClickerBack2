@@ -553,7 +553,7 @@ public class CarPostController {
             query3 =query3.replace("ciudadcompra2", "Lima");
 
             executeUpdate(query3);
-            return ResponseService.genSuccess("success");
+            return ResponseService.genSuccess(null);
 
         }catch (Exception e){
             e.printStackTrace();
