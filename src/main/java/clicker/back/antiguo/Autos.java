@@ -27,7 +27,7 @@ public class Autos implements Cloneable {
     String  concesionarios;
 
     //@Column(length = 1000)
-    String foto;
+    String fotoPrincipal;
 
     //@Column(length = 1000)
     String documentacion;
@@ -81,14 +81,12 @@ public class Autos implements Cloneable {
         this.modelo = modelo;
     }
 
-
-
-    public String getFoto() {
-        return foto;
+    public String getFotoPrincipal() {
+        return fotoPrincipal;
     }
 
-    public void setFoto(String foto) {
-        this.foto = foto;
+    public void setFotoPrincipal(String fotoPrincipal) {
+        this.fotoPrincipal = fotoPrincipal;
     }
 
     public String getDocumentacion() {
@@ -197,7 +195,7 @@ public class Autos implements Cloneable {
         setModelo(resultSet.getString("modelo"));
         setAnoFabricacion(resultSet.getLong("anofabricacion"));
         setConcesionarios(resultSet.getString("concesionario"));
-        setFoto(resultSet.getString("foto"));
+        setFotoPrincipal(resultSet.getString("foto"));
         setDocumentacion(resultSet.getString("documentacion"));
         setPrecioVenta( resultSet.getFloat("precio"));
         setMoneda(resultSet.getString("moneda"));
