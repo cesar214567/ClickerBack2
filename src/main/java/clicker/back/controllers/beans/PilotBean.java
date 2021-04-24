@@ -1,11 +1,7 @@
 package clicker.back.controllers.beans;
 
 public class PilotBean {
-    String marca;
-
-    String modelo;
-
-    String condicion;
+    String tipouso;
 
     String carroceria;
 
@@ -17,6 +13,16 @@ public class PilotBean {
 
     String correo;
 
+    String numTelefono;
+
+    public String getNumTelefono() {
+        return numTelefono;
+    }
+
+    public void setNumTelefono(String numTelefono) {
+        this.numTelefono = numTelefono;
+    }
+
     public String getCorreo() {
         return correo;
     }
@@ -25,28 +31,12 @@ public class PilotBean {
         this.correo = correo;
     }
 
-    public String getMarca() {
-        return marca;
+    public String getTipouso() {
+        return tipouso;
     }
 
-    public void setMarca(String marca) {
-        this.marca = marca;
-    }
-
-    public String getModelo() {
-        return modelo;
-    }
-
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
-    }
-
-    public String getCondicion() {
-        return condicion;
-    }
-
-    public void setCondicion(String condicion) {
-        this.condicion = condicion;
+    public void setTipouso(String tipouso) {
+        this.tipouso = tipouso;
     }
 
     public String getCarroceria() {

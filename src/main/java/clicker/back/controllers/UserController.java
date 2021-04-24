@@ -101,28 +101,17 @@ public class UserController {
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> validar(@RequestBody Usuario usuario){
-        if(usuario.getNombre()==null || usuario.getNumTelefono()==null){
-            return ResponseService.genError("no envio los datos",HttpStatus.BAD_REQUEST);
-        }
         String correo;
-        System.out.println(usuario.getCorreo().length());;
         try{
             correo = cryptoService.decrypt3(usuario.getCorreo());
         }catch (Exception e){
             return ResponseService.genError("no se pudo desencriptar el id",HttpStatus.INTERNAL_SERVER_ERROR);
         }
         Usuario real = usuariosService.getById(correo);
-        if(real.getRol().equals("USUARIO")){
-            real.setNombre(usuario.getNombre());
-            real.setNumTelefono(usuario.getNumTelefono());
-        }else{
-            real.setNombre(usuario.getNombre());
-            real.setNumTelefono(usuario.getNumTelefono());
-        }
         real.setValidated(true);
         try{
             usuariosService.save(real);
-            return new ResponseEntity<>(null,HttpStatus.OK);
+            return ResponseService.genSuccess(null);
         }catch (Exception e){
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }

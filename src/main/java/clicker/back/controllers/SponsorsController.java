@@ -28,6 +28,7 @@ public class SponsorsController {
             return ResponseService.genError("no se envio el auto a patrocinar",HttpStatus.BAD_REQUEST);
         }
         autoPatrocinado.setAutoSemiNuevo(autoSemiNuevoService.getById(autoPatrocinado.getAutoSemiNuevo().getId()));
+        autoPatrocinado.setLevel(null);
         if(autoPatrocinado.getAutoSemiNuevo()==null){
             return ResponseService.genError("no se encontro un auto con ese id",HttpStatus.BAD_REQUEST);
         }
@@ -57,7 +58,7 @@ public class SponsorsController {
             return ResponseService.genError("no se envio el id",HttpStatus.BAD_REQUEST);
         }
         AutoPatrocinado temp = autoPatrocinadoService.findById(autoPatrocinado.getId());
-        if(temp==null)return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if(temp==null)return ResponseService.genError("no se encontro",HttpStatus.NOT_FOUND);
         temp.setLevel(autoPatrocinado.getLevel());
         try{
             autoPatrocinadoService.save(temp);

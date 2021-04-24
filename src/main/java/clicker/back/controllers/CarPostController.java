@@ -9,6 +9,7 @@ import clicker.back.entities.*;
 import clicker.back.services.*;
 import clicker.back.utils.errors.ResponseService;
 import clicker.back.utils.services.LocacionesService;
+import com.sendgrid.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Date;
 
@@ -510,26 +514,47 @@ public class CarPostController {
     @Transactional
     public ResponseEntity<Object> postPilot(@RequestBody PilotBean pilotBean){
         try{
-            String query = "select id_user from usuarios where numdocumento=\'"+
+            String query = "select id_user,numtelefono from usuarios where numdocumento=\'"+
                     pilotBean.getDni()+"\'";
             System.out.println(query);
             ResultSet resultSet = executeQuery(query);
+            Long id_user = 0L;
             if(resultSet.next()){
-                Long id_user = resultSet.getLong("id_user");
-                return ResponseService.genSuccess(id_user);
-
+                id_user = resultSet.getLong("id_user");
+                String numtelefono = resultSet.getString("numtelefono");
+                if(numtelefono==null){
+                    executeUpdate("update usuarios set numtelefono=\'"+pilotBean.getNumTelefono()+
+                            "\' where id_user="+id_user);
+                }
             }else{
-                query="insert into usuarios(nombre,appellidos,correo,tipodocumento,numdocumento) " +
-                        "values(\'nombre2\',\'appellidos2\',\'correo2\',\'tipodocumento2\',\'numdocumento2\')";
-                query =query.replace("nombre2",pilotBean.getNombre());
-                query =query.replace("appellidos2",pilotBean.getApellidos());
-                query =query.replace("correo2",pilotBean.getCorreo());
-                query =query.replace("tipodocumento2","DNI");
-                query =query.replace("numdocumento2",pilotBean.getDni());
-                executeUpdate(query);
-
-                return ResponseService.genError("fallo ",HttpStatus.INTERNAL_SERVER_ERROR);
+                String query2="insert into usuarios(nombre,appellidos,correo,tipodocumento,numdocumento,numtelefono) " +
+                        "values(\'nombre2\',\'appellidos2\',\'correo2\',\'tipodocumento2\',\'numdocumento2\',\'numtelefono2\')";
+                query2 =query2.replace("nombre2",pilotBean.getNombre());
+                query2 =query2.replace("appellidos2",pilotBean.getApellidos());
+                query2 =query2.replace("correo2",pilotBean.getCorreo());
+                query2 =query2.replace("tipodocumento2","DNI");
+                query2 =query2.replace("numdocumento2",pilotBean.getDni());
+                query2 =query2.replace("numtelefono2",pilotBean.getNumTelefono());
+                executeUpdate(query2);
+                resultSet = executeQuery(query);
+                if(resultSet.next()) {
+                    id_user = resultSet.getLong("id_user");
+                }
             }
+            String query3="insert into solicitudes(tipouso,tipoauto,id_auto,id_user,fecha,canalinput,hora,ciudadcompra) " +
+                    "values(\'tipouso2\',\'tipoauto2\',\'id_auto2\',\'id_user2\',\'fecha2\',\'canalinput2\',\'hora2\',\'ciudadcompra2\')";
+            query3 =query3.replace("tipouso2",pilotBean.getTipouso());
+            query3 =query3.replace("tipoauto2",pilotBean.getCarroceria());
+            query3 =query3.replace("id_auto2","424");
+            query3 =query3.replace("id_user2",id_user.toString());
+            query3 =query3.replace("fecha2",LocalDate.now().toString());
+            query3 =query3.replace("canalinput2","CRM-WEB-CLICKER");
+            query3 =query3.replace("hora2", LocalTime.now().format(DateTimeFormatter.ofPattern("H:mm:ss")));
+            query3 =query3.replace("ciudadcompra2", "Lima");
+
+            executeUpdate(query3);
+            return ResponseService.genSuccess("success");
+
         }catch (Exception e){
             e.printStackTrace();
             return ResponseService.genError("fallo ",HttpStatus.INTERNAL_SERVER_ERROR);
