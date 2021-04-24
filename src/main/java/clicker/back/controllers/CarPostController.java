@@ -4,6 +4,7 @@ package clicker.back.controllers;
 import clicker.back.Setup;
 import clicker.back.antiguo.Autos;
 import clicker.back.controllers.beans.FiltrosBean;
+import clicker.back.controllers.beans.PilotBean;
 import clicker.back.entities.*;
 import clicker.back.services.*;
 import clicker.back.utils.errors.ResponseService;
@@ -49,6 +50,12 @@ public class CarPostController {
         return resultSet;
     }
 
+    public void executeUpdate(String sql) throws SQLException {
+        Connection connection = DriverManager.getConnection(db2Url, db2Username, db2Password);
+        Statement statement = connection.createStatement();
+        int resultSet = statement.executeUpdate(sql);
+        connection.close();
+    }
 
     @PostMapping
     @ResponseBody
@@ -472,7 +479,7 @@ public class CarPostController {
             return new ResponseEntity<>(autosNuevos,HttpStatus.OK);
         } catch (Exception e ) {
             e.printStackTrace();
-            return new ResponseEntity<>("fallo ",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo ",HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -481,7 +488,7 @@ public class CarPostController {
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> getAutosNuevos(@PathVariable("id")String id){
-        if(id==null)return new ResponseEntity<>("no se mando el id",HttpStatus.BAD_REQUEST);
+        if(id==null)return ResponseService.genError("no se mando el id",HttpStatus.BAD_REQUEST);
         try{
             String statements ="select * from autos a where a.id_auto=\'"+id+"\'";
             ResultSet resultSet = executeQuery(statements);
@@ -493,7 +500,39 @@ public class CarPostController {
             return new ResponseEntity<>(autosNuevos,HttpStatus.OK);
         } catch (Exception e ) {
             e.printStackTrace();
-            return new ResponseEntity<>("fallo ",HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseService.genError("fallo ",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @PostMapping("/pilot")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<Object> postPilot(@RequestBody PilotBean pilotBean){
+        try{
+            String query = "select id_user from usuarios where numdocumento=\'"+
+                    pilotBean.getDni()+"\'";
+            System.out.println(query);
+            ResultSet resultSet = executeQuery(query);
+            if(resultSet.next()){
+                Long id_user = resultSet.getLong("id_user");
+                return ResponseService.genSuccess(id_user);
+
+            }else{
+                query="insert into usuarios(nombre,appellidos,correo,tipodocumento,numdocumento) " +
+                        "values(\'nombre2\',\'appellidos2\',\'correo2\',\'tipodocumento2\',\'numdocumento2\')";
+                query =query.replace("nombre2",pilotBean.getNombre());
+                query =query.replace("appellidos2",pilotBean.getApellidos());
+                query =query.replace("correo2",pilotBean.getCorreo());
+                query =query.replace("tipodocumento2","DNI");
+                query =query.replace("numdocumento2",pilotBean.getDni());
+                executeUpdate(query);
+
+                return ResponseService.genError("fallo ",HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseService.genError("fallo ",HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

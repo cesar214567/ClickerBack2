@@ -7,7 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface AutoPatrocinadoRepository extends PagingAndSortingRepository<AutoPatrocinado,Long> {
-    List<AutoPatrocinado> findAllByOrderByLevelDesc();
+    List<AutoPatrocinado> findAllByOrderByLevelAsc();
 
     AutoPatrocinado findByAutoSemiNuevo(AutoSemiNuevo autoSemiNuevo);
 }

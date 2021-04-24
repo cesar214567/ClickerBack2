@@ -62,9 +62,7 @@ public class AuthController {
 
                     String secret = cryptoService.encrypt3(usuario.getCorreo());
                     Response response =emailService.sendSimpleMessage(usuario.getCorreo(),"clicker@gmail.com","buenas tardes mi estimadisimo" +
-                            "Le invitamos a confirmar su correo <b><font face=\"sans-serif\">" +
-                            "<a href=\"https://prieto-family.com/validation/"+ secret +"\" " +
-                            "style=\"color:#00bfff\" target=\"_blank\" >aqui</a></font></b>");
+                            "Le invitamos a confirmar su correo https://prieto-family.com/validation/"+ secret);
                     if (response.getStatusCode()==202){
                         Map<String,String> jsonElement = new HashMap<String,String>();
                         jsonElement.put("secret",secret);

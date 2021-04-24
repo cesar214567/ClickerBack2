@@ -31,7 +31,7 @@ public class DefaultAutoPatrocinadoService implements AutoPatrocinadoService {
 
     @Override
     public List<AutoPatrocinado> findAll() {
-        return  autoPatrocinadoRepository.findAllByOrderByLevelDesc();
+        return  autoPatrocinadoRepository.findAllByOrderByLevelAsc();
     }
 
     @Override
