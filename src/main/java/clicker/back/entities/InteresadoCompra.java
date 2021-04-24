@@ -18,7 +18,7 @@ public class InteresadoCompra {
     AutoSemiNuevo autoSemiNuevo;
 
     @Column
-    String nombre;
+    String nombres;
 
     @Column(length = 25)
     String numTelefono;
@@ -28,6 +28,28 @@ public class InteresadoCompra {
 
     @Column
     String descripcion;
+
+    @Column
+    String dni;
+
+    @Column
+    String apellidos;
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
 
     public String getDescripcion() {
         return descripcion;
@@ -53,12 +75,12 @@ public class InteresadoCompra {
         this.autoSemiNuevo = autoSemiNuevo;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getNombres() {
+        return nombres;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombres(String nombres) {
+        this.nombres = nombres;
     }
 
     public String getNumTelefono() {
