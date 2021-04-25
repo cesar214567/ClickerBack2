@@ -28,4 +28,6 @@ public interface UsuariosRepository extends PagingAndSortingRepository<Usuario,L
 
     @Query(nativeQuery = true,value = "select u.id_usuario,u.num_telefono,u.nombre from usuario u where u.correo=:correo")
     Tuple getData(String correo);
+
+
 }

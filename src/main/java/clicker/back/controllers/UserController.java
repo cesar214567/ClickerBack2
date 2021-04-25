@@ -4,6 +4,7 @@ import clicker.back.Setup;
 import clicker.back.entities.*;
 import clicker.back.services.*;
 import clicker.back.utils.errors.ResponseService;
+import com.sendgrid.Response;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -216,4 +217,31 @@ public class UserController {
             return ResponseService.genError("no se encontro usuario",HttpStatus.BAD_REQUEST);
         }
     }
+
+    @Autowired
+    EmailService emailService;
+
+    @PutMapping
+    @ResponseBody
+    public ResponseEntity<Object> updateUsuario(@RequestBody Usuario usuario){
+        if(usuario.getId()==null)return ResponseService.genError("no se mando el id",HttpStatus.BAD_REQUEST);
+        Usuario temp = usuariosService.getById(usuario.getId());
+        if(temp == null)return ResponseService.genError("no se encontro al usuario",HttpStatus.NOT_FOUND);
+        try{
+            temp.updateInfo(usuario);
+            if(usuario.getCorreo()!=null && !temp.getCorreo().equals(usuario.getCorreo())){
+                temp.setValidated(false);
+                temp.setCorreo(usuario.getCorreo());
+                String secret = cryptoService.encrypt3(usuario.getCorreo());
+                Response response =emailService.sendSimpleMessage(usuario.getCorreo(),"clicker@gmail.com","buenas tardes\n" +
+                        "Le invitamos a confirmar su correo https://prieto-family.com/validation/"+ secret);
+            }
+            usuariosService.save(temp);
+            return ResponseService.genSuccess(null);
+        }catch (Exception e){
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
 }

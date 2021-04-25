@@ -277,4 +277,15 @@ public class Usuario {
     public void setForm(Form form) {
         this.form = form;
     }
+
+    public void updateInfo(Usuario usuario){
+        if(usuario.getFbId()!=null)this.fbId=usuario.getFbId();
+        if(usuario.getNombre()!=null)this.nombre=usuario.getNombre();
+        if(usuario.getNumTelefono()!=null)this.numTelefono=usuario.getNumTelefono();
+        if(usuario.getPassword()!=null)this.password=usuario.getPassword();
+        if(usuario.getTipoLicencia()!=null)this.tipoLicencia=usuario.getTipoLicencia();
+        if(usuario.getTiempoLicencia()!=null)this.tiempoLicencia=usuario.getTiempoLicencia();
+        if(usuario.getTrabajoAplicativo()!=null)this.trabajoAplicativo=usuario.getTrabajoAplicativo();
+
+    }
 }

@@ -146,7 +146,10 @@ public class CarPostController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Object> getById(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(autoSemiNuevoService.getById(id),HttpStatus.OK);
+        if(id==null)return ResponseService.genError("no se mando el id",HttpStatus.BAD_REQUEST);
+        AutoSemiNuevo autoSemiNuevo = autoSemiNuevoService.getById(id);
+        if (!autoSemiNuevo.getValidado())return ResponseService.genError("no esta validado",HttpStatus.LOCKED);
+        return new ResponseEntity<>(autoSemiNuevo,HttpStatus.OK);
     }
 
     @Autowired
