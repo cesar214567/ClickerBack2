@@ -35,8 +35,8 @@ public class DefaultVentaSemiNuevoService implements VentaSemiNuevoService {
     }
 
     @Override
-    public List<VentaSemiNuevo> getVentasByUsuario(String usuario) {
-        return ventaSemiNuevoRepository.findAllByVendedor(usuario);
+    public List<VentaSemiNuevo> getVentasByUsuario(Long id) {
+        return ventaSemiNuevoRepository.findAllByVendedor(id);
     }
 
     @Override

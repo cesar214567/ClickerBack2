@@ -27,7 +27,12 @@ public class DefaultUsuariosService implements UsuariosService {
     }
 
     @Override
-    public Boolean existById(String correo) {
+    public Boolean existById(Long userId ) {
+        return usuariosRepository.existsById(userId);
+    }
+
+    @Override
+    public Boolean existByCorreo(String correo) {
         return usuariosRepository.existsByCorreo(correo);
     }
 
@@ -47,8 +52,13 @@ public class DefaultUsuariosService implements UsuariosService {
     }
 
     @Override
-    public Usuario getById(String id ) {
+    public Usuario getByCorreo(String id ) {
         return usuariosRepository.findByCorreo(id);
+    }
+
+    @Override
+    public Usuario getById(Long id) {
+        return usuariosRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -60,4 +70,6 @@ public class DefaultUsuariosService implements UsuariosService {
     public Long countUsers() {
         return usuariosRepository.countAllByEnabledAndValidated(true,true);
     }
+
+
 }

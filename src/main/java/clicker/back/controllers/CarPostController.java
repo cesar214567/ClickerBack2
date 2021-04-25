@@ -83,7 +83,7 @@ public class CarPostController {
         if(autoSemiNuevo.getLocacion()==null){
             return ResponseService.genError("no se encontro la locacion",HttpStatus.BAD_REQUEST);
         }
-        Usuario user = usuariosService.getById(autoSemiNuevo.getUsuario().getCorreo());
+        Usuario user = usuariosService.getByCorreo(autoSemiNuevo.getUsuario().getCorreo());
         if(user == null){
             return ResponseService.genError("no se encontro el usuario con ese id",HttpStatus.BAD_REQUEST);
         }else{
@@ -104,6 +104,7 @@ public class CarPostController {
             autoSemiNuevo.setEnabled(true);
             autoSemiNuevo.setRevisado(true);
             autoSemiNuevo.setFechaPublicacion(new Date());
+            autoSemiNuevo.setUsuario(user);
             autos.add(autoSemiNuevo);
             try{
                 usuariosService.save(user);
@@ -160,18 +161,18 @@ public class CarPostController {
         if(interesadoReventa.getAutoSemiNuevo()==null || interesadoReventa.getAutoSemiNuevo().getId()==null){
             return ResponseService.genError("No se envio el auto por el cual esta interesado",HttpStatus.BAD_REQUEST);
         }
-        if(interesadoReventaService.existByAutoIdAndCorreo(interesadoReventa.getAutoSemiNuevo().getId(), interesadoReventa.getUsuario().getCorreo())!=0){
-            return ResponseService.genError("",HttpStatus.LOCKED);
+        if(interesadoReventaService.existByAutoIdAndUsuarioId(interesadoReventa.getAutoSemiNuevo().getId(), interesadoReventa.getUsuario().getId())!=0){
+            return ResponseService.genError("este auto ya se ha marcado como interesado en vender",HttpStatus.LOCKED);
 
         }
         interesadoReventa.setAutoSemiNuevo(autoSemiNuevoService.getById(interesadoReventa.getAutoSemiNuevo().getId()));
         if(interesadoReventa.getAutoSemiNuevo() == null){
             return ResponseService.genError("no se encontro el auto",HttpStatus.NOT_FOUND);
         }
-        if(interesadoReventa.getUsuario()==null || interesadoReventa.getUsuario().getCorreo()==null){
+        if(interesadoReventa.getUsuario()==null || interesadoReventa.getUsuario().getId()==null){
             return ResponseService.genError("No se envio el usuario interesado",HttpStatus.BAD_REQUEST);
         }
-        interesadoReventa.setUsuario(usuariosService.getById(interesadoReventa.getUsuario().getCorreo()));
+        interesadoReventa.setUsuario(usuariosService.getById(interesadoReventa.getUsuario().getId()));
         if(interesadoReventa.getUsuario() == null){
             return ResponseService.genError(" se encontro el usuario en la base de datos",HttpStatus.NOT_FOUND);
         }
@@ -204,7 +205,6 @@ public class CarPostController {
         if(ventaSemiNuevo.getFoto()==null){
             return ResponseService.genError("no se envio la foto",HttpStatus.BAD_REQUEST);
         }
-        //TODO check if comprador exists
         if(ventaSemiNuevo.getComprador()!=null){
             if(ventaSemiNuevo.getComprador().getCorreo()==null){
                 return ResponseService.genError("no se envio el correo",HttpStatus.BAD_REQUEST);
@@ -213,9 +213,9 @@ public class CarPostController {
             comprador= compradorService.getById(ventaSemiNuevo.getComprador().getCorreo());
             if(comprador==null ){
                 Tuple usuario= usuariosService.getData(ventaSemiNuevo.getComprador().getCorreo());
-                if(usuariosService.existById(ventaSemiNuevo.getComprador().getCorreo())){
+                if(usuariosService.existByCorreo(ventaSemiNuevo.getComprador().getCorreo())){
                     comprador=new Comprador();
-                    comprador.setCorreo((String) usuario.get("id_usuario"));
+                    comprador.setCorreo(ventaSemiNuevo.getComprador().getCorreo());
                     comprador.setNombre((String) usuario.get("nombre"));
                     if(usuario.get("num_telefono")!=null)comprador.setTelefono( usuario.get("num_telefono").toString());
                     ventaSemiNuevo.setComprador(comprador);
@@ -240,7 +240,7 @@ public class CarPostController {
         float gananciaUsuario = 0;
         if(ventaSemiNuevo.getAutoSemiNuevo().getUsuario().getRol().equals("USUARIO") ){
             if(ventaSemiNuevo.getVendedor()!=null){
-                ventaSemiNuevo.setVendedor(usuariosService.getById(ventaSemiNuevo.getVendedor().getCorreo()));
+                ventaSemiNuevo.setVendedor(usuariosService.getByCorreo(ventaSemiNuevo.getVendedor().getCorreo()));
                 if(ventaSemiNuevo.getVendedor()==null){
                     return ResponseService.genError("no se encontro el vendedor con ese id",HttpStatus.BAD_REQUEST);
                 }
@@ -251,7 +251,7 @@ public class CarPostController {
             }
         }else{
             if(ventaSemiNuevo.getVendedor()!=null){
-                ventaSemiNuevo.setVendedor(usuariosService.getById(ventaSemiNuevo.getVendedor().getCorreo()));
+                ventaSemiNuevo.setVendedor(usuariosService.getByCorreo(ventaSemiNuevo.getVendedor().getCorreo()));
                 if(ventaSemiNuevo.getVendedor()==null){
                     return ResponseService.genError("no se encontro el vendedor con ese id",HttpStatus.BAD_REQUEST);
                 }

@@ -51,8 +51,8 @@ public interface AutoSemiNuevoRepository extends PagingAndSortingRepository<Auto
 
     List<AutoSemiNuevo> findAllByEnabledAndRevisadoAndComprado(Boolean enabled, Boolean revisado, Boolean comprado);
 
-    @Query(nativeQuery = true,value = "select a.id_auto_semi_nuevo from auto_semi_nuevo a where a.id_usuario=:correo and a.comprado=true ")
-    List<Long> findAllAutosNotComprados(String correo);
+    @Query(nativeQuery = true,value = "select a.id_auto_semi_nuevo from auto_semi_nuevo a where a.id_usuario=:userId and a.comprado=true ")
+    List<Long> findAllAutosNotComprados(Long userId);
 
 
 }

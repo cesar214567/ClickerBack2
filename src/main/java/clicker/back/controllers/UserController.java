@@ -40,7 +40,7 @@ public class UserController {
         if(users.getEmail()==null || users.getPassword()==null){
             return ResponseService.genError("no se envio el email",HttpStatus.BAD_REQUEST);
         }
-        Usuario usuario= usuariosService.getById(users.getEmail());
+        Usuario usuario= usuariosService.getByCorreo(users.getEmail());
         if(usuario==null){
             Users temp = userService.getById(users.getEmail());
             if(temp==null){
@@ -56,7 +56,7 @@ public class UserController {
         System.out.println(id);
         Users user = userService.getById(id);
         if (user == null)
-            return new ResponseEntity<>(usuariosService.getById(id), HttpStatus.OK);
+            return new ResponseEntity<>(usuariosService.getByCorreo(id), HttpStatus.OK);
         else
             return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -73,7 +73,7 @@ public class UserController {
         if(form.getUsuario()==null || form.getUsuario().getCorreo()==null){
             return ResponseService.genError("no se envio el usuario",HttpStatus.BAD_REQUEST);
         }
-        form.setUsuario(usuariosService.getById(form.getUsuario().getCorreo()));
+        form.setUsuario(usuariosService.getByCorreo(form.getUsuario().getCorreo()));
         if(form.getUsuario()==null){
             return ResponseService.genError("no se encontro el usuario",HttpStatus.NOT_FOUND);
         }
@@ -107,7 +107,8 @@ public class UserController {
         }catch (Exception e){
             return ResponseService.genError("no se pudo desencriptar el id",HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        Usuario real = usuariosService.getById(correo);
+        Usuario real = usuariosService.getByCorreo(correo);
+        if(real == null)return ResponseService.genError("usuario no se encontro",HttpStatus.NOT_FOUND);
         real.setValidated(true);
         try{
             usuariosService.save(real);
@@ -120,10 +121,10 @@ public class UserController {
 
     @GetMapping(value = "/registroBalance")
     @ResponseBody
-    public ResponseEntity<Object> getRegistroBalance(@RequestParam("id")String correo){
-        List<VentaSemiNuevo> ventaSemiNuevos =  ventaSemiNuevoService.getByIdAuto(autoSemiNuevoService.getAllAutosVendidosByUsuario(correo));
-        List<SolicitudesRetiro> solicitudesRetiros = solicitudesRetiroService.getAllAceptadosByUsuario(correo);
-        List<VentaSemiNuevo> ventaSemiNuevos1 = ventaSemiNuevoService.getVentasByUsuario(correo);
+    public ResponseEntity<Object> getRegistroBalance(@RequestParam("id")Long id){
+        List<VentaSemiNuevo> ventaSemiNuevos =  ventaSemiNuevoService.getByIdAuto(autoSemiNuevoService.getAllAutosVendidosByUsuario(id));
+        List<SolicitudesRetiro> solicitudesRetiros = solicitudesRetiroService.getAllAceptadosByUsuario(id);
+        List<VentaSemiNuevo> ventaSemiNuevos1 = ventaSemiNuevoService.getVentasByUsuario(id);
         JSONArray jsonArray = new JSONArray();
         for (VentaSemiNuevo ventaSemiNuevo : ventaSemiNuevos) {
             if(ventaSemiNuevo.getGananciaUsuario()>0){
@@ -165,16 +166,15 @@ public class UserController {
     @GetMapping(value = "/interesadoVenta")
     @ResponseBody
     @Transactional
-    public ResponseEntity<Object> getIntVenta(@RequestParam("correo") String correo ){
+    public ResponseEntity<Object> getIntVenta(@RequestParam("id")Long userId  ){
         try{
-            if(correo==null){
+            if(userId==null){
                 return ResponseService.genError("no mando correo",HttpStatus.BAD_REQUEST);
             }
-            if(!usuariosService.existById(correo)){
+            if(!usuariosService.existById(userId)){
                 return ResponseService.genError("no existe el usuario",HttpStatus.BAD_REQUEST);
             }
-            //TODO INVESTIGAR PORQ CUANDO SE SETEA A NULO EL USUARIO NO SALE
-            List<InteresadoReventa> interesadoReventas= interesadoReventaService.getAllByUsuario(correo);
+            List<InteresadoReventa> interesadoReventas= interesadoReventaService.getAllByUsuario(userId);
             return new ResponseEntity<>(interesadoReventas,HttpStatus.OK);
         }catch (Exception e){
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
@@ -205,10 +205,10 @@ public class UserController {
 
     @GetMapping("/ventas")
     @ResponseBody
-    public ResponseEntity<Object> getVentasByUsuario(@RequestParam("correo")String correo){
-        if(correo!=null){
+    public ResponseEntity<Object> getVentasByUsuario(@RequestParam("id")Long id){
+        if(id!=null){
             try{
-                return new ResponseEntity<>(ventaSemiNuevoService.getVentasByUsuario(correo),HttpStatus.OK);
+                return new ResponseEntity<>(ventaSemiNuevoService.getVentasByUsuario(id),HttpStatus.OK);
             }catch (Exception e){
                 return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
             }

@@ -43,7 +43,7 @@ public class AuthController {
         }
         Users users = usersService.getByEmail(usuario.getCorreo());
         if(users ==null){
-            Usuario temp = usuariosService.getById(usuario.getCorreo());
+            Usuario temp = usuariosService.getByCorreo(usuario.getCorreo());
             if(temp==null){
                 if(usuario.getRol().equals("REMAX")) {
                     usuario.getForm().setUsuario(usuario);

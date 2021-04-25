@@ -32,7 +32,7 @@ public class RetirosController {
         }
         if(solicitudesRetiro.getUsuario()==null || solicitudesRetiro.getUsuario().getCorreo()==null)
             return ResponseService.genError("no se envio el usuario",HttpStatus.BAD_REQUEST);
-        solicitudesRetiro.setUsuario(usuariosService.getById(solicitudesRetiro.getUsuario().getCorreo()));
+        solicitudesRetiro.setUsuario(usuariosService.getByCorreo(solicitudesRetiro.getUsuario().getCorreo()));
         if(solicitudesRetiro.getUsuario()==null){
             return ResponseService.genError("no se encontro al usuario",HttpStatus.BAD_REQUEST);
         }
@@ -80,12 +80,12 @@ public class RetirosController {
 
     @GetMapping
     @ResponseBody
-    public ResponseEntity<Object> getSolicitudVigente(@RequestParam("id")String correo){
+    public ResponseEntity<Object> getSolicitudVigente(@RequestParam("id")Long userId){
         try{
-            if (correo==null){
-                return ResponseService.genError("no se envió correo",HttpStatus.BAD_REQUEST);
+            if (userId==null){
+                return ResponseService.genError("no se envió id",HttpStatus.BAD_REQUEST);
             }
-            List<SolicitudesRetiro> solicitudes = solicitudesRetiroService.findSolicitudVigente(correo);
+            List<SolicitudesRetiro> solicitudes = solicitudesRetiroService.findSolicitudVigente(userId);
             if (solicitudes.size() == 0){
                 return ResponseService.genError("no se encontró solicitudes para el usuario enviado",HttpStatus.NOT_FOUND);
             }

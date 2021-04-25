@@ -12,6 +12,6 @@ public interface VentaSemiNuevoRepository extends PagingAndSortingRepository<Ven
     @Query(nativeQuery = true,value = "select * from venta_semi_nuevo v where v.id_auto_semi_nuevo in :ids ")
     List<VentaSemiNuevo> findAllByAuto(List<Long> ids);
 
-    @Query(nativeQuery = true,value = "select * from venta_semi_nuevo v where v.id_vendedor=:correo")
-    List<VentaSemiNuevo> findAllByVendedor(String correo);
+    @Query(nativeQuery = true,value = "select * from venta_semi_nuevo v where v.id_vendedor=:id")
+    List<VentaSemiNuevo> findAllByVendedor(Long id);
 }

@@ -33,7 +33,7 @@ public class DenunciaController {
             return ResponseService.genError("no se envio detalle de la denuncia",HttpStatus.BAD_REQUEST);
         if(denuncia.getAutoSemiNuevo()==null || denuncia.getUsuario()==null)
             return ResponseService.genError("no se envio usuario o auto",HttpStatus.BAD_REQUEST);
-        Usuario denunciante = usuariosService.getById(denuncia.getUsuario().getCorreo());
+        Usuario denunciante = usuariosService.getByCorreo(denuncia.getUsuario().getCorreo());
         AutoSemiNuevo autoSemiNuevo = autoSemiNuevoService.getById(denuncia.getAutoSemiNuevo().getId());
         if(denunciante == null || autoSemiNuevo == null ){
             return ResponseService.genError("no se encontro el usuario o el vehiculo",HttpStatus.BAD_REQUEST);

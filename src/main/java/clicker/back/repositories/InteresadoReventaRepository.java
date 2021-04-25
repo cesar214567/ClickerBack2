@@ -11,10 +11,10 @@ public interface InteresadoReventaRepository extends PagingAndSortingRepository<
 
     List<InteresadoReventa> findAllByAutoSemiNuevo(AutoSemiNuevo autoSemiNuevo);
 
-    @Query(nativeQuery = true,value = "select * from interesado_reventa i where i.id_usuario=:correo")
-    List<InteresadoReventa> findAllByCorreo(String correo);
+    @Query(nativeQuery = true,value = "select * from interesado_reventa i where i.id_usuario=:userId")
+    List<InteresadoReventa> findAllByCorreo(Long userId);
 
-    @Query(nativeQuery = true,value = "select count(*) from interesado_reventa i where i.id_usuario=:correo and i.id_auto_semi_nuevo=:autoId")
-    Integer existByAutoAndCorreo(Long autoId,String correo);
+    @Query(nativeQuery = true,value = "select count(*) from interesado_reventa i where i.id_usuario=:userId and i.id_auto_semi_nuevo=:autoId")
+    Integer existByAutoAndUsuario(Long autoId,Long userId);
 
 }

@@ -9,6 +9,10 @@ import java.util.List;
 
 @Entity
 public class Usuario {
+    @Column(name = "id_usuario")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    Long id;
 
     @Column
     String fbId;
@@ -22,8 +26,7 @@ public class Usuario {
     @Column
     Long numTelefono;
 
-    @Id
-    @Column(unique = true,name = "id_usuario")
+    @Column(unique = true)
     String correo;
 
     @Column
@@ -131,7 +134,13 @@ public class Usuario {
         this.nombre = nombre;
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getImagenPerfil() {
         return imagenPerfil;

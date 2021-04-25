@@ -39,7 +39,7 @@ public class BackApplication extends SpringBootServletInitializer {
     @Autowired
     UsersService usersService;
 
-    @Bean
+    /*@Bean
     InitializingBean sendDatabase() {
         return () -> {
             Locaciones locaciones = new Locaciones("000000","Lima","Lima","Jesus Maria",true);
@@ -301,7 +301,7 @@ public class BackApplication extends SpringBootServletInitializer {
             autosService.save(autos9);
             autosService.save(autos10);
             autosService.save(autos11);
-            */
+
             Users admin = new Users();
             admin.setEmail("luis.jauregui@utec.edu.pe");
             admin.setPassword("uwu");
@@ -321,7 +321,7 @@ public class BackApplication extends SpringBootServletInitializer {
 
             usuariosService.save(usuario2);
         };
-    }
+    }*/
 }
 
 

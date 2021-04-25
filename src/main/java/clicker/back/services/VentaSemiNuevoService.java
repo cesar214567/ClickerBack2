@@ -16,7 +16,7 @@ public interface VentaSemiNuevoService {
 
     List<VentaSemiNuevo> getAll();
 
-    List<VentaSemiNuevo> getVentasByUsuario(String string);
+    List<VentaSemiNuevo> getVentasByUsuario(Long id);
 
     List<VentaSemiNuevo> getByIdAuto(List<Long> id);
 

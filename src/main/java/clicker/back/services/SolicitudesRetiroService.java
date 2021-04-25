@@ -20,7 +20,7 @@ public interface SolicitudesRetiroService {
 
     Boolean checkIfExist(Usuario usuario);
 
-    List<SolicitudesRetiro> getAllAceptadosByUsuario(String correo);
+    List<SolicitudesRetiro> getAllAceptadosByUsuario(Long userId );
 
-    List<SolicitudesRetiro> findSolicitudVigente(String correo);
+    List<SolicitudesRetiro> findSolicitudVigente(Long userId);
 }

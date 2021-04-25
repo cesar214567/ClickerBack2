@@ -40,12 +40,12 @@ public class DefaultInteresadoReventaService implements InteresadoReventaService
     }
 
     @Override
-    public List<InteresadoReventa> getAllByUsuario(String correo) {
-        return interesadoReventaRepository.findAllByCorreo(correo);
+    public List<InteresadoReventa> getAllByUsuario(Long userId) {
+        return interesadoReventaRepository.findAllByCorreo(userId);
     }
 
     @Override
-    public Integer existByAutoIdAndCorreo(Long autoId, String correo) {
-        return interesadoReventaRepository.existByAutoAndCorreo(autoId,correo);
+    public Integer existByAutoIdAndUsuarioId(Long autoId, Long userId) {
+        return interesadoReventaRepository.existByAutoAndUsuario(autoId,userId);
     }
 }

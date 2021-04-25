@@ -44,5 +44,5 @@ public interface AutoSemiNuevoService {
 
     List<AutoSemiNuevo> getReportados();
 
-    List<Long> getAllAutosVendidosByUsuario(String correo);
+    List<Long> getAllAutosVendidosByUsuario(Long userId);
 }

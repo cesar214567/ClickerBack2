@@ -105,8 +105,8 @@ public class DefaultAutoSemiNuevoService implements AutoSemiNuevoService {
     }
 
     @Override
-    public List<Long> getAllAutosVendidosByUsuario(String correo) {
-        return autoSemiNuevoRepository.findAllAutosNotComprados(correo);
+    public List<Long> getAllAutosVendidosByUsuario(Long userId) {
+        return autoSemiNuevoRepository.findAllAutosNotComprados(userId);
     }
 
 

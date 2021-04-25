@@ -12,7 +12,8 @@ public interface UsuariosService {
 
     void delete(Usuario usuario);
 
-    Usuario getById(String id );
+    Usuario getByCorreo(String id );
+    Usuario getById(Long id );
 
     List<Usuario> getAll();
 
@@ -22,7 +23,10 @@ public interface UsuariosService {
 
     void updateBalance(Float extraBalance, String correo);
 
-    Boolean existById(String correo);
+    Boolean existById(Long userId );
+
+    Boolean existByCorreo(String correo  );
+
 
     Tuple getData(String correo);
 }

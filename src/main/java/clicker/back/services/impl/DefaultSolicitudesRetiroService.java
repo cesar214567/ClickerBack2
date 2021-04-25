@@ -44,12 +44,12 @@ public class DefaultSolicitudesRetiroService implements SolicitudesRetiroService
     }
 
     @Override
-    public List<SolicitudesRetiro> getAllAceptadosByUsuario(String correo) {
-        return solicitudesRetiroRepository.findAceptadosByUsuario(correo);
+    public List<SolicitudesRetiro> getAllAceptadosByUsuario(Long userId) {
+        return solicitudesRetiroRepository.findAceptadosByUsuario(userId);
     }
 
     @Override
-    public List<SolicitudesRetiro> findSolicitudVigente(String correo) {
-        return solicitudesRetiroRepository.findSolicitudVigente(correo);
+    public List<SolicitudesRetiro> findSolicitudVigente(Long userId) {
+        return solicitudesRetiroRepository.findSolicitudVigente(userId);
     };
 }
