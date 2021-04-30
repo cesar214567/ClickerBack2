@@ -39,7 +39,7 @@ public class BackApplication extends SpringBootServletInitializer {
     @Autowired
     UsersService usersService;
 
-    /*@Bean
+    @Bean
     InitializingBean sendDatabase() {
         return () -> {
             Locaciones locaciones = new Locaciones("000000","Lima","Lima","Jesus Maria",true);
@@ -214,94 +214,7 @@ public class BackApplication extends SpringBootServletInitializer {
             autoPatrocinado.getAutoSemiNuevo().setId((long) 11);
             autoPatrocinado.setLevel(20);
             autoPatrocinadoService.save(autoPatrocinado);
-
-            /*Autos autos = new Autos();
-            autos.setAnofabricacion(new Date());
-            autos.setCiudadesDisponibles(Arrays.asList("Lima","Piura","Trujillo"));
-            autos.setCodVersion(1);
-            autos.setDocumentacion("prueba1");
-            autos.setMoneda("dólares");
-            autos.setPrecio((long) 12000);
-            autos.setVersion("1");
-            autos.setUsoAuto(Arrays.asList("particular","remisse"));
             
-            Autos autos1 = (Autos) autos.clone();
-            Autos autos2 = (Autos) autos.clone();
-            Autos autos3 = (Autos) autos.clone();
-            Autos autos4 = (Autos) autos.clone();
-            Autos autos5 = (Autos) autos.clone();
-            Autos autos6 = (Autos) autos.clone();
-            Autos autos7 = (Autos) autos.clone();
-            Autos autos8 = (Autos) autos.clone();
-            Autos autos9 = (Autos) autos.clone();
-            Autos autos10 = (Autos) autos.clone();
-            Autos autos11 = (Autos) autos.clone();
-
-            autos.setMarca("Volkswagen");
-            autos.setModelo("Atlas");
-            autos.setTipoCarroceria("SUV");
-            autos1.setMarca("Volkswagen");
-            autos1.setModelo("Jetta");
-            autos1.setTipoCarroceria("SEDAN");
-            autos2.setMarca("Volkswagen");
-            autos2.setModelo("Passat");
-            autos2.setTipoCarroceria("SEDAN");
-            autos3.setMarca("Volkswagen");
-            autos3.setModelo("Tiguan");
-            autos3.setTipoCarroceria("SUV");
-            autos4.setMarca("Nissan");
-            autos4.setModelo("Altima");
-            autos4.setTipoCarroceria("COUPE");
-            autos5.setMarca("Nissan");
-            autos5.setModelo("Armada");
-            autos5.setTipoCarroceria("SUV");
-            autos6.setMarca("Nissan");
-            autos6.setModelo("Versa");
-            autos6.setTipoCarroceria("CITYCAR");
-            autos7.setMarca("Hyundai");
-            autos7.setModelo("Elantra");
-            autos7.setTipoCarroceria("COUPE");
-            autos8.setMarca("Hyundai");
-            autos8.setModelo("Verna");
-            autos8.setTipoCarroceria("SEDAN");
-            autos9.setMarca("Tesla");
-            autos9.setModelo("Model Y");
-            autos9.setTipoCarroceria("SEDAN");
-            autos10.setMarca("Tesla");
-            autos10.setModelo("Model S");
-            autos10.setTipoCarroceria("CONVERTIBLE");
-            autos11.setMarca("Tesla");
-            autos11.setModelo("Model X");
-            autos11.setTipoCarroceria("COUPE");
-
-            autos.setFoto("https://data-clicker-pruebas.nyc3.digitaloceanspaces.com/clicker-prueba-imagenes/elantra.jpeg");
-            autos3.setFoto("https://data-clicker-pruebas.nyc3.digitaloceanspaces.com/clicker-prueba-imagenes/elantra.jpeg");
-            autos6.setFoto("https://data-clicker-pruebas.nyc3.digitaloceanspaces.com/clicker-prueba-imagenes/elantra.jpeg");
-            autos9.setFoto("https://data-clicker-pruebas.nyc3.digitaloceanspaces.com/clicker-prueba-imagenes/elantra.jpeg");
-
-            autos1.setFoto("https://data-clicker-pruebas.nyc3.digitaloceanspaces.com/clicker-prueba-imagenes/2015_Hyundai_Genesis_3.8L_front.jpg");
-            autos4.setFoto("https://data-clicker-pruebas.nyc3.digitaloceanspaces.com/clicker-prueba-imagenes/2015_Hyundai_Genesis_3.8L_front.jpg");
-            autos7.setFoto("https://data-clicker-pruebas.nyc3.digitaloceanspaces.com/clicker-prueba-imagenes/2015_Hyundai_Genesis_3.8L_front.jpg");
-            autos10.setFoto("https://data-clicker-pruebas.nyc3.digitaloceanspaces.com/clicker-prueba-imagenes/2015_Hyundai_Genesis_3.8L_front.jpg");
-
-            autos2.setFoto("https://data-clicker-pruebas.nyc3.digitaloceanspaces.com/clicker-prueba-imagenes/40593-2021elantra-1584497298.jpg");
-            autos5.setFoto("https://data-clicker-pruebas.nyc3.digitaloceanspaces.com/clicker-prueba-imagenes/40593-2021elantra-1584497298.jpg");
-            autos8.setFoto("https://data-clicker-pruebas.nyc3.digitaloceanspaces.com/clicker-prueba-imagenes/40593-2021elantra-1584497298.jpg");
-            autos11.setFoto("https://data-clicker-pruebas.nyc3.digitaloceanspaces.com/clicker-prueba-imagenes/40593-2021elantra-1584497298.jpg");
-
-            autosService.save(autos);
-            autosService.save(autos1);
-            autosService.save(autos2);
-            autosService.save(autos3);
-            autosService.save(autos4);
-            autosService.save(autos5);
-            autosService.save(autos6);
-            autosService.save(autos7);
-            autosService.save(autos8);
-            autosService.save(autos9);
-            autosService.save(autos10);
-            autosService.save(autos11);
-
             Users admin = new Users();
             admin.setEmail("luis.jauregui@utec.edu.pe");
             admin.setPassword("uwu");
@@ -321,7 +234,7 @@ public class BackApplication extends SpringBootServletInitializer {
 
             usuariosService.save(usuario2);
         };
-    }*/
+    }
 }
 
 

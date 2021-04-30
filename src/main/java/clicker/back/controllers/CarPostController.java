@@ -499,12 +499,11 @@ public class CarPostController {
         try{
             String statements ="select * from autos a where a.id_auto=\'"+id+"\'";
             ResultSet resultSet = executeQuery(statements);
-            List<Autos> autosNuevos = new ArrayList<>();
-            while(resultSet.next()){
-                Autos autos = new Autos(resultSet);
-                autosNuevos.add(autos);
+            Autos auto=null;
+            if(resultSet.next()){
+                auto = new Autos(resultSet);
             }
-            return new ResponseEntity<>(autosNuevos,HttpStatus.OK);
+            return new ResponseEntity<>(auto,HttpStatus.OK);
         } catch (Exception e ) {
             e.printStackTrace();
             return ResponseService.genError("fallo ",HttpStatus.INTERNAL_SERVER_ERROR);
