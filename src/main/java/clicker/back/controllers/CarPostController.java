@@ -145,6 +145,7 @@ public class CarPostController {
     }
 
     @GetMapping(value = "/{id}")
+    @ResponseBody
     public ResponseEntity<Object> getById(@PathVariable("id") Long id) {
         if(id==null)return ResponseService.genError("no se mando el id",HttpStatus.BAD_REQUEST);
         AutoSemiNuevo autoSemiNuevo = autoSemiNuevoService.getById(id);
