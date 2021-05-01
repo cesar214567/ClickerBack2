@@ -96,7 +96,6 @@ public class AuthController {
                 try{
                     String secret = cryptoService.encrypt3(usuario.getCorreo());
                     user.setSecret(secret);
-                    System.out.println(secret);
                     return new ResponseEntity<>(user, HttpStatus.OK);
                 }catch (Exception e){
                     return ResponseService.genError("fallo la encriptacion",HttpStatus.INTERNAL_SERVER_ERROR);

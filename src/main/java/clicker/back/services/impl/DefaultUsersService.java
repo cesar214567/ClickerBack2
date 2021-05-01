@@ -26,7 +26,7 @@ public class DefaultUsersService implements UsersService {
     }
 
     @Override
-    public Users getById(String id) {
+    public Users getById(Long id) {
         return usersRepository.findById(id).orElse(null);
     }
 

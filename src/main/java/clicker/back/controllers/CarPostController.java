@@ -503,8 +503,11 @@ public class CarPostController {
             Autos auto=null;
             if(resultSet.next()){
                 auto = new Autos(resultSet);
+                return new ResponseEntity<>(auto,HttpStatus.OK);
+            }else{
+                return ResponseService.genError("no se encontro ",HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity<>(auto,HttpStatus.OK);
+
         } catch (Exception e ) {
             e.printStackTrace();
             return ResponseService.genError("fallo ",HttpStatus.INTERNAL_SERVER_ERROR);

@@ -43,7 +43,7 @@ public class UserController {
         }
         Usuario usuario= usuariosService.getByCorreo(users.getEmail());
         if(usuario==null){
-            Users temp = userService.getById(users.getEmail());
+            Users temp = userService.getByEmail(users.getEmail());
             if(temp==null){
                 return new ResponseEntity<>(userService.save(users), HttpStatus.OK);
             }
@@ -55,7 +55,7 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<Object> getById(@RequestParam("id") String id ) {
         System.out.println(id);
-        Users user = userService.getById(id);
+        Users user = userService.getByEmail(id);
         if (user == null)
             return new ResponseEntity<>(usuariosService.getByCorreo(id), HttpStatus.OK);
         else
@@ -232,6 +232,8 @@ public class UserController {
             if(usuario.getCorreo()!=null && !temp.getCorreo().equals(usuario.getCorreo())){
                 temp.setValidated(false);
                 temp.setCorreo(usuario.getCorreo());
+                //TODO
+                //CHEQUEAR CORREOS
                 String secret = cryptoService.encrypt3(usuario.getCorreo());
                 Response response =emailService.sendSimpleMessage(usuario.getCorreo(),"clicker@gmail.com","buenas tardes\n" +
                         "Le invitamos a confirmar su correo https://prieto-family.com/validation/"+ secret);

@@ -6,7 +6,11 @@ import javax.persistence.*;
 @Table(name = "users")
 public class Users {
 
+    @Column(name = "id_users")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    Long id;
+
     @Column(unique = true,length = 100)
     String email;
 
@@ -21,6 +25,14 @@ public class Users {
 
     @Column
     String rol;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getEmail() {
         return email;
