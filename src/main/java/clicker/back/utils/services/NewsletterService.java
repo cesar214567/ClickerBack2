@@ -15,3 +15,4 @@ public interface NewsletterService {
     List<Newsletter> findAll();
 
 }
+

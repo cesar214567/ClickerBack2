@@ -31,4 +31,3 @@ public class DefaultEmailService implements EmailService {
             return response;
     }
 }
-

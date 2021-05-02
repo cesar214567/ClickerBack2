@@ -112,6 +112,20 @@ public class AutoSemiNuevo implements Cloneable {
     @Column
     Boolean unicoDueno;
 
+    @Column
+    String transmision;
+
+    @Column
+    Integer choques;
+
+    @Column
+    Boolean fallaMecanica;
+
+    @Column
+    Boolean llaves;
+
+    @Column
+    Boolean fumado;
 
     @OneToMany(cascade = CascadeType.ALL)
     List<FotosAutoSemiNuevo> fotos;
@@ -422,6 +436,47 @@ public class AutoSemiNuevo implements Cloneable {
         this.descripcion = descripcion;
     }
 
+
+    public String getTransmision() {
+        return transmision;
+    }
+
+    public void setTransmision(String transmision) {
+        this.transmision = transmision;
+    }
+
+    public Integer getChoques() {
+        return choques;
+    }
+
+    public void setChoques(Integer choques) {
+        this.choques = choques;
+    }
+
+    public Boolean getFallaMecanica() {
+        return fallaMecanica;
+    }
+
+    public void setFallaMecanica(Boolean fallaMecanica) {
+        this.fallaMecanica = fallaMecanica;
+    }
+
+    public Boolean getLlaves() {
+        return llaves;
+    }
+
+    public void setLlaves(Boolean llaves) {
+        this.llaves = llaves;
+    }
+
+    public Boolean getFumado() {
+        return fumado;
+    }
+
+    public void setFumado(Boolean fumado) {
+        this.fumado = fumado;
+    }
+
     public void info(AutoSemiNuevo autoSemiNuevo){
 
         if(this.correoDueno!=null)autoSemiNuevo.setCorreoDueno(this.correoDueno);
@@ -445,8 +500,11 @@ public class AutoSemiNuevo implements Cloneable {
         if(this.version!=null)autoSemiNuevo.setVersion(this.version);
         if(this.mantenimiento!=null)autoSemiNuevo.setMantenimiento(this.mantenimiento);
         if(this.unicoDueno!=null)autoSemiNuevo.setUnicoDueno(this.unicoDueno);
-
-
+        if(this.transmision!=null)autoSemiNuevo.setTransmision(this.transmision);
+        if(this.choques!=null)autoSemiNuevo.setChoques(this.choques);
+        if(this.fallaMecanica!=null)autoSemiNuevo.setFallaMecanica(this.fallaMecanica);
+        if(this.llaves!=null)autoSemiNuevo.setLlaves(this.llaves);
+        if(this.fumado!=null)autoSemiNuevo.setFumado(this.fumado);
 
     }
     public void reverseInfo(AutoSemiNuevo autoSemiNuevo){
