@@ -1,10 +1,7 @@
 package clicker.back.entities;
 
 
-import clicker.back.utils.entities.Show;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonView;
-import org.springframework.core.annotation.Order;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,7 +17,6 @@ public class Usuario implements Serializable {
     @Column
     String fbId;
 
-    @JsonView(Show.Public.class)
     @Column
     String nombre;
 
@@ -30,7 +26,6 @@ public class Usuario implements Serializable {
     @Column
     Long numTelefono;
 
-    @JsonView(Show.Public.class)
     @Column(unique = true)
     String correo;
 

@@ -1,24 +1,16 @@
 package clicker.back.controllers.utils;
 
 import clicker.back.Setup;
-import clicker.back.entities.Usuario;
 import clicker.back.services.UsuariosService;
 import clicker.back.utils.entities.Incidencias;
-import clicker.back.utils.entities.Show;
 import clicker.back.utils.errors.ResponseService;
 import clicker.back.utils.services.IncidenciasService;
-import clicker.back.utils.services.LocacionesService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInput;
-import java.io.InputStream;
-import java.io.ObjectOutputStream;
 import java.util.Date;
 
 @RestController

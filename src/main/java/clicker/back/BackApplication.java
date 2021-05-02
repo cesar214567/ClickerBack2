@@ -226,6 +226,9 @@ public class BackApplication extends SpringBootServletInitializer {
             Usuario usuario2 = new Usuario();
             usuario2.setRol("PARTICULAR");
             usuario2.setCorreo("gabriel.spranger@utec.edu.pe");
+            usuario2.setNombre("Gabriel Spranger Rojas");
+            usuario2.setNumDocumento("72985463");
+            usuario2.setNumTelefono((long) 987654321);
             usuario2.setPassword("uwu");
             usuario2.setValidated(true);
             usuario2.setEnabled(true);

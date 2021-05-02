@@ -144,18 +144,23 @@ public class CarPostController {
         }
     }
 
+
+
     @GetMapping(value = "/{id}")
     @ResponseBody
-    public ResponseEntity<Object> getById(@PathVariable("id") Long id) {
-        if(id==null)return ResponseService.genError("no se mando el id",HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> getValidateById(@PathVariable("id") Long id) {
+        try{
+            if(id==null)return ResponseService.genError("no se mando el id",HttpStatus.BAD_REQUEST);
         AutoSemiNuevo autoSemiNuevo = autoSemiNuevoService.getById(id);
-        if (!autoSemiNuevo.getValidado())return ResponseService.genError("no esta validado",HttpStatus.LOCKED);
+        if(autoSemiNuevo==null)return ResponseService.genError("no se encontro el auto",HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(autoSemiNuevo,HttpStatus.OK);
+        }catch (Exception e){
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Autowired
     InteresadoReventaService interesadoReventaService;
-
 
 
     @PostMapping(value = "/interesadoVenta")
@@ -270,6 +275,7 @@ public class CarPostController {
             }
         }
         ventaSemiNuevo.getAutoSemiNuevo().setComprado(true);
+        ventaSemiNuevo.getAutoSemiNuevo().setEnabled(false);
         ventaSemiNuevo.setGananciaEmpresa(gananciaClicker);
         ventaSemiNuevo.setGananciaUsuario(gananciaUsuario);
         ventaSemiNuevo.setGananciaVendedor(gananciaVendedor);
