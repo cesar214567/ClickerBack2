@@ -46,6 +46,9 @@ public class CarPostController {
     @Autowired
     LocacionesService locacionesService;
 
+    @Autowired
+    AutoPatrocinadoService autoPatrocinadoService;
+
     public ResultSet executeQuery(String sql) throws SQLException {
         Connection connection = DriverManager.getConnection(db2Url, db2Username, db2Password);
         Statement statement = connection.createStatement();
@@ -279,13 +282,18 @@ public class CarPostController {
         ventaSemiNuevo.setGananciaEmpresa(gananciaClicker);
         ventaSemiNuevo.setGananciaUsuario(gananciaUsuario);
         ventaSemiNuevo.setGananciaVendedor(gananciaVendedor);
+        AutoPatrocinado autoPatrocinado = autoPatrocinadoService.findByAutoSemiNuevo(ventaSemiNuevo.getAutoSemiNuevo());
         try{
 
             usuariosService.updateBalance(gananciaUsuario,ventaSemiNuevo.getAutoSemiNuevo().getUsuario().getCorreo());
             if(ventaSemiNuevo.getVendedor()!=null){
                 usuariosService.updateBalance(gananciaVendedor,ventaSemiNuevo.getVendedor().getCorreo());
             }
+            if(autoPatrocinado!=null){
+                autoPatrocinadoService.delete(autoPatrocinado);
+            }
             ventaSemiNuevoService.save(ventaSemiNuevo);
+
             return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
