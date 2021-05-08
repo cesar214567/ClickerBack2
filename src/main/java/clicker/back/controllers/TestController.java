@@ -11,6 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 @RestController
@@ -55,6 +60,24 @@ public class TestController {
         }
 
     }
+
+    @PostMapping("/bucket")
+    @ResponseBody
+    public ResponseEntity<Object> testBucket(@RequestPart("files")MultipartFile[] multipartFiles){
+        try{
+            List<String> fileNames = new ArrayList<>();
+            Arrays.asList(multipartFiles).stream().forEach(file -> {
+                fileNames.add(file.getOriginalFilename());
+            });
+            return ResponseService.genSuccess(fileNames);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+    }
+
 
 
 }
