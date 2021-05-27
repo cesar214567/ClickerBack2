@@ -318,7 +318,7 @@ public class CarPostController {
         try{
             List<Object> autos = new ArrayList<>();
             autos.addAll(autoSemiNuevoService.getAllEnabled(true,true,false));
-            ResultSet resultSet = executeQuery("select * from autos");
+            ResultSet resultSet = executeQuery("select * from autos a where a.presentar!=false");
             while(resultSet.next()){
                 autos.add(new Autos(resultSet));
                 /*Array array= resultSet.getArray("ciudadesdisp");
@@ -421,7 +421,7 @@ public class CarPostController {
     @Transactional
     public ResponseEntity<Object> getNoVendidos() throws SQLException {
         try{
-            ResultSet resultSet = executeQuery("SELECT count(*) as count FROM autos");
+            ResultSet resultSet = executeQuery("SELECT count(*) as count FROM autos a where a.presentar!=false");
             resultSet.next();
             Long sumatotal = autoSemiNuevoService.getAllNoVendidos()+resultSet.getLong("count");
             return new ResponseEntity<>(sumatotal,HttpStatus.OK);
@@ -431,13 +431,46 @@ public class CarPostController {
         }
     }
 
+    @GetMapping("/novendidos/nuevo")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<Object> getNoVendidosNuevos() throws SQLException {
+        try{
+            ResultSet resultSet = executeQuery("SELECT count(*) as count FROM autos a where a.presentar!=false");
+            resultSet.next();
+            Long sumatotal = resultSet.getLong("count");
+            return new ResponseEntity<>(sumatotal,HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/novendidos/semiNuevo")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<Object> getNoVendidosSemiNuevos() throws SQLException {
+        try{
+            ResultSet resultSet = executeQuery("SELECT count(*) as count FROM autos a where a.presentar!=false");
+            resultSet.next();
+            Long sumatotal = autoSemiNuevoService.getAllNoVendidos();
+            return new ResponseEntity<>(sumatotal,HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+
     @GetMapping("/marcas")
     @ResponseBody
     @Transactional
     public ResponseEntity<Object> getMarcas() throws SQLException {
         try{
             List<String> marcas = autoSemiNuevoService.getAllMarcasString();
-            ResultSet resultSet = executeQuery("select distinct (a.marca) as marcas from autos a ");
+            ResultSet resultSet = executeQuery("select distinct (a.marca) as marcas from autos a where a.presentar!=false");
 
             while(resultSet.next()){
                 marcas.add(resultSet.getString("marcas"));
@@ -463,7 +496,7 @@ public class CarPostController {
             }
             //TODO
             ResultSet resultSet = executeQuery("select count(a.id_auto) as count ,a.marca as marca ,a.modelo as modelo " +
-                    ",a.tipocarroceria as tipo_carroceria from autos a  group by (a.marca,a.modelo,a.tipocarroceria )");
+                    ",a.tipocarroceria as tipo_carroceria from autos a where a.presentar!=false group by (a.marca,a.modelo,a.tipocarroceria )");
             while(resultSet.next()){
                 filtrosBeans.add(new FiltrosBean(resultSet.getString("marca"),resultSet.getString("modelo"),resultSet.getString("tipo_carroceria"),"NEW"));
             }
@@ -492,7 +525,7 @@ public class CarPostController {
     @Transactional
     public ResponseEntity<Object> getAutosNuevos(){
         try{
-            ResultSet resultSet = executeQuery("select * from autos a ");
+            ResultSet resultSet = executeQuery("select * from autos a where a.presentar!=false");
             List<Autos> autosNuevos = new ArrayList<>();
             while(resultSet.next()){
                 Autos autos = new Autos(resultSet);
@@ -512,7 +545,7 @@ public class CarPostController {
     public ResponseEntity<Object> getAutosNuevos(@PathVariable("id")String id){
         if(id==null)return ResponseService.genError("no se mando el id",HttpStatus.BAD_REQUEST);
         try{
-            String statements ="select * from autos a where a.id_auto=\'"+id+"\'";
+            String statements ="select * from autos a where a.presentar!=false a.id_auto=\'"+id+"\'";
             ResultSet resultSet = executeQuery(statements);
             Autos auto=null;
             if(resultSet.next()){
