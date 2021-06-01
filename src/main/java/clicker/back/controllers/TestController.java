@@ -1,6 +1,7 @@
 package clicker.back.controllers;
 
 import clicker.back.Setup;
+import clicker.back.services.AmazonService;
 import clicker.back.services.CryptoService;
 import clicker.back.services.EmailService;
 import clicker.back.services.VentaSemiNuevoService;
@@ -30,6 +31,9 @@ public class TestController {
     CryptoService cryptoService;
     @Autowired
     EmailService emailService;
+
+    @Autowired
+    AmazonService amazonService;
 
     @GetMapping("/ventas")
     @ResponseBody
@@ -63,20 +67,30 @@ public class TestController {
 
     @PostMapping("/bucket")
     @ResponseBody
-    public ResponseEntity<Object> testBucket(@RequestPart("files")MultipartFile[] multipartFiles){
+    public ResponseEntity<Object> testBucket(@RequestPart("files")MultipartFile[] multipartFiles,@RequestPart("nombre")String string){
         try{
             List<String> fileNames = new ArrayList<>();
-            Arrays.asList(multipartFiles).stream().forEach(file -> {
-                fileNames.add(file.getOriginalFilename());
+            Arrays.stream(multipartFiles).forEach(file -> {
+                fileNames.add(amazonService.uploadFile(file,"cesar","fotos"));
             });
             return ResponseService.genSuccess(fileNames);
         }catch (Exception e){
             e.printStackTrace();
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
 
     }
+
+    @DeleteMapping("/bucket")
+    @ResponseBody
+    public ResponseEntity<Object> deleteImage(@RequestParam("image")String string){
+        try{
+            return ResponseService.genSuccess(amazonService.deleteFileFromS3Bucket(string));
+        }catch (Exception e){
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 
 

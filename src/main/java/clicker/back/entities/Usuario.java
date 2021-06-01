@@ -44,7 +44,7 @@ public class Usuario implements Serializable {
     @Column
     String tipoDocumento;
 
-    @Column(length = 25)
+    @Column(length = 25, unique = true)
     String numDocumento;
 
     @Column
