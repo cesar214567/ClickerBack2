@@ -9,6 +9,8 @@ import clicker.back.entities.*;
 import clicker.back.services.*;
 import clicker.back.utils.errors.ResponseService;
 import clicker.back.utils.services.LocacionesService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sendgrid.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Tuple;
 import javax.transaction.Transactional;
@@ -49,6 +52,9 @@ public class CarPostController {
     @Autowired
     AutoPatrocinadoService autoPatrocinadoService;
 
+    @Autowired
+    AmazonService amazonService;
+
     public ResultSet executeQuery(String sql) throws SQLException {
         Connection connection = DriverManager.getConnection(db2Url, db2Username, db2Password);
         Statement statement = connection.createStatement();
@@ -67,7 +73,10 @@ public class CarPostController {
     @PostMapping
     @ResponseBody
     @Transactional
-    public ResponseEntity<Object> post(@RequestBody AutoSemiNuevo autoSemiNuevo){
+    public ResponseEntity<Object> post(@RequestPart("autoSemiNuevo") String model,@RequestPart("files") MultipartFile[] multipartFiles) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        AutoSemiNuevo autoSemiNuevo = mapper.readValue(model, AutoSemiNuevo.class);
+    //public ResponseEntity<Object> post(@RequestBody AutoSemiNuevo autoSemiNuevo){
         if(autoSemiNuevo.getUsuario()==null || autoSemiNuevo.getUsuario().getCorreo()==null)
             return ResponseService.genError("no se envio un usuario",HttpStatus.BAD_REQUEST);
         List<AutoSemiNuevo> temp = autoSemiNuevoService.getByPlaca(autoSemiNuevo.getPlaca());
@@ -107,9 +116,18 @@ public class CarPostController {
             autoSemiNuevo.setEnabled(true);
             autoSemiNuevo.setRevisado(true);
             autoSemiNuevo.setFechaPublicacion(new Date());
+            List<String> fotos = new ArrayList<>();
+
+
             autoSemiNuevo.setUsuario(user);
-            autos.add(autoSemiNuevo);
             try{
+                autoSemiNuevo = autoSemiNuevoService.save(autoSemiNuevo);
+                AutoSemiNuevo finalAutoSemiNuevo = autoSemiNuevo;
+                Arrays.stream(multipartFiles).forEach(file -> {
+                    fotos.add(amazonService.uploadFile(file,user.getId().toString(),"fotosAutos/"+ finalAutoSemiNuevo.getId().toString()));
+                });
+                finalAutoSemiNuevo.setFotos(fotos);
+                autos.add(finalAutoSemiNuevo);
                 usuariosService.save(user);
                 return new ResponseEntity<>( HttpStatus.OK);
             }catch (Exception e ){
@@ -378,17 +396,30 @@ public class CarPostController {
     @PutMapping
     @ResponseBody
     @Transactional
-    public ResponseEntity<Object> updatePost(@RequestBody AutoSemiNuevo autoSemiNuevo){
-        if(autoSemiNuevo.getId()==null)return new ResponseEntity<>("no se envio id",HttpStatus.BAD_REQUEST);
-        AutoSemiNuevo temp = autoSemiNuevoService.getById(autoSemiNuevo.getId());
-        if(temp==null){
-            return ResponseService.genError("no se encontro el auto",HttpStatus.BAD_REQUEST);
-        }
-        if(temp.getComprado()){
-            return ResponseService.genError("el auto no puede ser modificado porque ya se vendio",HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<Object> updatePost(@RequestPart("autoSemiNuevo") String model,@RequestPart("files") MultipartFile[] multipartFiles) throws JsonProcessingException {
+//  public ResponseEntity<Object> updatePost(@RequestBody AutoSemiNuevo autoSemiNuevo){
         try{
+            ObjectMapper objectMapper = new ObjectMapper();
+            AutoSemiNuevo autoSemiNuevo = objectMapper.readValue(model,AutoSemiNuevo.class);
+            if(autoSemiNuevo.getId()==null)return new ResponseEntity<>("no se envio id",HttpStatus.BAD_REQUEST);
+            AutoSemiNuevo temp = autoSemiNuevoService.getById(autoSemiNuevo.getId());
+            if(temp==null){
+                return ResponseService.genError("no se encontro el auto",HttpStatus.BAD_REQUEST);
+            }
+            if(temp.getComprado()){
+                return ResponseService.genError("el auto no puede ser modificado porque ya se vendio",HttpStatus.BAD_REQUEST);
+            }
             autoSemiNuevo.info(temp);
+            Map<String,Integer> fotos = new HashMap<>();
+            autoSemiNuevo.getFotos().forEach(foto->fotos.put(foto,0));
+            temp.getFotos().forEach(foto->{
+                if(!fotos.containsKey(foto)){
+                    amazonService.deleteFileFromS3Bucket(foto);
+                }
+            });
+            temp.setFotos(autoSemiNuevo.getFotos());
+            Arrays.stream(multipartFiles).forEach(file->temp.getFotos().add(amazonService.uploadFile(file,temp.getUsuario().getId().toString(),"fotosAutos/"+ temp.getId().toString())));
+
             autoSemiNuevoService.save(temp);
             return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){

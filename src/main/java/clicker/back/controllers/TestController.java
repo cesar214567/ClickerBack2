@@ -74,6 +74,7 @@ public class TestController {
                 fileNames.add(amazonService.uploadFile(file,"cesar","fotos"));
             });
             return ResponseService.genSuccess(fileNames);
+
         }catch (Exception e){
             e.printStackTrace();
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);

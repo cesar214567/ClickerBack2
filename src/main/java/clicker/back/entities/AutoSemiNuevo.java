@@ -127,8 +127,8 @@ public class AutoSemiNuevo implements Cloneable {
     @Column
     Boolean fumado;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    List<FotosAutoSemiNuevo> fotos;
+    @ElementCollection
+    List<String> fotos;
 
     @OneToOne(cascade = CascadeType.ALL)
     SolicitudRemocionAuto solicitudRemocionAuto;
@@ -412,11 +412,11 @@ public class AutoSemiNuevo implements Cloneable {
         this.fotoPrincipal = fotoPrincipal;
     }
 
-    public List<FotosAutoSemiNuevo> getFotos() {
+    public List<String> getFotos() {
         return fotos;
     }
 
-    public void setFotos(List<FotosAutoSemiNuevo> fotos) {
+    public void setFotos(List<String> fotos) {
         this.fotos = fotos;
     }
 
