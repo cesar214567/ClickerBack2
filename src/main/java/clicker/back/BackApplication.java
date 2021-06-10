@@ -4,8 +4,6 @@ import clicker.back.entities.*;
 import clicker.back.services.AutoPatrocinadoService;
 import clicker.back.services.UsersService;
 import clicker.back.services.UsuariosService;
-import clicker.back.utils.entities.Locaciones;
-import clicker.back.utils.services.LocacionesService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -34,17 +32,13 @@ public class BackApplication extends SpringBootServletInitializer {
     UsuariosService usuariosService;
     @Autowired
     AutoPatrocinadoService autoPatrocinadoService;
-        @Autowired
-    LocacionesService locacionesService;
+
     @Autowired
     UsersService usersService;
 
     @Bean
     InitializingBean sendDatabase() {
         return () -> {
-            Locaciones locaciones = new Locaciones("000000","Lima","Lima","Jesus Maria",true);
-            locaciones = locacionesService.save(locaciones);
-
             Usuario usuario = new Usuario();
             usuario.setRol("REMAX");
             usuario.setCorreo("cesar.madera@utec.edu.com");
@@ -84,7 +78,7 @@ public class BackApplication extends SpringBootServletInitializer {
             autoSemiNuevo.setEnabled(true);
             autoSemiNuevo.setFechaPublicacion(new Date());
             autoSemiNuevo.setAccesorios(Arrays.asList("ventilador", "radio", "ambientador"));
-            autoSemiNuevo.setLocacion(locaciones);
+            autoSemiNuevo.setLocacion("Lima");
 
             AutoSemiNuevo autoSemiNuevo1 = (AutoSemiNuevo) autoSemiNuevo.clone();
             AutoSemiNuevo autoSemiNuevo2 = (AutoSemiNuevo) autoSemiNuevo.clone();

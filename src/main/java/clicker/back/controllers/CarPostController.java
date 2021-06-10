@@ -8,10 +8,8 @@ import clicker.back.controllers.beans.PilotBean;
 import clicker.back.entities.*;
 import clicker.back.services.*;
 import clicker.back.utils.errors.ResponseService;
-import clicker.back.utils.services.LocacionesService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sendgrid.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -45,9 +43,6 @@ public class CarPostController {
 
     @Autowired
     VentaSemiNuevoService ventaSemiNuevoService;
-
-    @Autowired
-    LocacionesService locacionesService;
 
     @Autowired
     AutoPatrocinadoService autoPatrocinadoService;
@@ -87,13 +82,6 @@ public class CarPostController {
             if(!semiNuevo.getComprado() && semiNuevo.getEnabled()){
                 return ResponseService.genError("este auto esta siendo vendido",HttpStatus.BAD_REQUEST);
             }
-        }
-        if(autoSemiNuevo.getLocacion()==null || autoSemiNuevo.getLocacion().getId()==null) {
-            return ResponseService.genError("no se envio la locacion",HttpStatus.BAD_REQUEST);
-        }
-        autoSemiNuevo.setLocacion(locacionesService.findById(autoSemiNuevo.getLocacion().getId()));
-        if(autoSemiNuevo.getLocacion()==null){
-            return ResponseService.genError("no se encontro la locacion",HttpStatus.BAD_REQUEST);
         }
         Usuario user = usuariosService.getByCorreo(autoSemiNuevo.getUsuario().getCorreo());
         if(user == null){

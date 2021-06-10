@@ -73,8 +73,8 @@ public class AutoSemiNuevo implements Cloneable {
     @Column
     Float precioVenta;
 
-    @ManyToOne
-    Locaciones locacion;
+    @Column
+    String locacion;
 
     @Column
     Boolean comprado;
@@ -420,14 +420,6 @@ public class AutoSemiNuevo implements Cloneable {
         this.fotos = fotos;
     }
 
-    public Locaciones getLocacion() {
-        return locacion;
-    }
-
-    public void setLocacion(Locaciones locacion) {
-        this.locacion = locacion;
-    }
-
     public String getDescripcion() {
         return descripcion;
     }
@@ -477,7 +469,16 @@ public class AutoSemiNuevo implements Cloneable {
         this.fumado = fumado;
     }
 
+    public String getLocacion() {
+        return locacion;
+    }
+
+    public void setLocacion(String locacion) {
+        this.locacion = locacion;
+    }
+
     public void info(AutoSemiNuevo autoSemiNuevo){
+
 
         if(this.correoDueno!=null)autoSemiNuevo.setCorreoDueno(this.correoDueno);
         if(this.nombreDueno!=null)autoSemiNuevo.setNombreDueno(this.nombreDueno);

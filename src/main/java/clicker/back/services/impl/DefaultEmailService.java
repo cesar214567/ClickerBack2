@@ -43,7 +43,7 @@ public class DefaultEmailService implements EmailService {
         Personalization personalization = new Personalization();
         personalization.addDynamicTemplateData("data",secret);
         personalization.addTo(_to);
-            mail.setTemplateId(templateId);
+        mail.setTemplateId(templateId);
         mail.addPersonalization(personalization);
         SendGrid sg = new SendGrid(apiKey);
         Request request = new Request();
