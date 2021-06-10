@@ -55,8 +55,6 @@ public class AuthController {
                 usuario.setBalance((float) 0);
                 usuario.setValidated(false);
                 usuario.setEnabled(true);
-                usuario.setNombre(null);
-                usuario.setNumTelefono(null);
                 try{
                     usuariosService.save(usuario);
 
