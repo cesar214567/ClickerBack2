@@ -1,15 +1,8 @@
 package clicker.back.antiguo;
 
 
-import clicker.back.utils.entities.Locaciones;
-
-import javax.persistence.*;
-import javax.xml.transform.Result;
-import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
 
 public class Autos implements Cloneable {
 

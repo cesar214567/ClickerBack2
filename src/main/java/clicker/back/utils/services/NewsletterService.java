@@ -1,6 +1,5 @@
 package clicker.back.utils.services;
 
-import clicker.back.utils.entities.Locaciones;
 import clicker.back.utils.entities.Newsletter;
 
 import java.util.List;

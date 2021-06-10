@@ -1,6 +1,5 @@
 package clicker.back.entities;
 
-import clicker.back.utils.entities.Locaciones;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
