@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.support.HttpRequestHandlerServlet;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Tuple;
@@ -90,7 +91,7 @@ public class CarPostController {
         String model="{}";
         for (Part part:request.getParts()){
             if(part.getContentType()!=null ){
-                if (part.getName().equals("files[0]")){
+                if (part.getName().equals("fotoPrincipal")){
                     firstFile = new MockMultipartFile(part.getSubmittedFileName(),part.getSubmittedFileName(),part.getContentType(),part.getInputStream());
                 }else{
                     multipartFiles.add(new MockMultipartFile(part.getSubmittedFileName(),part.getSubmittedFileName(),part.getContentType(),part.getInputStream()) );
@@ -427,11 +428,25 @@ public class CarPostController {
     @PutMapping
     @ResponseBody
     @Transactional
-    public ResponseEntity<Object> updatePost(@RequestPart("autoSemiNuevo") String model,@RequestPart("files") MultipartFile[] multipartFiles) throws JsonProcessingException {
+    public ResponseEntity<Object> updatePost(HttpServletRequest request) throws JsonProcessingException {
 //  public ResponseEntity<Object> updatePost(@RequestBody AutoSemiNuevo autoSemiNuevo){
         try{
 
-
+            List<MultipartFile> multipartFiles = new ArrayList<>();
+            MultipartFile firstFile = null;
+            String model="{}";
+            for (Part part:request.getParts()){
+                if(part.getContentType()!=null ){
+                    if (part.getName().equals("fotoPrincipal")){
+                        firstFile = new MockMultipartFile(part.getSubmittedFileName(),part.getSubmittedFileName(),part.getContentType(),part.getInputStream());
+                    }else{
+                        multipartFiles.add(new MockMultipartFile(part.getSubmittedFileName(),part.getSubmittedFileName(),part.getContentType(),part.getInputStream()) );
+                    }
+                }else{
+                    String theString = IOUtils.toString(part.getInputStream(), StandardCharsets.UTF_8);
+                    model = String.valueOf(theString);
+                }
+            }
             ObjectMapper objectMapper = new ObjectMapper();
             AutoSemiNuevo autoSemiNuevo = objectMapper.readValue(model,AutoSemiNuevo.class);
             if(autoSemiNuevo.getId()==null)return new ResponseEntity<>("no se envio id",HttpStatus.BAD_REQUEST);
@@ -442,6 +457,14 @@ public class CarPostController {
             if(temp.getComprado()){
                 return ResponseService.genError("el auto no puede ser modificado porque ya se vendio",HttpStatus.BAD_REQUEST);
             }
+            List<Accesorio> accesoriosList = new ArrayList<>();
+            for (Accesorio accesorio : autoSemiNuevo.getAccesorios()) {
+                Accesorio accesorioTemp = accesorioService.getById(accesorio.getId());
+                if (accesorioTemp!=null){
+                    accesoriosList.add(accesorioTemp);
+                }
+            }
+            autoSemiNuevo.setAccesorios(accesoriosList);
             autoSemiNuevo.info(temp);
             Map<String,Integer> fotos = new HashMap<>();
             autoSemiNuevo.getFotos().forEach(foto->fotos.put(foto,0));
@@ -451,8 +474,12 @@ public class CarPostController {
                 }
             });
             temp.setFotos(autoSemiNuevo.getFotos());
-            Arrays.stream(multipartFiles).forEach(file->temp.getFotos().add(amazonService.uploadFile(file,temp.getUsuario().getId().toString(),"fotosAutos/"+ temp.getId().toString())));
+            (multipartFiles).forEach(file->temp.getFotos().add(amazonService.uploadFile(file,temp.getUsuario().getId().toString(),"fotosAutos/"+ temp.getId().toString())));
+            if(firstFile!=null){
+                amazonService.deleteFileFromS3Bucket(temp.getFotoPrincipal());
+                temp.setFotoPrincipal(amazonService.uploadFile(firstFile,temp.getUsuario().getId().toString(),"fotosAutos/"+ temp.getId().toString()));
 
+            }
             autoSemiNuevoService.save(temp);
             return new ResponseEntity<>(null,HttpStatus.OK);
         }catch (Exception e){
