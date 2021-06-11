@@ -81,10 +81,15 @@ public class CarPostController {
     public ResponseEntity<Object> post(HttpServletRequest request) throws IOException, ServletException {
 
         List<MultipartFile> multipartFiles = new ArrayList<>();
+        MultipartFile firstFile = null;
         String model="{}";
         for (Part part:request.getParts()){
             if(part.getContentType()!=null ){
-                multipartFiles.add(new MockMultipartFile(part.getName(),part.getName(),part.getContentType(),part.getInputStream()) );
+                if (part.getName().equals("files[0]")){
+                    firstFile = new MockMultipartFile(part.getSubmittedFileName(),part.getSubmittedFileName(),part.getContentType(),part.getInputStream());
+                }else{
+                    multipartFiles.add(new MockMultipartFile(part.getSubmittedFileName(),part.getSubmittedFileName(),part.getContentType(),part.getInputStream()) );
+                }
             }else{
                 String theString = IOUtils.toString(part.getInputStream(), StandardCharsets.UTF_8);
                 model = String.valueOf(theString);
@@ -135,6 +140,10 @@ public class CarPostController {
                 (multipartFiles).forEach(file -> {
                     fotos.add(amazonService.uploadFile(file,user.getId().toString(),"fotosAutos/"+ finalAutoSemiNuevo.getId().toString()));
                 });
+                if(firstFile!=null){
+                    String fotoPrincipal = amazonService.uploadFile(firstFile,user.getId().toString(),"fotosAutos/"+ finalAutoSemiNuevo.getId().toString());
+                    finalAutoSemiNuevo.setFotoPrincipal(fotoPrincipal)  ;
+                }
                 finalAutoSemiNuevo.setFotos(fotos);
                 autos.add(finalAutoSemiNuevo);
                 usuariosService.save(user);
