@@ -30,8 +30,8 @@ try:
                                      port="5432",
                                      database="postgres")
     cursor = connection.cursor()
-    printSep('ubigeos')
-    loadTable(connection, 'locaciones.csv', 'locaciones')
+    printSep('accesorios')
+    loadTable(connection, 'accesorios.csv', 'accesorios')
 
 
     printSep('FINISHED')

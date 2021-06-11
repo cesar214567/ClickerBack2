@@ -1,5 +1,6 @@
 package clicker.back.entities;
 
+import clicker.back.utils.entities.Accesorio;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -93,8 +94,8 @@ public class AutoSemiNuevo implements Cloneable {
     @Column(length = 1000)
     String video;
 
-    @ElementCollection
-    List<String> accesorios;
+    @OneToMany
+    List<Accesorio> accesorios;
 
     @Column(length = 1000)
     String fotoPrincipal;
@@ -395,11 +396,11 @@ public class AutoSemiNuevo implements Cloneable {
         this.numeroCilindros = numeroCilindros;
     }
 
-    public List<String> getAccesorios() {
+    public List<Accesorio> getAccesorios() {
         return accesorios;
     }
 
-    public void setAccesorios(List<String> accesorios) {
+    public void setAccesorios(List<Accesorio> accesorios) {
         this.accesorios = accesorios;
     }
 

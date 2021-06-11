@@ -75,7 +75,7 @@ public class AuthController {
                 }
             }
         }
-        return ResponseService.genError("se encontro un usuario con ese correo",HttpStatus.BAD_REQUEST);
+        return ResponseService.genError("se encontro un usuario con ese correo",HttpStatus.FOUND);
     }
 
     @PostMapping(value = "/login")

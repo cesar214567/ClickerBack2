@@ -7,7 +7,9 @@ import clicker.back.controllers.beans.FiltrosBean;
 import clicker.back.controllers.beans.PilotBean;
 import clicker.back.entities.*;
 import clicker.back.services.*;
+import clicker.back.utils.entities.Accesorio;
 import clicker.back.utils.errors.ResponseService;
+import clicker.back.utils.services.AccesorioService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
@@ -59,6 +61,9 @@ public class CarPostController {
 
     @Autowired
     AmazonService amazonService;
+
+    @Autowired
+    AccesorioService accesorioService;
 
     public ResultSet executeQuery(String sql) throws SQLException {
         Connection connection = DriverManager.getConnection(db2Url, db2Username, db2Password);
@@ -135,6 +140,14 @@ public class CarPostController {
 
             autoSemiNuevo.setUsuario(user);
             try{
+                List<Accesorio> accesoriosList = new ArrayList<>();
+                for (Accesorio accesorio : autoSemiNuevo.getAccesorios()) {
+                    Accesorio accesorioTemp = accesorioService.getById(accesorio.getId());
+                    if (accesorioTemp!=null){
+                        accesoriosList.add(accesorioTemp);
+                    }
+                }
+                autoSemiNuevo.setAccesorios(accesoriosList);
                 autoSemiNuevo = autoSemiNuevoService.save(autoSemiNuevo);
                 AutoSemiNuevo finalAutoSemiNuevo = autoSemiNuevo;
                 (multipartFiles).forEach(file -> {
@@ -417,6 +430,8 @@ public class CarPostController {
     public ResponseEntity<Object> updatePost(@RequestPart("autoSemiNuevo") String model,@RequestPart("files") MultipartFile[] multipartFiles) throws JsonProcessingException {
 //  public ResponseEntity<Object> updatePost(@RequestBody AutoSemiNuevo autoSemiNuevo){
         try{
+
+
             ObjectMapper objectMapper = new ObjectMapper();
             AutoSemiNuevo autoSemiNuevo = objectMapper.readValue(model,AutoSemiNuevo.class);
             if(autoSemiNuevo.getId()==null)return new ResponseEntity<>("no se envio id",HttpStatus.BAD_REQUEST);

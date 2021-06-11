@@ -77,7 +77,7 @@ public class BackApplication extends SpringBootServletInitializer {
             autoSemiNuevo.setComprado(false);
             autoSemiNuevo.setEnabled(true);
             autoSemiNuevo.setFechaPublicacion(new Date());
-            autoSemiNuevo.setAccesorios(Arrays.asList("ventilador", "radio", "ambientador"));
+            autoSemiNuevo.setAccesorios(new ArrayList<>());
             autoSemiNuevo.setLocacion("Lima");
 
             AutoSemiNuevo autoSemiNuevo1 = (AutoSemiNuevo) autoSemiNuevo.clone();

@@ -32,4 +32,9 @@ public class DefaultAccesorioService implements AccesorioService {
     public Accesorio getById(Long id) {
         return accesorioRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public Boolean existById(Long id) {
+        return accesorioRepository.existsById(id);
+    }
 }

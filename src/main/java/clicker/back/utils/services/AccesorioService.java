@@ -14,5 +14,7 @@ public interface AccesorioService {
 
     Accesorio getById(Long id);
 
+    Boolean existById(Long id);
+
 
 }
