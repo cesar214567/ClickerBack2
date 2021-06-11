@@ -8,7 +8,7 @@ public interface AccesorioService {
 
     List<Accesorio> getAllEnabled();
 
-    List<Accesorio> getAll();
+    List<Accesorio> getAll();   
 
     Accesorio save(Accesorio accesorio);
 

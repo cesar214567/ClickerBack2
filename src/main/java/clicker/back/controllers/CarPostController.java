@@ -10,17 +10,27 @@ import clicker.back.services.*;
 import clicker.back.utils.errors.ResponseService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Tuple;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
 import javax.transaction.Transactional;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -68,7 +78,18 @@ public class CarPostController {
     @PostMapping
     @ResponseBody
     @Transactional
-    public ResponseEntity<Object> post(@RequestPart("autoSemiNuevo") String model,@RequestPart("files") MultipartFile[] multipartFiles) throws JsonProcessingException {
+    public ResponseEntity<Object> post(HttpServletRequest request) throws IOException, ServletException {
+
+        List<MultipartFile> multipartFiles = new ArrayList<>();
+        String model="{}";
+        for (Part part:request.getParts()){
+            if(part.getContentType()!=null ){
+                multipartFiles.add(new MockMultipartFile(part.getName(),part.getName(),part.getContentType(),part.getInputStream()) );
+            }else{
+                String theString = IOUtils.toString(part.getInputStream(), StandardCharsets.UTF_8);
+                model = String.valueOf(theString);
+            }
+        }
         ObjectMapper mapper = new ObjectMapper();
         AutoSemiNuevo autoSemiNuevo = mapper.readValue(model, AutoSemiNuevo.class);
     //public ResponseEntity<Object> post(@RequestBody AutoSemiNuevo autoSemiNuevo){
@@ -111,7 +132,7 @@ public class CarPostController {
             try{
                 autoSemiNuevo = autoSemiNuevoService.save(autoSemiNuevo);
                 AutoSemiNuevo finalAutoSemiNuevo = autoSemiNuevo;
-                Arrays.stream(multipartFiles).forEach(file -> {
+                (multipartFiles).forEach(file -> {
                     fotos.add(amazonService.uploadFile(file,user.getId().toString(),"fotosAutos/"+ finalAutoSemiNuevo.getId().toString()));
                 });
                 finalAutoSemiNuevo.setFotos(fotos);

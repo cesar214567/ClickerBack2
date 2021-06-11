@@ -56,10 +56,11 @@ public class UserController {
     public ResponseEntity<Object> getById(@RequestParam("id") String id ) {
         System.out.println(id);
         Users user = userService.getByEmail(id);
-        if (user == null)
+        if (user == null){
             return new ResponseEntity<>(usuariosService.getByCorreo(id), HttpStatus.OK);
-        else
+        }else{
             return new ResponseEntity<>(user, HttpStatus.OK);
+        }
     }
 
     @GetMapping
