@@ -266,4 +266,42 @@ public class UserController {
     }
 
 
+    @GetMapping("/recover/{id}")
+    @ResponseBody
+    public ResponseEntity<Object> recoverPassword(@PathVariable("id")Long id){
+        try{
+            Usuario usuario = usuariosService.getById(id);
+            if(usuario==null){
+                return ResponseService.genError("no se encontro el usuario",HttpStatus.NOT_FOUND);
+            }else{
+                String correo = usuario.getCorreo();
+                String secret = cryptoService.encrypt3(correo);
+                emailService.sendTemplateMessage(correo,"Recuperacion de contrasena",secret,false);
+                return ResponseService.genSuccess("enviado");
+            }
+        }catch (Exception e){
+            return ResponseService.genError("fallo del servidor",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @PutMapping("/recover")
+    @ResponseBody
+    public ResponseEntity<Object> updatePassword(@RequestBody Usuario usuario){
+        try{
+            String correo = cryptoService.decrypt3(usuario.getCorreo());
+            Usuario usuarioTemp = usuariosService.getByCorreo(correo);
+            if(usuarioTemp!=null){
+                usuarioTemp.setPassword(usuario.getPassword());
+                usuariosService.save(usuarioTemp );
+                return ResponseService.genSuccess("se updateo la contrasena");
+            }else{
+                return ResponseService.genError("no se encontro el usuario",HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e){
+            return ResponseService.genError("fallo del servidor",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

@@ -19,8 +19,10 @@ public class DefaultEmailService implements EmailService {
     String apiKey;
     @Value("${apiemail}")
     String email;
-    @Value("${templateId}")
-    String templateId;
+    @Value("${validationtemplateId}")
+    String validationTemplateId;
+    @Value("${recovertemplateId}")
+    String recoverTemplateId;
 
     public Response sendSimpleMessage(String to, String subject, String text) throws IOException {
         Email _from = new Email(email);
@@ -35,7 +37,7 @@ public class DefaultEmailService implements EmailService {
         Response response = sg.api(request);
         return response;
     }
-    public Response sendTemplateMessage(String to, String subject, String secret) throws IOException {
+    public Response sendTemplateMessage(String to, String subject, String secret,Boolean mode) throws IOException {
         Email _from = new Email(email);
         Email _to = new Email(to);
         Content content = new Content("text/html","<p>aaaa</p>" );
@@ -43,7 +45,12 @@ public class DefaultEmailService implements EmailService {
         Personalization personalization = new Personalization();
         personalization.addDynamicTemplateData("data",secret);
         personalization.addTo(_to);
-        mail.setTemplateId(templateId);
+        if(mode){//1 for validation 0 for recover
+            mail.setTemplateId(validationTemplateId);
+        }else{
+            mail.setTemplateId(recoverTemplateId);
+        }
+
         mail.addPersonalization(personalization);
         SendGrid sg = new SendGrid(apiKey);
         Request request = new Request();

@@ -37,6 +37,11 @@ public class DefaultUsuariosService implements UsuariosService {
     }
 
     @Override
+    public Boolean existByNumDocumento(String numdocumento) {
+        return usuariosRepository.existsByNumDocumento(numdocumento);
+    }
+
+    @Override
     public Tuple getData(String correo) {
         return usuariosRepository.getData(correo);
     }

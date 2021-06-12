@@ -50,7 +50,7 @@ public class TestController {
     public ResponseEntity<Object> testMail(){
         try{
             String secret = cryptoService.encrypt3("camgcamg11@gmail.com");
-            Response response = emailService.sendTemplateMessage("camgcamg11@gmail.com","template",secret);
+            Response response = emailService.sendTemplateMessage("camgcamg11@gmail.com","template",secret,false);
             if (response.getStatusCode()==202) {
                 JSONObject jsonElement = new JSONObject();
                 jsonElement.put("secret", secret);

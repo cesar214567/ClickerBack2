@@ -27,6 +27,6 @@ public interface UsuariosService {
 
     Boolean existByCorreo(String correo  );
 
-
+    Boolean existByNumDocumento(String numdocumento);
     Tuple getData(String correo);
 }
