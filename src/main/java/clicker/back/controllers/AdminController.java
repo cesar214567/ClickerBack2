@@ -88,22 +88,22 @@ public class    AdminController {
     @GetMapping(value = "/interesados")
     @ResponseBody
     public ResponseEntity<Object> getAllInteresados(){
-        JSONArray jsonArray = new JSONArray();
-        List<AutoSemiNuevo> list = autoSemiNuevoService.getAllEnabled(true,true,false);
-        for (AutoSemiNuevo autoSemiNuevo : list) {
-            List<InteresadoCompra> interesadoCompraList = interesadoCompraService.getAllByAuto(autoSemiNuevo);
-            List<InteresadoReventa> interesadoReventasList = interesadoReventaService.getAllByAuto(autoSemiNuevo);
-            interesadoCompraList.forEach(t->t.setAutoSemiNuevo(null));
-            if (interesadoCompraList.size()!=0 || interesadoReventasList.size()!=0 ){
-                JSONObject object = new JSONObject();
-                object.put("auto",autoSemiNuevo);
-                object.put("interesadosReventa",interesadoReventasList);
-                object.put("interesadosCompra",interesadoCompraList);
-                jsonArray.appendElement(object);
-            }
-
-        }
         try{
+            JSONArray jsonArray = new JSONArray();
+            List<AutoSemiNuevo> list = autoSemiNuevoService.getAllEnabled(true,true,false);
+            for (AutoSemiNuevo autoSemiNuevo : list) {
+                List<InteresadoCompra> interesadoCompraList = interesadoCompraService.getAllByAuto(autoSemiNuevo);
+                List<InteresadoReventa> interesadoReventasList = interesadoReventaService.getAllByAuto(autoSemiNuevo);
+                interesadoCompraList.forEach(t->t.setAutoSemiNuevo(null));
+                if (interesadoCompraList.size()!=0 || interesadoReventasList.size()!=0 ){
+                    JSONObject object = new JSONObject();
+                    object.put("auto",autoSemiNuevo);
+                    object.put("interesadosReventa",interesadoReventasList);
+                    object.put("interesadosCompra",interesadoCompraList);
+                    jsonArray.appendElement(object);
+                }
+
+            }
             return new ResponseEntity<>(jsonArray,HttpStatus.OK);
         }catch (Exception e){
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
@@ -138,7 +138,7 @@ public class    AdminController {
     public ResponseEntity<Object> validate(@RequestParam("id") Long idAuto){
         try{
             autoSemiNuevoService.setRevisado(true,idAuto);
-            return new ResponseEntity<>(null,HttpStatus.OK);
+            return ResponseService.genSuccess(null);
         }catch (Exception e){
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -150,7 +150,7 @@ public class    AdminController {
     public ResponseEntity<Object> remove(@RequestParam("id") Long idAuto){
         try{
             autoSemiNuevoService.borrarAuto(idAuto);
-            return new ResponseEntity<>(null,HttpStatus.OK);
+            return ResponseService.genSuccess(null);
         }catch (Exception e){
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }

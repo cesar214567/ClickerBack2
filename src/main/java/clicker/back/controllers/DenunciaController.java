@@ -48,7 +48,7 @@ public class DenunciaController {
         try{
             denunciaService.save(denuncia);
             autoSemiNuevoService.setRevisado(false,autoSemiNuevo.getId());
-            return new ResponseEntity<>(null,HttpStatus.OK);
+            return ResponseService.genSuccess(null);
         }catch (Exception e){
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }

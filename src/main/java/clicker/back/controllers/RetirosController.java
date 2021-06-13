@@ -49,7 +49,7 @@ public class RetirosController {
         solicitudesRetiro.getUsuario().getSolicitudesRetiros().add(solicitudesRetiro);
         try{
             solicitudesRetiroService.save(solicitudesRetiro);
-            return new ResponseEntity<>(null,HttpStatus.OK);
+            return ResponseService.genSuccess(null);
         }catch (Exception e){
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -72,7 +72,7 @@ public class RetirosController {
             solicitudesRetiro.getUsuario().getSolicitudesRetiros().removeIf(n->n.getId().equals(id));
             usuariosService.save(solicitudesRetiro.getUsuario());
             solicitudesRetiroService.delete(solicitudesRetiro);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ResponseService.genSuccess(null);
         }catch (Exception e){
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -91,7 +91,7 @@ public class RetirosController {
             }
             for (SolicitudesRetiro solicitud: solicitudes){
                 if (solicitud.getAceptado() == null) {
-                    return new ResponseEntity<>(solicitud, HttpStatus.OK);
+                    return ResponseService.genSuccess(solicitud);
                 }
             }
             return ResponseService.genError("solicitud ya fue atendida",HttpStatus.ALREADY_REPORTED);

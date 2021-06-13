@@ -35,7 +35,7 @@ public class SponsorsController {
         if(autoPatrocinadoService.findByAutoSemiNuevo(autoPatrocinado.getAutoSemiNuevo())!=null)
             return ResponseService.genError("ya se patrocino este auto",HttpStatus.BAD_REQUEST);
         try{
-            return new ResponseEntity<>(autoPatrocinadoService.save(autoPatrocinado),HttpStatus.OK);
+            return ResponseService.genSuccess(autoPatrocinadoService.save(autoPatrocinado));
         }catch (Exception e){
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -45,7 +45,7 @@ public class SponsorsController {
     @ResponseBody
     public ResponseEntity<Object> getAll(){
         try{
-            return new ResponseEntity<>(autoPatrocinadoService.findAll(),HttpStatus.OK);
+            return ResponseService.genSuccess(autoPatrocinadoService.findAll());
         }catch (Exception e){
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -62,7 +62,7 @@ public class SponsorsController {
         temp.setLevel(autoPatrocinado.getLevel());
         try{
             autoPatrocinadoService.save(temp);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ResponseService.genSuccess(null);
         }catch (Exception e){
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }

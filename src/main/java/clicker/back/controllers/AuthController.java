@@ -72,7 +72,7 @@ public class AuthController {
                     if (response.getStatusCode()==202){
                         Map<String,String> jsonElement = new HashMap<String,String>();
                         jsonElement.put("secret",secret);
-                        return new ResponseEntity<>(jsonElement, HttpStatus.OK);
+                        return ResponseService.genSuccess(jsonElement);
                     }else{
                         System.out.println(response.getBody());
                         return ResponseService.genError("fallo interno del servidor ",HttpStatus.INTERNAL_SERVER_ERROR);
@@ -102,13 +102,13 @@ public class AuthController {
                 try{
                     String secret = cryptoService.encrypt3(usuario.getCorreo());
                     user.setSecret(secret);
-                    return new ResponseEntity<>(user, HttpStatus.OK);
+                    return ResponseService.genSuccess(user);
                 }catch (Exception e){
                     return ResponseService.genError("fallo la encriptacion",HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
         }else {
-            return new ResponseEntity<>(users, HttpStatus.OK);
+            return ResponseService.genSuccess(users);
         }
     }
 
