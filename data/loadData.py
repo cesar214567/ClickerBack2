@@ -30,8 +30,8 @@ try:
     #                                 port="5432",
     #                                 database="postgres")
     cursor = connection.cursor()
-    printSep('accesorios')
-    loadTable(connection, 'accesorios.csv', 'accesorios')
+    printSep('accesorio')
+    loadTable(connection, 'accesorios.csv', 'accesorio')
 
 
     printSep('FINISHED')
