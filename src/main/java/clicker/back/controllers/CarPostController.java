@@ -510,7 +510,7 @@ public class CarPostController {
     @GetMapping("/novendidos")
     @ResponseBody
     @Transactional
-    public ResponseEntity<Object> getNoVendidos() throws SQLException {
+    public ResponseEntity<Object> getNoVendidos()  {
         try{
             ResultSet resultSet = executeQuery("SELECT count(*) as count FROM autos a where a.presentar!=false");
             resultSet.next();
@@ -525,7 +525,7 @@ public class CarPostController {
     @GetMapping("/novendidos/nuevo")
     @ResponseBody
     @Transactional
-    public ResponseEntity<Object> getNoVendidosNuevos() throws SQLException {
+    public ResponseEntity<Object> getNoVendidosNuevos()  {
         try{
             ResultSet resultSet = executeQuery("SELECT count(*) as count FROM autos a where a.presentar!=false");
             resultSet.next();
@@ -577,7 +577,7 @@ public class CarPostController {
     @GetMapping("/filtros")
     @ResponseBody
     @Transactional
-    public ResponseEntity<Object> getFiltros() throws SQLException {
+    public ResponseEntity<Object> getFiltros() {
         Connection connection=null;
         try{
             List<FiltrosBean> filtrosBeans = new ArrayList<>();
