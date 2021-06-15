@@ -464,10 +464,14 @@ public class CarPostController {
                     accesoriosList.add(accesorioTemp);
                 }
             }
-            autoSemiNuevo.setAccesorios(accesoriosList);
+            temp.setAccesorios(accesoriosList);
             autoSemiNuevo.info(temp);
             Map<String,Integer> fotos = new HashMap<>();
             autoSemiNuevo.getFotos().forEach(foto->fotos.put(foto,0));
+            if (!autoSemiNuevo.getFotoPrincipal().equals(temp.getFotoPrincipal())) {
+                fotos.put(autoSemiNuevo.getFotoPrincipal(), 0);
+            }
+            temp.setFotoPrincipal(autoSemiNuevo.getFotoPrincipal());
             temp.getFotos().forEach(foto->{
                 if(!fotos.containsKey(foto)){
                     amazonService.deleteFileFromS3Bucket(foto);
@@ -475,6 +479,7 @@ public class CarPostController {
             });
             temp.setFotos(autoSemiNuevo.getFotos());
             (multipartFiles).forEach(file->temp.getFotos().add(amazonService.uploadFile(file,temp.getUsuario().getId().toString(),"fotosAutos/"+ temp.getId().toString())));
+
             if(firstFile!=null){
                 amazonService.deleteFileFromS3Bucket(temp.getFotoPrincipal());
                 temp.setFotoPrincipal(amazonService.uploadFile(firstFile,temp.getUsuario().getId().toString(),"fotosAutos/"+ temp.getId().toString()));
