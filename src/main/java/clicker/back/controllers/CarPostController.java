@@ -161,7 +161,7 @@ public class CarPostController {
                 finalAutoSemiNuevo.setFotos(fotos);
                 autos.add(finalAutoSemiNuevo);
                 usuariosService.save(user);
-                return ResponseService.genSuccess( HttpStatus.OK);
+                return ResponseService.genSuccess( null);
             }catch (Exception e ){
                 return ResponseService.genError("fallo",HttpStatus.BAD_REQUEST);
             }

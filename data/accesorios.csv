@@ -1,25 +1,50 @@
-1,true,Retrovisores electricos,Equipamento
-2,true,Neblineros,Equipamento
+1,true,Bluetooth: Kit manos libres,Equipamento
+2,true,Pantalla touch en tablero,Equipamento
 3,true,Aire acondicionado,Equipamento
-4,true,Full equipo,Equipamento
+4,true,Aire acondicionado con climatizador,Equipamento
 5,true,Computadora a bordo,Equipamento
-6,true,Parlantes/bajos,Equipamento
-7,true,Radio CD,Equipamento
-8,true,Radio MP3,Equipamento
-9,true,Aros,Exterior
-10,true,Aros de aleacion,Exterior
-11,true,Parrilla,Exterior
-12,true,Luces Halogenas,Exterior
-13,true,Localizador,Seguridad
-14,true,Airbag,Seguridad
-15,true,Laminas de seguridad,Seguridad
-16,true,Blindado,Seguridad
-17,true,Faros antiniebla delantero,Seguridad
-18,true,Faros antiniebla traseros,Seguridad
-19,true,Inmovilizador de motor,Seguridad
-20,true,Repartidor electronico de frenado,Seguridad
-21,true,Frenos ABS,Seguridad
+6,true,Apple Car play & Android audio,Equipamento
+7,true,Pestillos y lunas eléctricas,Equipamento
+8,true,Espejos abatibles eléctricamente,Equipamento
+9,true,Asientos eléctricos,Equipamento
+10,true,Sunroof ,Equipamento
+11,true,Asientos de cuero,Equipamento
+12,true,Neblineros de serie,Equipamento
+13,true,Paddle shift,Equipamento
+14,true,Tratamiento de pintura ,Exterior
+15,true,Aros de aleación de serie,Exterior
+16,true,Aros de fierro con vasos o tapas plásticas,Exterior
+17,true,Airbags,Seguridad
+18,true,Láminas de seguridad,Seguridad
+19,true,Localizador GPS,Seguridad
+20,true,Frenos ABS,Seguridad
+21,true,Frenos EBD (repartidor electrónico de frenado),Seguridad
 22,true,Alarma,Seguridad
-23,true,Sunroof,Extras
-24,true,Asientos de cuero,Extras
-25,true,Climatizador,Extras
+23,true,Polarizado,Seguridad
+24,true,Blindado,Seguridad
+25,true,Cámara de retroceso,Seguridad
+26,true,Sensores de estacionamiento,Seguridad
+27,true,Inmovilizador de motor,Seguridad
+28,true,Anclajes ISOFIX para asientos de bebé,Seguridad
+29,true,Llave con mando a distancia,Extras
+30,true,Bola o cubo de remolque,Extras
+31,true,Barras transversales de techo (Thule o similar),Extras
+32,true,Parrilla para equipaje (Thule o similar),Extras
+33,true,"Luces HID/ LED",Extras
+34,true,Llantas H/T deportivas,Extras
+35,true,"Llantas M/T/ A/T todoterreno",Extras
+36,true,Aros de aleación deportivos para pista,Extras
+37,true,Aros de aleación especiales para off road,Extras
+38,true,Parlantes/Subwoofer,Extras
+39,true,Mantenimientos en Concesionario,Documentacion
+40,true,Marcar si la garantía y mantenimientos están vigentes (aplica para los 3 primeros años),Documentacion
+41,true,Garantía extendida del concesionario,Documentacion
+42,true,Mantenimientos en Taller privado o mecánico de confianza,Documentacion
+43,true,Marcar si ha sido el único dueño,Documentacion
+44,true,Marcar si cuenta con 2 llaves,Documentacion
+45,true,Soat vigente,Documentacion
+46,true,Revisión técnica vigente,Documentacion
+47,true,Documentos en regla,Documentacion
+48,true,Sin papeletas pendientes de pago,Documentacion
+49,true,Marcar si el último dígito de la placa es IMPAR,Documentacion
+50,true,Marcar si el último dígito de la placa es PAR,Documentacion

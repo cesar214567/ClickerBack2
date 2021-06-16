@@ -255,7 +255,7 @@ public class UserController {
             Usuario usuario =usuariosService.getById(id);
             if(!usuario.getValidated()){
                 String secret = cryptoService.encrypt3(usuario.getCorreo());
-                Response response = emailService.sendTemplateMessage(usuario.getCorreo(), "clicker@gmail.com",secret,true);
+                Response response = emailService.sendTemplateMessage(usuario.getCorreo(), "Validacion de correo",secret,true);
                 return ResponseService.genSuccess(null);
             }else{
                 return ResponseService.genError("ya esta validado el usuario",HttpStatus.CONFLICT);

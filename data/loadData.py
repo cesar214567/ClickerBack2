@@ -18,17 +18,17 @@ def printSep(text):
 
 
 try:
-    connection = psycopg2.connect(user="doadmin",
-                                 password="xbe4qv0g3ze08p75",
-                                 host="db-clickerperu-pruebas-do-user-7908831-0.b.db.ondigitalocean.com",
-                                 port="25060",
-                                 database="clicker-pruebas-web")
+    #connection = psycopg2.connect(user="doadmin",
+    #                             password="xbe4qv0g3ze08p75",
+    #                             host="db-clickerperu-pruebas-do-user-7908831-0.b.db.ondigitalocean.com",
+    #                             port="25060",
+    #                             database="clicker-pruebas-web")
 
-    #connection = psycopg2.connect(user="postgres",
-    #                               password="admin",
-    #                                host="127.0.0.1",
-    #                                 port="5432",
-    #                                 database="postgres")
+    connection = psycopg2.connect(user="postgres",
+                                   password="admin",
+                                    host="127.0.0.1",
+                                     port="5432",
+                                     database="postgres")
     cursor = connection.cursor()
     printSep('accesorio')
     loadTable(connection, 'accesorios.csv', 'accesorio')
