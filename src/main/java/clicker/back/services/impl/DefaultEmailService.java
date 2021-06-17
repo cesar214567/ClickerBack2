@@ -8,11 +8,12 @@ import com.sendgrid.helpers.mail.objects.Email;
 import com.sendgrid.helpers.mail.objects.Personalization;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 
-@Component
+@Service
 public class DefaultEmailService implements EmailService {
 
     @Value("${apikey}")
@@ -42,16 +43,13 @@ public class DefaultEmailService implements EmailService {
         Email _to = new Email(to);
         Content content = new Content("text/html","<p>aaaa</p>" );
         Mail mail = new Mail(_from, subject, _to, content);
-        Personalization personalization = new Personalization();
-        personalization.addDynamicTemplateData("data",secret);
-        personalization.addTo(_to);
+        mail.personalization.get(0).addDynamicTemplateData("data",secret);
+
         if(mode){//1 for validation 0 for recover
             mail.setTemplateId(validationTemplateId);
-        }else{
+        }else {
             mail.setTemplateId(recoverTemplateId);
         }
-
-        mail.addPersonalization(personalization);
         SendGrid sg = new SendGrid(apiKey);
         Request request = new Request();
         request.setMethod(Method.POST);
