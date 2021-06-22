@@ -2,6 +2,7 @@ package clicker.back.entities;
 
 import clicker.back.utils.entities.Accesorio;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,7 +11,16 @@ import java.util.List;
 @Entity
 public class AutoSemiNuevo implements Cloneable {
     @Column(name = "id_auto_semi_nuevo")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "auto-semi-nuevo-generator")
+    @GenericGenerator(
+            name = "auto-semi-nuevo-generator",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "auto_semi_nuevo_sequence"),
+                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "75"),
+                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+            }
+    )
     @Id
     Long id;
 

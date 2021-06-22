@@ -43,7 +43,8 @@ public class BackApplication extends SpringBootServletInitializer {
 
             Usuario usuario = new Usuario();
             usuario.setRol("PARTICULAR");
-            usuario.setCorreo("");
+            usuario.setCorreo("santiago.salas@clicker.pe");
+            usuario.setPassword("clicker");
             usuario.setNombre("Santiago José Salas Salas");
             usuario.setTipoDocumento("DNI");
             usuario.setNumDocumento("71838102");

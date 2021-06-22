@@ -52,5 +52,4 @@ public class FotoBannerController {
             return new ResponseEntity<>("FALLO",HttpStatus.BAD_REQUEST);
         }
     }
-
 }
