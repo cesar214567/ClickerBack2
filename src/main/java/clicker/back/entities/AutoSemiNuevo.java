@@ -53,7 +53,7 @@ public class AutoSemiNuevo implements Cloneable {
     String tipoCarroceria;
 
     @Column
-    Integer cilindrada;
+    Float cilindrada;
 
     @Column
     Long kilometraje;
@@ -100,7 +100,7 @@ public class AutoSemiNuevo implements Cloneable {
     @Column(length = 1000)
     String fotoPrincipal;
 
-    @Column
+    @Column(length = 1000)
     String descripcion;
 
     @Column
@@ -356,11 +356,11 @@ public class AutoSemiNuevo implements Cloneable {
         this.tipoCarroceria = tipoCarroceria;
     }
 
-    public Integer getCilindrada() {
+    public Float getCilindrada() {
         return cilindrada;
     }
 
-    public void setCilindrada(Integer cilindrada) {
+    public void setCilindrada(Float cilindrada) {
         this.cilindrada = cilindrada;
     }
 
@@ -524,4 +524,6 @@ public class AutoSemiNuevo implements Cloneable {
         this.setSerie(autoSemiNuevo.getSerie());
 
     }
+
+
 }

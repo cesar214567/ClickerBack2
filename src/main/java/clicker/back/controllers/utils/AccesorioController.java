@@ -3,10 +3,14 @@ import clicker.back.Setup;
 import clicker.back.utils.entities.Accesorio;
 import clicker.back.utils.errors.ResponseService;
 import clicker.back.utils.services.AccesorioService;
+import org.hibernate.sql.ordering.antlr.OrderingSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.lang.reflect.Array;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/accesorio")
@@ -19,8 +23,28 @@ public class AccesorioController {
     @ResponseBody
     public ResponseEntity<Object> getAll(){
         try{
-            return ResponseService.genSuccess(accesorioService.getAllEnabled());
+            List<Accesorio> accesorioList = accesorioService.getAllEnabled();
+            Map<String,List<Accesorio>> map = new HashMap<>();
+            for (Accesorio accesorio : accesorioList) {
+                if(!map.containsKey(accesorio.getTipo())){
+                    map.put(accesorio.getTipo(),new ArrayList<>());
+                }
+                map.get(accesorio.getTipo()).add(accesorio);
+
+            }
+            Collection<List<Accesorio>> result =  map.values();
+
+            return ResponseService.genSuccess(result.stream().sorted(new Comparator<List<Accesorio>>() {
+                @Override
+                public int compare(List<Accesorio> o1, List<Accesorio> o2) {
+                    Integer x = o2.size();
+                    Integer y = o1.size();
+
+                    return x.compareTo(y);
+                }
+            }));
         }catch (Exception e){
+            e.printStackTrace();
             return ResponseService.genError("fallo en el servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
