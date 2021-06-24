@@ -260,11 +260,13 @@ public class CarPostController {
     @PostMapping(value = "/venta")
     @ResponseBody
     @Transactional
-    public ResponseEntity<Object> ventaSemiNuevo(@RequestBody VentaSemiNuevo ventaSemiNuevo){
+    public ResponseEntity<Object> ventaSemiNuevo(@RequestPart("file")MultipartFile file,@RequestPart("ventaSemiNuevo") String model) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        VentaSemiNuevo ventaSemiNuevo = objectMapper.readValue(model,VentaSemiNuevo.class);
         if(ventaSemiNuevo.getComisionGeneral()==null || ventaSemiNuevo.getPrecioFinalVenta()==null){
             return ResponseService.genError("no se enviaron la comision o el precio final",HttpStatus.BAD_REQUEST);
         }
-        if(ventaSemiNuevo.getFoto()==null){
+        if(file==null){
             return ResponseService.genError("no se envio la foto",HttpStatus.BAD_REQUEST);
         }
         if(ventaSemiNuevo.getComprador()!=null){
@@ -333,8 +335,11 @@ public class CarPostController {
         ventaSemiNuevo.setGananciaUsuario(gananciaUsuario);
         ventaSemiNuevo.setGananciaVendedor(gananciaVendedor);
         AutoPatrocinado autoPatrocinado = autoPatrocinadoService.findByAutoSemiNuevo(ventaSemiNuevo.getAutoSemiNuevo());
+        String foto ="";
         try{
-
+            foto = amazonService.uploadFile(file,ventaSemiNuevo.getAutoSemiNuevo().getUsuario().getId().toString(),
+                    "fotosVentas/"+ ventaSemiNuevo.getAutoSemiNuevo().getId().toString());
+            ventaSemiNuevo.setFoto(foto);
             usuariosService.updateBalance(gananciaUsuario,ventaSemiNuevo.getAutoSemiNuevo().getUsuario().getCorreo());
             if(ventaSemiNuevo.getVendedor()!=null){
                 usuariosService.updateBalance(gananciaVendedor,ventaSemiNuevo.getVendedor().getCorreo());
@@ -342,10 +347,14 @@ public class CarPostController {
             if(autoPatrocinado!=null){
                 autoPatrocinadoService.delete(autoPatrocinado);
             }
+
             ventaSemiNuevoService.save(ventaSemiNuevo);
 
             return ResponseService.genSuccess(null);
         }catch (Exception e){
+            if(!foto.equals("")){
+                amazonService.deleteFileFromS3Bucket(foto);
+            }
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
