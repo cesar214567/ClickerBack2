@@ -477,7 +477,7 @@ public class CarPostController {
             autoSemiNuevo.info(temp);
             Map<String,Integer> fotos = new HashMap<>();
             autoSemiNuevo.getFotos().forEach(foto->fotos.put(foto,0));
-            if (!autoSemiNuevo.getFotoPrincipal().equals(temp.getFotoPrincipal())) {
+            if (temp.getFotoPrincipal()!=null && !autoSemiNuevo.getFotoPrincipal().equals(temp.getFotoPrincipal())) {
                 fotos.put(autoSemiNuevo.getFotoPrincipal(), 0);
             }
             temp.setFotoPrincipal(autoSemiNuevo.getFotoPrincipal());
@@ -490,7 +490,7 @@ public class CarPostController {
             (multipartFiles).forEach(file->temp.getFotos().add(amazonService.uploadFile(file,temp.getUsuario().getId().toString(),"fotosAutos/"+ temp.getId().toString())));
 
             if(firstFile!=null){
-                amazonService.deleteFileFromS3Bucket(temp.getFotoPrincipal());
+                if(temp.getFotoPrincipal()!=null)amazonService.deleteFileFromS3Bucket(temp.getFotoPrincipal());
                 temp.setFotoPrincipal(amazonService.uploadFile(firstFile,temp.getUsuario().getId().toString(),"fotosAutos/"+ temp.getId().toString()));
 
             }
@@ -650,7 +650,7 @@ public class CarPostController {
     public ResponseEntity<Object> getAutosNuevos(@PathVariable("id")String id){
         if(id==null)return ResponseService.genError("no se mando el id",HttpStatus.BAD_REQUEST);
         try{
-            String statements ="select * from autos a where a.presentar!=false a.id_auto=\'"+id+"\'";
+            String statements ="select * from autos a where a.presentar!=false and a.id_auto=\'"+id+"\'";
             ResultSet resultSet = executeQuery(statements);
             Autos auto=null;
             if(resultSet.next()){

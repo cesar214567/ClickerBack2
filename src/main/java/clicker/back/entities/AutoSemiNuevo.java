@@ -1,6 +1,7 @@
 package clicker.back.entities;
 
 import clicker.back.utils.entities.Accesorio;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -184,6 +185,7 @@ public class AutoSemiNuevo implements Cloneable {
         this.revisado = revisado;
     }
 
+    @JsonIgnore
     public String getNombredeauto(){
         return marca+" "+modelo+" de tipo "+tipoCarroceria;
     }

@@ -49,7 +49,6 @@ public class BackApplication extends SpringBootServletInitializer {
             usuario.setTipoDocumento("DNI");
             usuario.setNumDocumento("71838102");
             usuario.setNumTelefono((long) 987654321);
-            usuario.setPassword("uwu");
             usuario.setValidated(true);
             usuario.setEnabled(true);
             usuario.setCantidadCarrosAno(100000);
