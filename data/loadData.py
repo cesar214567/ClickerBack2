@@ -31,7 +31,7 @@ try:
                                      database="postgres")
     cursor = connection.cursor()
     printSep('carros')
-    loadTable(connection, 'autoseminuevo.csv', 'auto_semi_nuevo')
+    loadTable(connection, 'autoseminuevo2.csv', 'auto_semi_nuevo')
     printSep('relaciones')
     loadTable(connection, 'relaciones.csv', 'usuario_carros_posteados')
     printSep('accesorio')

@@ -54,7 +54,6 @@ public class UserController {
     @GetMapping(value = "/id")
     @ResponseBody
     public ResponseEntity<Object> getById(@RequestParam("id") String id ) {
-        System.out.println(id);
         Users user = userService.getByEmail(id);
         if (user == null){
             return new ResponseEntity<>(usuariosService.getByCorreo(id), HttpStatus.OK);
@@ -267,15 +266,15 @@ public class UserController {
     }
 
 
-    @GetMapping("/recover/{id}")
+    @PostMapping("/recover")
     @ResponseBody
-    public ResponseEntity<Object> recoverPassword(@PathVariable("id")Long id){
+    public ResponseEntity<Object> recoverPassword(@RequestBody Usuario usuario){
         try{
-            Usuario usuario = usuariosService.getById(id);
-            if(usuario==null){
+            Usuario temp = usuariosService.getByCorreo(usuario.getCorreo());
+            if(temp==null){
                 return ResponseService.genError("no se encontro el usuario",HttpStatus.NOT_FOUND);
             }else{
-                String correo = usuario.getCorreo();
+                String correo = temp.getCorreo();
                 String secret = cryptoService.encrypt3(correo);
                 emailService.sendTemplateMessage(correo,"Recuperacion de contrasena",secret,false);
                 return ResponseService.genSuccess(null);

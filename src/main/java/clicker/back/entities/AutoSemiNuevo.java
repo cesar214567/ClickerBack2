@@ -124,9 +124,6 @@ public class AutoSemiNuevo implements Cloneable {
     Boolean unicoDueno;
 
     @Column
-    String transmision;
-
-    @Column
     Integer choques;
 
     @Column
@@ -441,13 +438,6 @@ public class AutoSemiNuevo implements Cloneable {
     }
 
 
-    public String getTransmision() {
-        return transmision;
-    }
-
-    public void setTransmision(String transmision) {
-        this.transmision = transmision;
-    }
 
     public Integer getChoques() {
         return choques;
@@ -513,7 +503,6 @@ public class AutoSemiNuevo implements Cloneable {
         if(this.version!=null)autoSemiNuevo.setVersion(this.version);
         if(this.mantenimiento!=null)autoSemiNuevo.setMantenimiento(this.mantenimiento);
         if(this.unicoDueno!=null)autoSemiNuevo.setUnicoDueno(this.unicoDueno);
-        if(this.transmision!=null)autoSemiNuevo.setTransmision(this.transmision);
         if(this.choques!=null)autoSemiNuevo.setChoques(this.choques);
         if(this.fallaMecanica!=null)autoSemiNuevo.setFallaMecanica(this.fallaMecanica);
         if(this.llaves!=null)autoSemiNuevo.setLlaves(this.llaves);

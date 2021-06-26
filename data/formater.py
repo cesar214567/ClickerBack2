@@ -31,7 +31,7 @@ for index,row in df.iterrows():
     data.append(int (str(row['Precio Final']).replace('$','').replace(',','')))
     data.append('true')
     data.append('')
-    data.append(row['Celular Propietario'])
+    data.append(row['    Propietario'])
     data.append('')
     data.append(row['Tipo de Carrocería'])
     data.append(row['Combustible'])
