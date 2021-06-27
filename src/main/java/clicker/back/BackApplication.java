@@ -77,6 +77,14 @@ public class BackApplication extends SpringBootServletInitializer {
             admin.setRol("ADMIN");
             usersService.save(admin);
 
+            Users admin2 = new Users();
+            admin2.setEmail("jonathan.prieto@utec.edu.pe");
+            admin2.setPassword("clicker");
+            admin2.setName("jonathan");
+            admin2.setPermitido(true);
+            admin2.setRol("ADMIN");
+            usersService.save(admin2);
+
             Usuario usuario2 = new Usuario();
             usuario2.setRol("PARTICULAR");
             usuario2.setCorreo("gabriel.spranger@utec.edu.pe");

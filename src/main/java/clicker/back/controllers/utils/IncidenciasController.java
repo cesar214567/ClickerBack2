@@ -46,9 +46,7 @@ public class IncidenciasController {
         try{
             ObjectMapper objectMapper = new ObjectMapper();
             Incidencias incidencias = objectMapper.readValue(model,Incidencias.class);
-            if (file==null){
-                return ResponseService.genError("no se envio la foto",HttpStatus.BAD_REQUEST);
-            }
+
             if(incidencias.getUsuario()==null || incidencias.getUsuario().getId()==null){
                 return ResponseService.genError("no se mando el usuario",HttpStatus.BAD_REQUEST);
             }
@@ -59,7 +57,11 @@ public class IncidenciasController {
             incidencias.setId(null);
             incidencias.setDate(new Date());
             incidencias = incidenciasService.save(incidencias);
-            incidencias.setFoto(amazonService.uploadFile(file,incidencias.getUsuario().getId().toString(),"fotosIncidencias/"+incidencias.getId()));
+            if (file!=null){
+                incidencias.setFoto(amazonService.uploadFile(file,incidencias.getUsuario().getId().toString(),"fotosIncidencias/"+incidencias.getId()));
+            }else{
+                incidencias.setFoto(null);
+            }
             return ResponseService.genSuccess(incidencias);
         }catch (Exception e){
             e.printStackTrace();
