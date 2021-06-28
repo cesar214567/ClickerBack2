@@ -30,9 +30,9 @@
 30;true;Bola o cubo de remolque;Extras
 31;true;Barras transversales de techo (Thule o similar);Extras
 32;true;Parrilla para equipaje (Thule o similar);Extras
-33;true;"Luces HID/ LED";Extras
+33;true;Luces HID/ LED;Extras
 34;true;Llantas H/T deportivas;Extras
-35;true;"Llantas M/T/ A/T todoterreno";Extras
+35;true;Llantas M/T/ A/T todoterreno;Extras
 36;true;Aros de aleación deportivos para pista;Extras
 37;true;Aros de aleación especiales para off road;Extras
 38;true;Parlantes/Subwoofer;Extras
@@ -46,5 +46,5 @@
 46;true;Revisión técnica vigente;Documentacion
 47;true;Documentos en regla;Documentacion
 48;true;Sin papeletas pendientes de pago;Documentacion
-49;true;Marcar si el último dígito de la placa es IMPAR;Documentacion
-50;true;Marcar si el último dígito de la placa es PAR;Documentacion
+49;true;Placa IMPAR;Documentacion
+50;true;Placa PAR;Documentacion

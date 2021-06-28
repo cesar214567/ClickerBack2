@@ -105,7 +105,7 @@ public class AutoSemiNuevo implements Cloneable {
     @Column(length = 1000)
     String video;
 
-    @OneToMany
+    @ManyToMany
     List<Accesorio> accesorios;
 
     @Column(length = 1000)
