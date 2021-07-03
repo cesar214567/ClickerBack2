@@ -22,6 +22,9 @@ public class Usuario implements Serializable {
     @Column
     String nombre;
 
+    @Column
+    String apellidos;
+
     @Column(length = 1000)
     String imagenPerfil;
 
@@ -88,7 +91,13 @@ public class Usuario implements Serializable {
 
     Long numeroDenuncias;
 
+    public String getApellidos() {
+        return apellidos;
+    }
 
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
 
     public String getSecret() {
         return secret;

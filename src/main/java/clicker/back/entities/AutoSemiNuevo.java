@@ -37,6 +37,9 @@ public class AutoSemiNuevo implements Cloneable {
     String serie;
 
     @Column
+    String vin;
+
+    @Column
     String correoDueno;
 
     @Column
@@ -479,6 +482,14 @@ public class AutoSemiNuevo implements Cloneable {
         this.locacion = locacion;
     }
 
+    public String getVin() {
+        return vin;
+    }
+
+    public void setVin(String vin) {
+        this.vin = vin;
+    }
+
     public void info(AutoSemiNuevo autoSemiNuevo){
 
 
@@ -507,6 +518,8 @@ public class AutoSemiNuevo implements Cloneable {
         if(this.fallaMecanica!=null)autoSemiNuevo.setFallaMecanica(this.fallaMecanica);
         if(this.llaves!=null)autoSemiNuevo.setLlaves(this.llaves);
         if(this.fumado!=null)autoSemiNuevo.setFumado(this.fumado);
+        if(this.vin!=null)autoSemiNuevo.setVin(this.vin);
+
 
     }
     public void reverseInfo(AutoSemiNuevo autoSemiNuevo){
