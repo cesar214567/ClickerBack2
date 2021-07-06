@@ -24,7 +24,6 @@ public interface AutoSemiNuevoService {
 
     List<AutoSemiNuevo> getAllFromIdList(List<Long> ids);
 
-    List<AutoSemiNuevo>  getByPlaca(String placa);
 
     Long getAllVendidos();
 
@@ -45,4 +44,8 @@ public interface AutoSemiNuevoService {
     List<AutoSemiNuevo> getReportados();
 
     List<Long> getAllAutosVendidosByUsuario(Long userId);
+
+    List<AutoSemiNuevo> getByPlaca(String placa);
+
+    void setVinAndColorByPlaca(String placa, String color ,String vin );
 }

@@ -10,8 +10,13 @@ import clicker.back.services.*;
 import clicker.back.utils.entities.Accesorio;
 import clicker.back.utils.errors.ResponseService;
 import clicker.back.utils.services.AccesorioService;
+import com.amazonaws.services.ec2.model.transform.UnmonitorInstancesResultStaxUnmarshaller;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +38,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.time.LocalDate;
@@ -40,6 +49,10 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(value = "/post")
@@ -65,6 +78,12 @@ public class CarPostController {
 
     @Autowired
     AccesorioService accesorioService;
+
+    ExecutorService executorService =new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<Runnable>());
+    @Value("${apitoken}")
+    String apiToken;
+    @Value("${apiurl}")
+    String apiUrl;
 
     public ResultSet executeQuery(String sql) throws SQLException {
         Connection connection = DriverManager.getConnection(db2Url, db2Username, db2Password);
@@ -161,6 +180,47 @@ public class CarPostController {
                 finalAutoSemiNuevo.setFotos(fotos);
                 autos.add(finalAutoSemiNuevo);
                 usuariosService.save(user);
+
+
+                Runnable runnableTask = () -> {
+
+                    try {
+                        var values = new HashMap<String, String>() {{
+                            put("placa", finalAutoSemiNuevo.getPlaca());
+                            put ("token", apiToken);
+                        }};
+
+                        var objectMapper = new ObjectMapper();
+                        String requestBody = objectMapper
+                                .writeValueAsString(values);
+                        System.out.println(requestBody);
+
+                        HttpClient client = HttpClient.newHttpClient();
+                        HttpRequest requestApi = HttpRequest.newBuilder()
+                                .uri(URI.create(apiUrl))
+                                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                                .header("Content-Type","application/json")
+                                .build();
+
+                        HttpResponse<String> response = client.send(requestApi,
+                                HttpResponse.BodyHandlers.ofString());
+
+                        String placa = finalAutoSemiNuevo.getPlaca();
+                        JSONParser parser = new JSONParser();
+                        JSONObject responseJson = (JSONObject) parser.parse(response.body());
+
+                        JSONObject data = (JSONObject) responseJson.get("data");
+                        String vin = (String) data.get("vin");
+                        String color = (String) data.get("color");
+                        autoSemiNuevoService.setVinAndColorByPlaca(placa,color,vin);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                };
+
+
+                executorService.execute(runnableTask);
+
                 return ResponseService.genSuccess( null);
             }catch (Exception e ){
                 return ResponseService.genError("fallo",HttpStatus.BAD_REQUEST);

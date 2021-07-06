@@ -26,6 +26,12 @@ public interface AutoSemiNuevoRepository extends PagingAndSortingRepository<Auto
 
     List<AutoSemiNuevo> findAllByPlaca(String placa);
 
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true,value = "update auto_semi_nuevo a set color=:color, vin=:vin where a.placa=:placa ")
+    void setVinAndColorByPlaca(String placa,String color, String vin);
+
+
     Long countAllByComprado(Boolean comprado);
 
     @Query(nativeQuery = true,value = "select count(distinct(a.marca)) from auto_semi_nuevo a where a.validado=true and a.enabled=true")

@@ -41,7 +41,7 @@ public class BackApplication extends SpringBootServletInitializer {
         return () -> {
 
 
-            /*Usuario usuario = new Usuario();
+            Usuario usuario = new Usuario();
             usuario.setRol("PARTICULAR");
             usuario.setCorreo("santiago.salas@clicker.pe");
             usuario.setPassword("clicker");
@@ -99,7 +99,7 @@ public class BackApplication extends SpringBootServletInitializer {
 
             usuariosService.save(usuario2);
 
-             */
+
         };
     }
 }

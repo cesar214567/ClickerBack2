@@ -490,6 +490,8 @@ public class AutoSemiNuevo implements Cloneable {
         this.vin = vin;
     }
 
+
+
     public void info(AutoSemiNuevo autoSemiNuevo){
 
 

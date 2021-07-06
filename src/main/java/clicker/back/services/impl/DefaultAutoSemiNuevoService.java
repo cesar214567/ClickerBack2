@@ -60,6 +60,11 @@ public class DefaultAutoSemiNuevoService implements AutoSemiNuevoService {
     }
 
     @Override
+    public void setVinAndColorByPlaca(String placa, String color, String vin) {
+        autoSemiNuevoRepository.setVinAndColorByPlaca(placa,color,vin);
+    }
+
+    @Override
     public Long getAllVendidos() {
         return autoSemiNuevoRepository.countAllByComprado(true);
     }
