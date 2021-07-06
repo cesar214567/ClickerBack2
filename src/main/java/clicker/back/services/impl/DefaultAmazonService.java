@@ -66,13 +66,13 @@ public class DefaultAmazonService implements AmazonService {
         String fileUrl = "";
         try {
             File file = convertMultiPartToFile(multipartFile);
-            String fileName = "";
+            String fileName = "fotosClicker/";
             if(id!=null){
-                fileName = id+"/"+dir+"/" + generateFileName(multipartFile);
+                fileName += id+"/"+dir+"/" + generateFileName(multipartFile);
             }else{
                 fileName = dir+"/" + generateFileName(multipartFile);
             }
-            fileUrl = endpointUrl + "/" + bucketName + "/fotosClicker/" + fileName;
+            fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
             System.out.println(uploadFileTos3bucket(fileName, file));
               file.delete();
         } catch (Exception e) {
