@@ -211,6 +211,7 @@ public class CarPostController {
 
                         JSONObject data = (JSONObject) responseJson.get("data");
                         String vin = (String) data.get("vin");
+
                         String color = (String) data.get("color");
                         autoSemiNuevoService.setVinAndColorByPlaca(placa,color,vin);
                     } catch (Exception e) {

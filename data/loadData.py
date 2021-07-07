@@ -28,7 +28,7 @@ try:
                                    password="admin",
                                     host="127.0.0.1",
                                      port="5432",
-    #                                 database="postgres")
+                                     database="postgres")
     cursor = connection.cursor()
     printSep('carros')
     loadTable(connection, 'autoseminuevo2.csv', 'auto_semi_nuevo')
