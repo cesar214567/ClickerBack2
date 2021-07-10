@@ -7,16 +7,7 @@ import javax.persistence.*;
 @Entity
 public class Accesorio {
     @Column(name = "accesorio_id")
-    @GeneratedValue(generator = "accesorio-generator")
-    @GenericGenerator(
-            name = "accesorio-generator",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "accesorio_sequence"),
-                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "51"),
-                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
-            }
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     Long id;
 
