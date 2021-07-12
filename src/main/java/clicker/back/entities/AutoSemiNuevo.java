@@ -13,7 +13,6 @@ import java.util.List;
 public class AutoSemiNuevo implements Cloneable {
     @Column(name = "id_auto_semi_nuevo")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     @Id
     Long id;
 
