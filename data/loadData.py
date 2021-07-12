@@ -30,10 +30,10 @@ try:
                                      port="5432",
                                      database="postgres")
     cursor = connection.cursor()
-    printSep('carros')
-    loadTable(connection, 'autoseminuevo2.csv', 'auto_semi_nuevo')
-    printSep('relaciones')
-    loadTable(connection, 'relaciones.csv', 'usuario_carros_posteados')
+    #printSep('carros')
+    #loadTable(connection, 'autoseminuevo2.csv', 'auto_semi_nuevo')
+    #printSep('relaciones')
+    #loadTable(connection, 'relaciones.csv', 'usuario_carros_posteados')
     printSep('accesorio')
     loadTable(connection, 'accesorios.csv', 'accesorio')
 
