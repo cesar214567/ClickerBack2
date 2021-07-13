@@ -39,9 +39,9 @@ public class BackApplication extends SpringBootServletInitializer {
     @Bean
     InitializingBean sendDatabase() {
         return () -> {
+            System.setProperty("tomcat.util.http.parser.HttpParser.requestTargetAllow","{}");
 
-
-            Usuario usuario = new Usuario();
+            /*Usuario usuario = new Usuario();
             usuario.setRol("PARTICULAR");
             usuario.setCorreo("santiago.salas@clicker.pe");
             usuario.setPassword("clicker");
@@ -98,7 +98,7 @@ public class BackApplication extends SpringBootServletInitializer {
             usuario2.setBalance((float) 0);
 
             usuariosService.save(usuario2);
-
+            */
 
         };
     }
