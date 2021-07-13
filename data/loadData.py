@@ -18,17 +18,17 @@ def printSep(text):
 
 
 try:
-    connection = psycopg2.connect(user="doadmin",
-                                     password="p4210mm1twj0yo0f",
-                                 host="db-clicker-peru-do-user-7725672-0.a.db.ondigitalocean.com",
-                                 port="25060",
-                                 database="defaultdb")
+    #connection = psycopg2.connect(user="doadmin",
+    #                                 password="p4210mm1twj0yo0f",
+    #                             host="db-clicker-peru-do-user-7725672-0.a.db.ondigitalocean.com",
+    #                             port="25060",
+    #                             database="defaultdb")
 
-    #connection = psycopg2.connect(user="postgres",
-    #                               password="admin",
-    #                                host="127.0.0.1",
-    #                                 port="5432",
-    #                                 database="postgres")
+    connection = psycopg2.connect(user="postgres",
+                                   password="admin",
+                                    host="127.0.0.1",
+                                     port="5432",
+                                     database="postgres")
     cursor = connection.cursor()
     #printSep('carros')
     #loadTable(connection, 'autoseminuevo2.csv', 'auto_semi_nuevo')
