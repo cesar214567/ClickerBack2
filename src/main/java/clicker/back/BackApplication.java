@@ -39,7 +39,6 @@ public class BackApplication extends SpringBootServletInitializer {
     @Bean
     InitializingBean sendDatabase() {
         return () -> {
-            System.setProperty("tomcat.util.http.parser.HttpParser.requestTargetAllow","{}");
 
             /*Usuario usuario = new Usuario();
             usuario.setRol("PARTICULAR");
