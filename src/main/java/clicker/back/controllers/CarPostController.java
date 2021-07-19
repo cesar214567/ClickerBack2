@@ -103,67 +103,66 @@ public class CarPostController {
     @PostMapping
     @ResponseBody
     @Transactional
-    public ResponseEntity<Object> post(HttpServletRequest request) throws IOException, ServletException {
-
-        List<MultipartFile> multipartFiles = new ArrayList<>();
-        MultipartFile firstFile = null;
-        String model="{}";
-        for (Part part:request.getParts()){
-            if(part.getContentType()!=null ){
-                if (part.getName().equals("fotoPrincipal")){
-                    firstFile = new MockMultipartFile(part.getSubmittedFileName(),part.getSubmittedFileName(),part.getContentType(),part.getInputStream());
-                }else{
-                    multipartFiles.add(new MockMultipartFile(part.getSubmittedFileName(),part.getSubmittedFileName(),part.getContentType(),part.getInputStream()) );
+    public ResponseEntity<Object> post(HttpServletRequest request) {
+        try {
+            List<MultipartFile> multipartFiles = new ArrayList<>();
+            MultipartFile firstFile = null;
+            String model = "{}";
+            for (Part part : request.getParts()) {
+                if (part.getContentType() != null) {
+                    if (part.getName().equals("fotoPrincipal")) {
+                        firstFile = new MockMultipartFile(part.getSubmittedFileName(), part.getSubmittedFileName(), part.getContentType(), part.getInputStream());
+                    } else {
+                        multipartFiles.add(new MockMultipartFile(part.getSubmittedFileName(), part.getSubmittedFileName(), part.getContentType(), part.getInputStream()));
+                    }
+                } else {
+                    String theString = IOUtils.toString(part.getInputStream(), StandardCharsets.UTF_8);
+                    model = String.valueOf(theString);
                 }
-            }else{
-                String theString = IOUtils.toString(part.getInputStream(), StandardCharsets.UTF_8);
-                model = String.valueOf(theString);
             }
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        AutoSemiNuevo autoSemiNuevo = mapper.readValue(model, AutoSemiNuevo.class);
-    //public ResponseEntity<Object> post(@RequestBody AutoSemiNuevo autoSemiNuevo){
-        if(autoSemiNuevo.getUsuario()==null || autoSemiNuevo.getUsuario().getCorreo()==null)
-            return ResponseService.genError("no se envio un usuario",HttpStatus.BAD_REQUEST);
-        List<AutoSemiNuevo> temp = autoSemiNuevoService.getByPlaca(autoSemiNuevo.getPlaca());
-        if(autoSemiNuevo.getPlaca()==null) {
-            return ResponseService.genError("no se mando la placa",HttpStatus.BAD_REQUEST);
-        }
-        for (AutoSemiNuevo semiNuevo : temp) {
-            if(!semiNuevo.getComprado() && semiNuevo.getEnabled()){
-                return ResponseService.genError("este auto esta siendo vendido",HttpStatus.BAD_REQUEST);
+            ObjectMapper mapper = new ObjectMapper();
+            AutoSemiNuevo autoSemiNuevo = mapper.readValue(model, AutoSemiNuevo.class);
+            //public ResponseEntity<Object> post(@RequestBody AutoSemiNuevo autoSemiNuevo){
+            if (autoSemiNuevo.getUsuario() == null || autoSemiNuevo.getUsuario().getCorreo() == null)
+                return ResponseService.genError("no se envio un usuario", HttpStatus.BAD_REQUEST);
+            List<AutoSemiNuevo> temp = autoSemiNuevoService.getByPlaca(autoSemiNuevo.getPlaca());
+            if (autoSemiNuevo.getPlaca() == null) {
+                return ResponseService.genError("no se mando la placa", HttpStatus.BAD_REQUEST);
             }
-        }
-        Usuario user = usuariosService.getByCorreo(autoSemiNuevo.getUsuario().getCorreo());
-        if(user == null){
-            return ResponseService.genError("no se encontro el usuario con ese id",HttpStatus.BAD_REQUEST);
-        }else{
-            Calendar c1 = Calendar.getInstance();
-            Calendar c2 = Calendar.getInstance();
-            c2.setTime(new Date());
-            int cont=0;
-            List<AutoSemiNuevo> autos = user.getCarrosPosteados();
-            for(AutoSemiNuevo auto:autos){
-                c1.setTime(auto.getFechaPublicacion());
-                if(c1.get(Calendar.YEAR)==c2.get(Calendar.YEAR))cont++;
+            for (AutoSemiNuevo semiNuevo : temp) {
+                if (!semiNuevo.getComprado() && semiNuevo.getEnabled()) {
+                    return ResponseService.genError("este auto esta siendo vendido", HttpStatus.BAD_REQUEST);
+                }
             }
-            if(cont>=user.getCantidadCarrosAno()){
-                return ResponseService.genError("ya agoto sus subidas anuales",HttpStatus.BAD_REQUEST);
-            }
-            autoSemiNuevo.setComprado(false);
-            autoSemiNuevo.setValidado(false);
-            autoSemiNuevo.setEnabled(true);
-            autoSemiNuevo.setRevisado(true);
-            autoSemiNuevo.setFechaPublicacion(new Date());
-            List<String> fotos = new ArrayList<>();
+            Usuario user = usuariosService.getByCorreo(autoSemiNuevo.getUsuario().getCorreo());
+            if (user == null) {
+                return ResponseService.genError("no se encontro el usuario con ese id", HttpStatus.BAD_REQUEST);
+            } else {
+                Calendar c1 = Calendar.getInstance();
+                Calendar c2 = Calendar.getInstance();
+                c2.setTime(new Date());
+                int cont = 0;
+                List<AutoSemiNuevo> autos = user.getCarrosPosteados();
+                for (AutoSemiNuevo auto : autos) {
+                    c1.setTime(auto.getFechaPublicacion());
+                    if (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)) cont++;
+                }
+                if (cont >= user.getCantidadCarrosAno()) {
+                    return ResponseService.genError("ya agoto sus subidas anuales", HttpStatus.BAD_REQUEST);
+                }
+                autoSemiNuevo.setComprado(false);
+                autoSemiNuevo.setValidado(false);
+                autoSemiNuevo.setEnabled(true);
+                autoSemiNuevo.setRevisado(true);
+                autoSemiNuevo.setFechaPublicacion(new Date());
+                List<String> fotos = new ArrayList<>();
 
 
-            autoSemiNuevo.setUsuario(user);
-            try{
+                autoSemiNuevo.setUsuario(user);
                 List<Accesorio> accesoriosList = new ArrayList<>();
                 for (Accesorio accesorio : autoSemiNuevo.getAccesorios()) {
                     Accesorio accesorioTemp = accesorioService.getById(accesorio.getId());
-                    if (accesorioTemp!=null){
+                    if (accesorioTemp != null) {
                         accesoriosList.add(accesorioTemp);
                     }
                 }
@@ -171,64 +170,54 @@ public class CarPostController {
                 autoSemiNuevo = autoSemiNuevoService.save(autoSemiNuevo);
                 AutoSemiNuevo finalAutoSemiNuevo = autoSemiNuevo;
                 (multipartFiles).forEach(file -> {
-                    fotos.add(amazonService.uploadFile(file,user.getId().toString(),"fotosAutos/"+ finalAutoSemiNuevo.getId().toString()));
+                    fotos.add(amazonService.uploadFile(file, user.getId().toString(), "fotosAutos/" + finalAutoSemiNuevo.getId().toString()));
                 });
-                if(firstFile!=null){
-                    String fotoPrincipal = amazonService.uploadFile(firstFile,user.getId().toString(),"fotosAutos/"+ finalAutoSemiNuevo.getId().toString());
-                    finalAutoSemiNuevo.setFotoPrincipal(fotoPrincipal)  ;
+                if (firstFile != null) {
+                    String fotoPrincipal = amazonService.uploadFile(firstFile, user.getId().toString(), "fotosAutos/" + finalAutoSemiNuevo.getId().toString());
+                    finalAutoSemiNuevo.setFotoPrincipal(fotoPrincipal);
                 }
                 finalAutoSemiNuevo.setFotos(fotos);
                 autos.add(finalAutoSemiNuevo);
                 usuariosService.save(user);
 
-
                 Runnable runnableTask = () -> {
-
                     try {
                         var values = new HashMap<String, String>() {{
                             put("placa", finalAutoSemiNuevo.getPlaca());
-                            put ("token", apiToken);
+                            put("token", apiToken);
                         }};
-
                         var objectMapper = new ObjectMapper();
                         String requestBody = objectMapper
                                 .writeValueAsString(values);
                         System.out.println(requestBody);
-
                         HttpClient client = HttpClient.newHttpClient();
                         HttpRequest requestApi = HttpRequest.newBuilder()
                                 .uri(URI.create(apiUrl))
                                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                                .header("Content-Type","application/json")
+                                .header("Content-Type", "application/json")
                                 .build();
-
                         HttpResponse<String> response = client.send(requestApi,
                                 HttpResponse.BodyHandlers.ofString());
-
                         String placa = finalAutoSemiNuevo.getPlaca();
                         JSONParser parser = new JSONParser();
                         JSONObject responseJson = (JSONObject) parser.parse(response.body());
-
                         JSONObject data = (JSONObject) responseJson.get("data");
                         String vin = (String) data.get("vin");
 
                         String color = (String) data.get("color");
-                        autoSemiNuevoService.setVinAndColorByPlaca(placa,color,vin);
+                        autoSemiNuevoService.setVinAndColorByPlaca(placa, color, vin);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 };
-
-
                 executorService.execute(runnableTask);
-
-                return ResponseService.genSuccess( null);
-            }catch (Exception e ){
-                return ResponseService.genError("fallo",HttpStatus.BAD_REQUEST);
+                return ResponseService.genSuccess(null);
             }
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseService.genError("fallo", HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @Autowired
