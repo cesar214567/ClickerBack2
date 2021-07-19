@@ -155,4 +155,43 @@ public class    AdminController {
             return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Autowired
+    SolicitudRemocionService solicitudRemocionService;
+
+    @GetMapping("/solicitudRemocion")
+    @ResponseBody
+    public ResponseEntity<Object> getSolicitudesRemocion() {
+        try{
+            return ResponseService.genSuccess(solicitudRemocionService.getAll());
+        }catch (Exception e){
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/solicitudRemocion")
+    @Transactional
+    @ResponseBody
+    public ResponseEntity<Object> validateSolicitudesRemocion(@RequestBody SolicitudRemocionAuto temp) {
+        try{
+            if(temp.getId()==null){
+                return ResponseService.genError("no se mando el id",HttpStatus.BAD_REQUEST);
+            }
+            SolicitudRemocionAuto solicitudRemocionAuto = solicitudRemocionService.getById(temp.getId());
+            if(solicitudRemocionAuto==null){
+                return ResponseService.genError("no se encontro la solicitud",HttpStatus.NOT_FOUND);
+            }
+            if(temp.getAccepted()){
+                solicitudRemocionAuto.getAutoSemiNuevo().setEnabled(false);
+            }
+
+            solicitudRemocionAuto.setAccepted(temp.getAccepted());
+            solicitudRemocionService.save(solicitudRemocionAuto);
+            return ResponseService.genSuccess(null);
+        }catch (Exception e){
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

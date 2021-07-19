@@ -48,4 +48,6 @@ public interface AutoSemiNuevoService {
     List<AutoSemiNuevo> getByPlaca(String placa);
 
     void setVinAndColorByPlaca(String placa, String color ,String vin );
+
+    Boolean existsById(Long id);
 }

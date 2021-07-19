@@ -65,6 +65,11 @@ public class DefaultAutoSemiNuevoService implements AutoSemiNuevoService {
     }
 
     @Override
+    public Boolean existsById(Long id) {
+        return autoSemiNuevoRepository.existsById(id);
+    }
+
+    @Override
     public Long getAllVendidos() {
         return autoSemiNuevoRepository.countAllByComprado(true);
     }

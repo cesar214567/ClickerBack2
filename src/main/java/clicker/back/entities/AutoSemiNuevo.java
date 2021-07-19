@@ -132,6 +132,7 @@ public class AutoSemiNuevo implements Cloneable {
     @ElementCollection
     List<String> fotos;
 
+    @JsonIgnoreProperties({"autoSemiNuevo"})
     @OneToOne(cascade = CascadeType.ALL)
     SolicitudRemocionAuto solicitudRemocionAuto;
 

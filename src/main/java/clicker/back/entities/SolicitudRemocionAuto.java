@@ -1,5 +1,7 @@
 package clicker.back.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,10 +13,22 @@ public class SolicitudRemocionAuto {
 
     @JoinColumn(name="id_auto_semi_nuevo")
     @OneToOne
+    @JsonIgnoreProperties({"accesorios","solicitudRemocionAuto","interesadoCompras","denuncias"})
     AutoSemiNuevo autoSemiNuevo;
 
     @Column(length = 1000)
     String descripcion;
+
+    @Column
+    Boolean accepted;
+
+    public Boolean getAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(Boolean accepted) {
+        this.accepted = accepted;
+    }
 
     public Long getId() {
         return id;

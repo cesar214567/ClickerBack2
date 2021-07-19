@@ -4,7 +4,7 @@ import clicker.back.entities.SolicitudRemocionAuto;
 
 import java.util.List;
 
-public interface AutoRemovidoService {
+public interface SolicitudRemocionService {
     SolicitudRemocionAuto save(SolicitudRemocionAuto solicitudRemocionAuto);
 
     void delete(SolicitudRemocionAuto solicitudRemocionAuto);
@@ -12,4 +12,6 @@ public interface AutoRemovidoService {
     SolicitudRemocionAuto getById(Long id);
 
     List<SolicitudRemocionAuto> getAll();
+
+    Boolean existSolicitudByCar(Long id);
 }

@@ -770,5 +770,37 @@ public class CarPostController {
 
     }
 
+    @Autowired
+    SolicitudRemocionService solicitudRemocionService;
+
+    @PostMapping("/solicitudRemocion")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<Object> removePost(@RequestBody SolicitudRemocionAuto solicitudRemocionAuto){
+        try{
+            if (solicitudRemocionAuto.getAutoSemiNuevo()==null || solicitudRemocionAuto.getAutoSemiNuevo().getId()==null){
+                return ResponseService.genError("no se envio los datos del auto",HttpStatus.BAD_REQUEST);
+            }
+            Boolean existPost = autoSemiNuevoService.existsById(solicitudRemocionAuto.getAutoSemiNuevo().getId());
+            Boolean existSolicitud = solicitudRemocionService.existSolicitudByCar(solicitudRemocionAuto.getAutoSemiNuevo().getId());
+            if(existSolicitud!=null){
+                return ResponseService.genError("el carro ya tiene una solicitud",HttpStatus.CONFLICT);
+            }
+            if (existPost ){
+                solicitudRemocionAuto.setId(null);
+                solicitudRemocionAuto.setAccepted(null);
+                AutoSemiNuevo autoSemiNuevo = autoSemiNuevoService.getById(solicitudRemocionAuto.getAutoSemiNuevo().getId());
+                autoSemiNuevo.setSolicitudRemocionAuto(solicitudRemocionAuto);
+                solicitudRemocionAuto.setAutoSemiNuevo(autoSemiNuevo);
+                return ResponseService.genSuccess(solicitudRemocionService.save(solicitudRemocionAuto));
+            }else{
+                return ResponseService.genError("el carro no fue encontrado",HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseService.genError("fallo",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
 
